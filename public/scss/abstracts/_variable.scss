@@ -1,0 +1,39 @@
+// settings
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Geologica:wght@100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Kumbh+Sans:wght@100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Oxygen:wght@300;400;700&family=Rethink+Sans:ital,wght@0,400..800;1,400..800&family=SUSE:wght@100..800&display=swap');
+
+
+
+
+$font-main: "Rethink Sans", sans-serif; //change
+$font-main2: "Oxygen", sans-serif;
+$font-main3: "Inter Tight", sans-serif;
+$font-main4: "SUSE", sans-serif;
+$font-main5: "Geologica", sans-serif;
+$font-main6: "Nunito", sans-serif;
+$font-main7: "Archivo", sans-serif;
+$fontIcon: "icomoon";
+
+:root {
+    --primary: #317C6F;
+    --white: #ffffff;
+    --black: #000000;
+    --error: #C72929;
+    --on-suface-container: #24283E;
+    --on-suface-variant-1: #6D7074;
+    --on-suface-variant-2: #A2A3AB;
+    --surface: #F3F5F5;
+    --outline: #E4E4E4;
+    --line-1: #FFFFFF26;
+    --bg-1: #FFFFFF26;
+    --bg-2: #ECF2F2;
+    --bg-3: rgba(0, 0, 0, 0.15);
+    --bg-4: #317C6F66;
+    --bg-5: #24283E1A;
+    --bg-6: #F7F7F7;
+    --color-text-1: #ADF9EB;
+    --color-text-2: #636666;
+    --color-text-3: #858585;
+    --color-text-4: #;
+    --border-1: rgba(36, 40, 62, 0.2);
+
+}
