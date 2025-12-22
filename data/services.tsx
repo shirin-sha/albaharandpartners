@@ -289,7 +289,7 @@ export const servicesData2 = [
   },
   {
     id: "printing-imaging",
-    tabTitle: "Printing & Imaging",
+    tabTitle: "Printing & Imaging Services",
     title: "Printing & Imaging",
     description:
       "Improve productivity with reliable printing and imaging environments—optimized for uptime, cost control, and enterprise workflows.",
@@ -306,7 +306,7 @@ export const servicesData2 = [
   },
   {
     id: "audio-visual",
-    tabTitle: "Audio & Visual",
+    tabTitle: "Audio & Visual Services",
     title: "Audio & Visual",
     description:
       "Create impactful meeting and communication spaces with professional audiovisual solutions for boardrooms, training rooms, and enterprise environments.",

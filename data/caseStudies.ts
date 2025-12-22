@@ -83,7 +83,7 @@ export const caseStudySlides = [
   {
     id: 10,
     imgSrc: "/image/case-studies-item/case-studies-10.jpg",
-    title: "Entrust – Identity & Authentication Enablement",
+    title: "Entrust – Identity & Authentication",
     description:
       "Helped enable identity and authentication initiatives with a focus on secure access, user onboarding readiness, and integration planning for enterprise environments.",
   },
@@ -97,7 +97,7 @@ export const caseStudySlides = [
   {
     id: 12,
     imgSrc: "/image/case-studies-item/case-studies-12.jpg",
-    title: "Pure Storage – Modern Storage Performance",
+    title: "Pure Storage – Modern Storage ",
     description:
       "Supported modernization initiatives to enhance data storage reliability and scalability, with implementation guidance and ongoing support for stable operations.",
   },

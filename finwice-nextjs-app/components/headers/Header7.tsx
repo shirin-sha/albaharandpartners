@@ -57,15 +57,7 @@ export default function Header7({ onepage = false }) {
                 </nav>
               </div>
               <div className="header-right">
-                <div className="tf-phone">
-                  <a href="#" className="icon">
-                    <i className="icon-PhoneCall" />
-                  </a>
-                  <div className="content">
-                    <p className="caption-2">Have any Question?</p>
-                    <a href="#">1-555-678-8888</a>
-                  </div>
-                </div>
+             
                 <div className="nav-btn">
                   <Link
                     href={`/pricing`}
