@@ -4,9 +4,10 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 const processSteps = [
   {
-    step: "Step 1",
-    title: "Assessment",
-    description: "Gather client’s financial information, goals, and needs.",
+    step: "",
+    title: "Trusted Partnerships",
+    description:
+      "We work with leading global brands to deliver proven technologies with dependable implementation standards.",
     icon: (
       <svg
         width={48}
@@ -40,9 +41,10 @@ const processSteps = [
     ),
   },
   {
-    step: "Step 2",
-    title: "Goal Setting",
-    description: "Define short-term and long-term financial objectives.",
+    step: "",
+    title: "End-to-End Delivery",
+    description:
+      "From requirements and planning to rollout and handover, we manage projects with clear accountability.",
     icon: (
       <svg
         width={48}
@@ -69,9 +71,10 @@ const processSteps = [
     ),
   },
   {
-    step: "Step 3",
-    title: "Plan Development",
-    description: "Create a customized financial strategy based on analysis.",
+    step: "",
+    title: "Security-First Approach",
+    description:
+      "Every deployment is aligned to security best practices, access control, and compliance-ready processes.",
     icon: (
       <svg
         width={48}
@@ -98,10 +101,10 @@ const processSteps = [
     ),
   },
   {
-    step: "Step 4",
-    title: "Ongoing Review",
+    step: "",
+    title: "Long-Term Support",
     description:
-      "Implement the plan and regularly review progress for adjustments.",
+      "Responsive support and maintenance to ensure stable performance, uptime, and continuous improvement.",
     icon: (
       <svg
         width={48}
@@ -149,15 +152,15 @@ export default function Process() {
                     href="#"
                     className="tag label text-btn-uppercase color-white"
                   >
-                    steps to success
+                    OUR ADVANTAGE
                   </a>
                 </div>
                 <h3 className="title-section mb-12 text-anime-wave">
-                  How Does It Work?
+                  Partnership That Delivers Results
                 </h3>
                 <div className="sub-title body-2 text-anime-wave">
-                  Follow our proven steps to achieve your goals and drive your
-                  business to success.
+                  A structured approach, strong partnerships, and reliable support—built to keep
+                  your business moving.
                 </div>
               </div>
               <div className="text-anime-wave-2">
