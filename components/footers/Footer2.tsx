@@ -217,7 +217,7 @@ export default function Footer2({
               <div className="footer-bottom-inner">
                 <div className="left">
                   <div className="text caption-1">
-                    ©2025 FinWice. All Rights Reserved.
+                    ©2025 Al Bahar & Partners. All Rights Reserved.
                   </div>
                 </div>
                 <div className="right">
