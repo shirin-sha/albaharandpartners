@@ -60,7 +60,7 @@ export default function Header7({ onepage = false }) {
            
                 <div className="nav-btn">
                   <Link
-                    href={`/pricing`}
+                    href={`#`}
                     className="tf-btn bg-on-suface-container style-1"
                   >
                     <span>Profile</span>

@@ -38,7 +38,7 @@ export default function About() {
                   <p>Or Call Us:</p>
                   <h5>
                     <a href="#" className="color-primary">
-                      1-555-678-8888
+                    +965 XXX XXXX
                     </a>
                   </h5>
                 </div>
