@@ -15,9 +15,9 @@ import { Metadata } from "next";
 import Processconsult from "@/components/homes/it-consulting/Process";
 export const metadata: Metadata = {
   title:
-    "Tax Advisory || FinWice - Business & Finance Consulting - React Nextjs Template",
+    "Al bahar partners",
   description:
-    "FinWice - Business & Finance Consulting - React Nextjs Template",
+    "",
 };
 export default function page() {
   return (
