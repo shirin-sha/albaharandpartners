@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {children}
             <MobileMenu />
             <Quickview />
-            <LoginModal />
+            {/* <LoginModal /> */}
             <Search />
             <TeamModal />
             <SideOffcanvas />
