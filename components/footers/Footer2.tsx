@@ -56,7 +56,7 @@ export default function Footer2({
                       src={
                         light
                           ? "/image/logo/logo-2.png"
-                          : "/image/logo/logo-footer.svg"
+                          : "/image/logo/logo-footer.png"
                       }
                       width={169}
                       height={41}

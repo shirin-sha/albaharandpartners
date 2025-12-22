@@ -16,204 +16,103 @@ export default function Brands() {
             <div className="tf-marquee tf-spacing-25">
               <div className="marquee-wrapper">
                 <div className="initial-child-container">
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  {/* Original set */}
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/vanfaba.svg"
+                        src="/image/brand/fort.png"
                         width={226}
                         height={44}
                       />
                     </a>
                   </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/panadoxn.svg"
+                        src="/image/brand/pure.png"
                         width={226}
                         height={44}
                       />
                     </a>
                   </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/slack.svg"
+                        src="/image/brand/team.png"
                         width={226}
                         height={44}
                       />
                     </a>
                   </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/shangxi.svg"
+                        src="/image/brand/hita.png"
                         width={226}
                         height={44}
                       />
                     </a>
                   </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/spotify.svg"
+                        src="/image/brand/axo.png"
                         width={226}
                         height={44}
                       />
                     </a>
                   </div>
-                  {/* 2 */}
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  {/* Duplicate set for seamless loop */}
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/vanfaba.svg"
+                        src="/image/brand/fort.png"
                         width={226}
                         height={44}
                       />
                     </a>
                   </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/panadoxn.svg"
+                        src="/image/brand/pure.png"
                         width={226}
                         height={44}
                       />
                     </a>
                   </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/slack.svg"
+                        src="/image/brand/team.png"
                         width={226}
                         height={44}
                       />
                     </a>
                   </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/shangxi.svg"
+                        src="/image/brand/hita.png"
                         width={226}
                         height={44}
                       />
                     </a>
                   </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/spotify.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  {/* 3 */}
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/vanfaba.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/panadoxn.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/slack.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/shangxi.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/spotify.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  {/* 4 */}
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/vanfaba.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/panadoxn.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/slack.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/shangxi.svg"
-                        width={226}
-                        height={44}
-                      />
-                    </a>
-                  </div>
-                  <div className="marquee-child-item">
-                    <a href="#" className="brand-item style-opacity">
-                      <Image
-                        alt=""
-                        src="/image/brand/spotify.svg"
+                        src="/image/brand/axo.png"
                         width={226}
                         height={44}
                       />

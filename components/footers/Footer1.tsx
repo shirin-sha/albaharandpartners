@@ -50,7 +50,7 @@ export default function Footer1({ parentClass = "footer" }) {
                   <Link href={`/`} className="logo">
                     <Image
                       alt=""
-                      src="/image/logo/logo-footer.svg"
+                      src="/image/logo/logo-footer.png"
                       width={169}
                       height={41}
                     />
