@@ -22,8 +22,9 @@ export default function Brands() {
                       <Image
                         alt=""
                         src="/image/brand/fort.png"
-                        width={226}
-                        height={44}
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
@@ -32,8 +33,9 @@ export default function Brands() {
                       <Image
                         alt=""
                         src="/image/brand/pure.png"
-                        width={226}
-                        height={44}
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
@@ -42,8 +44,9 @@ export default function Brands() {
                       <Image
                         alt=""
                         src="/image/brand/team.png"
-                        width={226}
-                        height={44}
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
@@ -52,8 +55,9 @@ export default function Brands() {
                       <Image
                         alt=""
                         src="/image/brand/hita.png"
-                        width={226}
-                        height={44}
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
@@ -62,8 +66,9 @@ export default function Brands() {
                       <Image
                         alt=""
                         src="/image/brand/axo.png"
-                        width={226}
-                        height={44}
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
@@ -72,9 +77,10 @@ export default function Brands() {
                     <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/fort.png"
-                        width={226}
-                        height={44}
+                        src="/image/brand/alhua.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
@@ -82,9 +88,10 @@ export default function Brands() {
                     <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/pure.png"
-                        width={226}
-                        height={44}
+                        src="/image/brand/crowd.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
@@ -92,9 +99,10 @@ export default function Brands() {
                     <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/team.png"
-                        width={226}
-                        height={44}
+                        src="/image/brand/entrust.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
@@ -102,9 +110,10 @@ export default function Brands() {
                     <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/hita.png"
-                        width={226}
-                        height={44}
+                        src="/image/brand/hik.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
@@ -112,9 +121,65 @@ export default function Brands() {
                     <a href="#" className="brand-item">
                       <Image
                         alt=""
-                        src="/image/brand/axo.png"
-                        width={226}
-                        height={44}
+                        src="/image/brand/logi.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
+                      />
+                    </a>
+                  </div>
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
+                      <Image
+                        alt=""
+                        src="/image/brand/nexus.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
+                      />
+                    </a>
+                  </div>
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
+                      <Image
+                        alt=""
+                        src="/image/brand/sedco.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
+                      />
+                    </a>
+                  </div>
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
+                      <Image
+                        alt=""
+                        src="/image/brand/thales.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
+                      />
+                    </a>
+                  </div>
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
+                      <Image
+                        alt=""
+                        src="/image/brand/tri.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
+                      />
+                    </a>
+                  </div>
+                  <div className="marquee-child-item" style={{ marginRight: '60px' }}>
+                    <a href="#" className="brand-item">
+                      <Image
+                        alt=""
+                        src="/image/brand/view.png"
+                        width={280}
+                        height={55}
+                        style={{ width: '280px', height: '55px', objectFit: 'contain' }}
                       />
                     </a>
                   </div>
