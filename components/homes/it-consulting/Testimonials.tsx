@@ -11,7 +11,7 @@ export default function Testimonials() {
   const [thumbswiper, setThumbswiper] = useState<SwiperType | null>(null);
   return (
     <section
-      className="section-testimonials h-8 tf-spacing-2 section-one-page"
+      className="section-testimonials h-8 section-one-page"
       id="testimonials"
     >
       <div className="tf-container position-relative">
