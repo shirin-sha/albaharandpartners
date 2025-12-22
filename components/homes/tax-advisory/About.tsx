@@ -10,28 +10,29 @@ export default function About() {
           <div className="heading-section mb-0">
             <div className="text-anime-wave">
               <a href="#" className="tag label text-btn-uppercase bg-white">
-                Leading the Way in Data Analytics
+                ABOUT AL BAHAR & PARTNERS
               </a>
             </div>
             <h3 className="mb-0 text-anime-wave">
-              Empowering Your Business <br />
-              Success
+              Empowering Business Through <br/> Trusted Partnerships
             </h3>
           </div>
         </div>
         <div className="about-right">
           <div className="section-content">
             <div className="text body-2 color-on-suface-container text-anime-wave-2">
-              With highly qualified psychologists, we offer effective and
-              tailored <br />
-              therapy for your unique needs. Trust us to support you fully.
+              Al Bahar & Partners delivers reliable, partner-backed technology solutions  <br/>for
+              organizations across Kuwait. We combine deep domain understanding <br/>with
+              proven delivery,
+               helping clients implement solutions with confidence,<br/>  efficiency,
+              and long-term support.
             </div>
             <div className="bottom g-40 text-anime-wave-2">
               <Link
                 href={`/contact-us`}
                 className="tf-btn bg-on-suface-container style-1"
               >
-                <span>Schedule A Consultation</span>
+                <span>Schedule a Consultation</span>
               </Link>
               <div className="tf-phone">
                 <div className="content">
