@@ -18,23 +18,21 @@ export default function Faqs() {
                       href="#"
                       className="tag label text-btn-uppercase bg-white"
                     >
-                      FAQs
+                    Questions
                     </a>
                   </div>
                   <h3 className="title-section mb-12 text-anime-wave">
-                    Proven Results You Can See
+                  Have any questions? here some answers.
                   </h3>
                   <div className="sub-title body-2 text-anime-wave mb-40">
-                    Find answers to some of the most common questions about
-                    financial planning, from budgeting and investment strategies
-                    to retirement planning and managing debt.
+                  In relation to websites and apps, UI design considers the look, interactivity of the making product. It's all about making sure that the user interface.
                   </div>
                   <div className="text-anime-wave">
                     <Link
                       href={`/contact-us`}
                       className="tf-btn style-1 bg-on-suface-container"
                     >
-                      <span> Schedule A Consultation </span>
+                      <span> Ask Your Question </span>
                     </Link>
                   </div>
                 </div>
@@ -48,7 +46,7 @@ export default function Faqs() {
                         data-bs-toggle="collapse"
                         className="title-according collapsed"
                       >
-                        What is financial planning? <span />
+                        What types of brands does Al Bahar Group represent? <span />
                       </a>
                     </h5>
                     <div
@@ -58,11 +56,7 @@ export default function Faqs() {
                     >
                       <div className="according-content">
                         <p>
-                          Financial planning helps you understand your financial
-                          situation, set achievable goals, and create a roadmap
-                          to reach those goals. It can provide peace of mind,
-                          help you make informed decisions, and prepare for
-                          unexpected events.
+                        We work with internationally recognised leaders in consumer goods, technology, shipping, travel and retail. Our partners trust us to represent their brands with the same care and standards they expect in their home markets.
                         </p>
                       </div>
                     </div>
@@ -74,7 +68,7 @@ export default function Faqs() {
                         data-bs-toggle="collapse"
                         className="title-according"
                       >
-                        Why is financial planning important?
+                     How can a new principal explore partnership opportunities?
                         <span />
                       </a>
                     </h5>
@@ -85,11 +79,7 @@ export default function Faqs() {
                     >
                       <div className="according-content">
                         <p>
-                          Financial planning helps you understand your financial
-                          situation, set achievable goals, and create a roadmap
-                          to reach those goals. It can provide peace of mind,
-                          help you make informed decisions, and prepare for
-                          unexpected events.
+                        You can contact our group office through the website or our main telephone number. Our leadership team will review your proposal, assess market fit and connect you with the relevant business vertical.
                         </p>
                       </div>
                     </div>
@@ -101,7 +91,7 @@ export default function Faqs() {
                         data-bs-toggle="collapse"
                         className="title-according collapsed"
                       >
-                        How often should I review my financial plan?
+                    In which channels do you operate?
                         <span />
                       </a>
                     </h5>
@@ -112,11 +102,7 @@ export default function Faqs() {
                     >
                       <div className="according-content">
                         <p>
-                          Financial planning helps you understand your financial
-                          situation, set achievable goals, and create a roadmap
-                          to reach those goals. It can provide peace of mind,
-                          help you make informed decisions, and prepare for
-                          unexpected events.
+                        Our businesses serve a wide range of channels – from large modern trade and hypermarkets to traditional retail, corporate accounts, government entities, and specialised sectors such as education and logistics.
                         </p>
                       </div>
                     </div>
@@ -128,7 +114,7 @@ export default function Faqs() {
                         data-bs-toggle="collapse"
                         className="title-according collapsed"
                       >
-                        What are the key components of a financial plan?
+                     How can I apply for a role at Al Bahar Group?
                         <span />
                       </a>
                     </h5>
@@ -139,11 +125,7 @@ export default function Faqs() {
                     >
                       <div className="according-content">
                         <p>
-                          Financial planning helps you understand your financial
-                          situation, set achievable goals, and create a roadmap
-                          to reach those goals. It can provide peace of mind,
-                          help you make informed decisions, and prepare for
-                          unexpected events.
+                        Visit our Careers section to view current opportunities and submit your application online. We regularly participate in career fairs and campus events to meet new talent.
                         </p>
                       </div>
                     </div>
@@ -155,8 +137,7 @@ export default function Faqs() {
                         data-bs-toggle="collapse"
                         className="title-according collapsed"
                       >
-                        Do I need a financial advisor to create a financial
-                        plan? <span />
+                      Do you support long-term development of your employees?<span />
                       </a>
                     </h5>
                     <div
@@ -166,11 +147,7 @@ export default function Faqs() {
                     >
                       <div className="according-content">
                         <p>
-                          Financial planning helps you understand your financial
-                          situation, set achievable goals, and create a roadmap
-                          to reach those goals. It can provide peace of mind,
-                          help you make informed decisions, and prepare for
-                          unexpected events.
+                        Yes. Training, coaching and structured learning programs are integral to our HR strategy. We believe investing in our people is essential to sustaining high performance and delivering value to our partners.
                         </p>
                       </div>
                     </div>

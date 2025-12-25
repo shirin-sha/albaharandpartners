@@ -47,7 +47,7 @@ export default function Details1({ blogId }: { blogId?: number }) {
                   return (
                     <h5 key={index} className="title-desc mt-30 mb-12">
                       {item.text}
-                    </h5>
+                </h5>
                   );
                 } else if (item.type === "list" && "items" in item && item.items) {
                   return (

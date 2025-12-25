@@ -10,11 +10,18 @@ import Cta from "@/components/common/Cta2";
 import Awards from "@/components/common/Awards";
 import Breadcumb from "@/components/common/Breadcumb";
 import { Metadata } from "next";
+import AboutAlBahar from "@/components/otherPages/AboutAlBahar";
+import Team from "@/components/homes/digital-transformation/Team";
+import Faqs from "@/components/homes/home-1/Faqs";
+import VisionMissionValues from "@/components/otherPages/VisionMissionValues";
+import Heritage from "@/components/otherPages/Heritage";
+import AboutBPC from "@/components/otherPages/AboutBPC";
+import AboutBDS from "@/components/otherPages/AboutBDS";
 export const metadata: Metadata = {
   title:
-    "About us || FinWice - Business & Finance Consulting - React Nextjs Template",
+    "About us || Al bahar and partners",
   description:
-    "FinWice - Business & Finance Consulting - React Nextjs Template",
+    "Al bahar and partners",
 };
 export default function page() {
   return (
@@ -34,13 +41,22 @@ export default function page() {
         </div>
       </div>
       <div className="main-content">
-        <Benefits />
-        <About />
+        <AboutAlBahar />
+        <VisionMissionValues />
+        <Heritage />
+        <AboutBPC />
+        <AboutBDS />
+     
+      
+     
+        <Team />
+      
+      
         <History />
-        <Features hasBorder parentClass="section-why-choose h-2 page-about" />
-        <Testimonials />
-        <Cta />
-        <Awards />
+        <Faqs />
+    
+      
+   \
       </div>
     </>
   );
