@@ -17,38 +17,47 @@ export default function SideOffcanvas() {
         />
       </div>
       <div className="meag-menu-item">
-        <h4 className="title-content fw-7">Finwice Construction</h4>
+        <h4 className="title-content fw-7">Start Your Consultation</h4>
         <p>
-          Nam augue velit, fermentum sed erat non, efficitur interdum lectus.
-          Donec hendrerit lorem a dui euismod tempus. Vivamus auctor blandit
-          tellus et interdum.
+          Partner-led technology solutions in Kuwait—delivered with structured
+          implementation, security-first practices, and dependable post-deployment
+          support.
         </p>
       </div>
       <div className="contact-mega-menu meag-menu-item">
-        <h4 className="title-content fw-7">Contact Us</h4>
+        <h4 className="title-content fw-7">Reach Us</h4>
         <ul className="contact-list-mega-menu">
           <li>
             <p>
-              Address:
-              <a href="#" target="_blank">
-                55 East 10th Street, New York, NY 10003, United States
+              Email:
+              <a href="mailto:enquiries@albaharandpartners.com">
+                {" "}
+                enquiries@albaharandpartners.com{" "}
               </a>
             </p>
           </li>
           <li>
             <p>
-              Email:
-              <a href="mailto:example@gmail.com"> example@gmail.com </a>
+              Call: <a href="tel:+965XXXXXXXX"> +965 XXXXXXXX</a>
             </p>
           </li>
           <li>
             <p>
-              Call: <a href="tel:+00012345688"> +000 (123) 456 88</a>
+              Service Requests:
+              <a href="mailto:support@albaharandpartners.com">
+                {" "}
+                support@albaharandpartners.com{" "}
+              </a>
+            </p>
+          </li>
+          <li>
+            <p>
+              Location: <span>Kuwait</span>
             </p>
           </li>
         </ul>
       </div>
-      <div className="list-img">
+      {/* <div className="list-img">
         {blogThumbnails.map((item, index) => (
           <Link
             className="me-2"
@@ -64,7 +73,7 @@ export default function SideOffcanvas() {
             />
           </Link>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

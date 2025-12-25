@@ -24,14 +24,14 @@ export async function generateMetadata({
 
   return {
     title:
-      "Blog Details || FinWice - Business & Finance Consulting - React Nextjs Template",
+      "Blog Details || Al Bahar & Partners",
     description:
-      "FinWice - Business & Finance Consulting - React Nextjs Template",
+      "Al Bahar & Partners",
     openGraph: {
       title:
-        "Blog Details || FinWice - Business & Finance Consulting - React Nextjs Template",
+        "Blog Details || Al Bahar & Partners",
       description:
-        "FinWice - Business & Finance Consulting - React Nextjs Template",
+        "Al Bahar & Partners",
       type: "article",
       url: `/blog-details-1/${post.id}`,
     },
@@ -141,7 +141,7 @@ export default async function page({
                       <div className="icon">
                         <i className="icon-user" />
                       </div>
-                      <div className="text body-2">Tony Nguyen</div>
+                  
                     </div>
                   </div>
                 </div>
@@ -151,7 +151,7 @@ export default async function page({
         </div>
       </div>
       <div className="main-content tf-spacing-2">
-        <Details1 />
+        <Details1 blogId={blog.id} />
         <RelatedBlogs />
       </div>
     </>

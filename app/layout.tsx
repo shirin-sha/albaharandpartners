@@ -15,7 +15,12 @@ import { rtlInitScript } from "@/lib/rtl-init";
 
 import { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "FinWice - Business & Finance Consulting - React Nextjs Template",
+  title: "Al Bahar & Partners - Technology Solutions",
+  icons: {
+    icon: "/image/logo/favicon.png",
+    shortcut: "/image/logo/favicon.png",
+    apple: "/image/logo/favicon.png",
+  },
 };
 import { ReactNode } from "react";
 
