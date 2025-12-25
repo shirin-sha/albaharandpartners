@@ -20,7 +20,7 @@ export default function AboutAlBahar() {
                   About Al-Bahar Group
                 </a>
               </div>
-              <h3 className="text-color-change mb-40">
+              <h3 className="title-section mb-40">
                 Al-Bahar Group was founded<br /> in 1937 by Mr. Mohamed<br /> Abdulrahman
                 Al-Bahar as<br /> a  General Trading Company.
               </h3>
