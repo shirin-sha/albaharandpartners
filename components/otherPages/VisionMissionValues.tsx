@@ -65,11 +65,11 @@ export default function VisionMissionValues() {
                 create sustainable, long-term success.
               </div>
             </div>
-            <div className="process-list hover-active-step" style={{ alignItems: "flex-start" }}>
+            <div className="process-list" style={{ alignItems: "flex-start" }}>
               {items.map((item, index) => (
                 <div
                   key={item.id}
-                  className="process-item style-2 hover-img step-hover"
+                  className="process-item style-2 hover-img"
                   style={{ alignSelf: "flex-start" }}
                 >
                   <div className="image">

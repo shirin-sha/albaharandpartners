@@ -3,6 +3,7 @@ import { timelineItems } from "@/data/timeline";
 import React, { useState } from "react";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Image from "next/image";
 
 export default function History() {
   const [hoveredItems, setHoveredItems] = useState<number[]>([]);
@@ -66,10 +67,26 @@ export default function History() {
                       >
                         <div className="time-line-content">
                           <div className="heading">
-                            <div className="label">{item.year}</div>
-                            <h5 className="title-content">{item.title}</h5>
+                            
+                            <h5 className="title-content">{item.year}</h5>
                           </div>
-                          <div className="desc">{item.description}</div>
+                          <div className="desc">{item.title}</div>
+                          {item.logos && item.logos.length > 0 && (
+                            <div className="time-line-logos" style={{ marginTop: "16px", display: "flex", flexWrap: "wrap", gap: "12px", alignItems: "center", justifyContent: "center" }}>
+                              {item.logos.map((logo, logoIndex) => (
+                                <div key={logoIndex} className="time-line-logo-item">
+                                  <Image
+                                    src={logo.src}
+                                    alt={logo.alt}
+                                    width={100}
+                                    height={60}
+                                    className="lazyload"
+                                    unoptimized
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </SwiperSlide>

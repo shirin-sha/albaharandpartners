@@ -56,7 +56,7 @@ export default function Footer2({
                       src={
                         light
                           ? "/image/logo/logo-2.png"
-                          : "/image/logo/logo-footer.png"
+                          : "/image/logo/logo-footer.svg"
                       }
                       width={169}
                       height={41}
@@ -64,13 +64,11 @@ export default function Footer2({
                   </Link>
                 </div>
                 <div className="text caption-1">
-                  Welcome to Al Bahar & Partners (BPC). We deliver partner-led
+                  Welcome to your trusted financial partner! Explore
                   <br />
-                  technology solutions across banking, identity, infrastructure,
+                  personalized strategies and expert guidance to secure
                   <br />
-                  and cybersecurity, supported by reliable implementation
-                  <br />
-                  and long-term support.
+                  your financial future and achieve success.
                 </div>
                 <div className="footer-social">
                   <div className="title-footer">Follow Us:</div>
@@ -120,13 +118,15 @@ export default function Footer2({
               <div className="footer-right">
                 <div className="footer-subscribe">
                   <h4 className={`${light ? "" : "color-white"}`}>
-                    Subscribe for Updates & Insights
+                    Subscribe For All
+                    <br />
+                    The Top News!
                   </h4>
                   <div className="footer-subscribe-content">
-                    <NewsLetterForm placeholder="Enter your email address" />
+                    <NewsLetterForm />
                     <div className="text caption-2">
-                      Get occasional updates on solutions, case studies, and
-                      company news. No spam.
+                      Sign up for updates on our latest news and events. No
+                      spam, just valuable insights!
                     </div>
                   </div>
                 </div>
@@ -143,21 +143,21 @@ export default function Footer2({
                             <Link href={`/about-us`}>About Us</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/solutions`}>Solutions</Link>
+                            <Link href={`/our-teams`}>Our Team</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/brands`}>Case Studies</Link>
+                            <a href="#">My Account</a>
                           </li>
                         </ul>
                         <ul>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/our-partners`}>Our Partners</Link>
+                            <Link href={`/blog-left-sidebar`}>Blog</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/blog-left-sidebar`}>News & Insights</Link>
+                            <Link href={`/case-studies-1`}>Case studies</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/careers`}>Careers</Link>
+                            <Link href={`/contact-us`}>Contact</Link>
                           </li>
                         </ul>
                       </div>
@@ -165,19 +165,19 @@ export default function Footer2({
                   </div>
                   <div className="footer-content footer-col-block">
                     <div className="title-mobile label text-btn-uppercase mb-12">
-                      Service & Assistance
+                      Working Time
                       <i className="icon-arrow-51" />
                     </div>
                     <div className="tf-collapse-content">
                       <ul>
                         <li className="support-item-footer caption-1">
-                          <span>Service: +965 XXXXXX</span>
+                          <span>Mon-Fri: 9:00am - 17:00pm</span>
                         </li>
                         <li className="support-item-footer caption-1">
-                          <span>Complaints: +965 XXXXX</span>
+                          <span>Satt: 10:00am - 18:00pm</span>
                         </li>
                         <li className="support-item-footer caption-1">
-                          <span>Help Mail: support@abahargroup.com</span>
+                          <span>Sun: Closed</span>
                         </li>
                       </ul>
                     </div>
@@ -191,16 +191,15 @@ export default function Footer2({
                       <ul>
                         <li className="support-item-footer caption-1">
                           <span>
-                            Kuwait City, Kuwait
-                            <br />
-                            (exact office address)
+                            101 E 129th St, East Chicago, IN <br />
+                            46312, US
                           </span>
                         </li>
                         <li className="support-item-footer caption-1">
-                          <span>Phone: +965 XXXXXXXX</span>
+                          <span>1-555-678-8888</span>
                         </li>
                         <li className="support-item-footer caption-1">
-                          <span>Email: info@albahargroup.com</span>
+                          <span>example@gmail.com</span>
                         </li>
                       </ul>
                     </div>
@@ -218,20 +217,25 @@ export default function Footer2({
               <div className="footer-bottom-inner">
                 <div className="left">
                   <div className="text caption-1">
-                    ©2025 Al Bahar & Partners. All Rights Reserved.
+                    ©2025 FinWice. All Rights Reserved.
                   </div>
                 </div>
                 <div className="right">
                   <ul>
                     <li>
-                      <Link href={`/contact-us`} className="caption-1">
-                        Contact Us
-                      </Link>
+                      <a href="#" className="caption-1">
+                        Terms Of Services
+                      </a>
                     </li>
                     <li>
-                      <Link href={`/support`} className="caption-1">
-                        Support
-                      </Link>
+                      <a href="#" className="caption-1">
+                        Privacy Policy
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" className="caption-1">
+                        Cookie Policy
+                      </a>
                     </li>
                   </ul>
                 </div>

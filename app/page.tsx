@@ -29,14 +29,11 @@ export default function page() {
       <div className="main-content">
         <About />
         <Processconsult />
-    
         <Services />
         <Testimonials />
         <Brands />
         <CaseStudies />
- 
         <Features />
-      
         <Blogs />
         <Cta />
       </div>

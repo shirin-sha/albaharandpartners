@@ -1,23 +1,43 @@
 export const teamMembers = [
   {
-    imgSrc: "/image/team-item/team-item-1.jpg",
-    name: "Sarah Martinez",
-    position: "Child & Adolescent Therapist",
+    imgSrc: "/image/team-item/team1.jpg",
+    name: "Ihab Al Khatib",
+    position: "Group General Manager - BKGH",
   },
   {
-    imgSrc: "/image/team-item/team-item-2.jpg",
-    name: "Dr. Emily Stevens",
-    position: "Lead Therapist",
+    imgSrc: "/image/team-item/team2.jpg",
+    name: "Abdullateef Al-Bahar",
+    position: "Group General Manager - FMCG Group",
   },
   {
-    imgSrc: "/image/team-item/team-item-3.jpg",
-    name: "Michael Carter",
-    position: "Family Therapist",
+    imgSrc: "/image/team-item/team3.jpg",
+    name: "Dariusz Sobieraj",
+    position: "Group Chief Financial Officer - BKGH",
   },
   {
-    imgSrc: "/image/team-item/team-item-4.jpg",
+    imgSrc: "/image/team-item/team4.jpg",
     name: "Dr. James Mcavoy",
-    position: "Clinical Psychologist",
+    position: "Group Head of Risk & Compliance",
+  },
+  {
+    imgSrc: "/image/team-item/team4.jpg",
+    name: "Nishad Victor",
+    position: "General Manager, Shipping",
+  },
+  {
+    imgSrc: "/image/team-item/team4.jpg",
+    name: "Rajee Rajab",
+    position: "General Manager - Food Division",
+  },
+  {
+    imgSrc: "/image/team-item/team4.jpg",
+    name: "Arz Naim",
+    position: "General Manager – HAT",
+  },
+  {
+    imgSrc: "/image/team-item/team4.jpg",
+    name: "Bassil Hadad",
+    position: "Group Head of Human Resources",
   },
 ];
 

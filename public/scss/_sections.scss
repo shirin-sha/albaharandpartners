@@ -829,6 +829,20 @@
   }
 }
 
+.section-process {
+  .process-item {
+    .benefit-lists {
+      .benefit-items {
+        .icon,
+        .icon i {
+          transform: none !important;
+          transition: none !important;
+        }
+      }
+    }
+  }
+}
+
 .section-about {
   &.h-1 {
     .flat-animate-tab {
