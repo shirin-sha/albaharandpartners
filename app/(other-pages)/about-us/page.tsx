@@ -17,6 +17,7 @@ import VisionMissionValues from "@/components/otherPages/VisionMissionValues";
 import Heritage from "@/components/otherPages/Heritage";
 import AboutBPC from "@/components/otherPages/AboutBPC";
 import AboutBDS from "@/components/otherPages/AboutBDS";
+import Contact from "@/components/homes/digital-transformation/Contact";
 export const metadata: Metadata = {
   title:
     "About us || Al bahar and partners",
@@ -44,8 +45,8 @@ export default function page() {
         <AboutAlBahar />
         <VisionMissionValues />
         <Heritage />
-        <AboutBPC />
         <AboutBDS />
+        <Contact />
      
       
      
