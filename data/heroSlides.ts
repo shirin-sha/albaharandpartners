@@ -62,6 +62,7 @@ export const slides4 = [
       "We help organizations plan, deploy, and support trusted solutions, built for performance, security, and long-term value.",
     buttonText: "Explore Our Solutions",
     buttonLink: "/solutions",
+    image: "/image/hero/hero-1.jpg",
   },
   {
     title: "Secure Digital\nBanking & Payments",
@@ -69,6 +70,7 @@ export const slides4 = [
       "From payment technologies to identity and security, we enable safer transactions and smarter customer experiences.",
     buttonText: "View Banking Solutions",
     buttonLink: "/solutions/banking-payments",
+    image: "/image/hero/hero-2.jpg",
   },
   {
     title: "IT & Cybersecurity\nMade Business-Ready",
@@ -76,5 +78,6 @@ export const slides4 = [
       "Reliable infrastructure, strong security, and responsive support, so your teams can operate with confidence.",
     buttonText: "Talk to Our Team",
     buttonLink: "/contact-us",
+    image: "/image/hero/hero-3.jpg",
   },
 ];

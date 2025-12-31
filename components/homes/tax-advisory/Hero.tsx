@@ -25,8 +25,27 @@ export default function Hero() {
       </div>
       {slides4.map((slide, index) => (
         <SwiperSlide className="swiper-slide" key={index}>
-          <div className={`page-title-inner img-h7-${index + 1}`}>
-            <div className="tf-container">
+          <div 
+            className="page-title-inner"
+            style={{
+              backgroundImage: `url(${slide.image})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              position: 'relative',
+            }}
+          >
+            <div 
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                zIndex: 1,
+              }}
+            />
+            <div className="tf-container" style={{ position: 'relative', zIndex: 2 }}>
               <div className="row">
                 <div className="col-12">
                   <div className="page-title-content">

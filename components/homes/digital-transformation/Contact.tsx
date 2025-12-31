@@ -11,7 +11,7 @@ export default function Contact() {
         <div className="image tf-animate-1">
           <Image
             src="/image/section/section-contact-home-h.jpg"
-            alt=""
+            alt="960width and 706height image"
             className="lazyload"
             width={960}
             height={706}
