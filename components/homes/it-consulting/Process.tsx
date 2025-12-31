@@ -190,7 +190,7 @@ export default function Process() {
             >
               {processSteps.map((item, index) => (
                 <SwiperSlide className="swiper-slide" key={index}>
-                  <div className="process-item bg-1 bg-1-style-2 step-hover">
+                  <div className="process-item bg-1 bg-1-style-2 style-border step-hover">
                     <div className="process-top">
                       <div className="icon">{item.icon}</div>
                       <span className="label text-btn-uppercase">
