@@ -18,6 +18,8 @@ export default function Hero() {
       }}
       autoplay={{
         delay: 4000,
+        pauseOnMouseEnter: true,
+        disableOnInteraction: false,
       }}
     >
       <div className="tf-btn-arrow arrow-left sw-auto-next snbp7">
