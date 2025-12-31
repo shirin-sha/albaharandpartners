@@ -44,7 +44,7 @@ const processSteps = [
     step: "",
     title: "End-to-End Delivery",
     description:
-      "From requirements and planning to rollout and handover, we manage projects with clear accountability.",
+      "From requirements and planning to rollout and handover, we manage projects with clear accountability and ownership.",
     icon: (
       <svg
         width={48}
