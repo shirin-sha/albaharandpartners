@@ -282,7 +282,7 @@ export const servicesData2 = [
       "Secure access and customer onboarding readiness",
       "Integration support for existing platforms",
     ],
-    imgSrc: "/image/section/img-section-services-h8-1.jpg",
+    imgSrc: "/image/section/service-1.jpg",
     imgWidth: 960,
     imgHeight: 720,
     isActive: true,

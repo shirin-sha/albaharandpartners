@@ -72,7 +72,12 @@ export default function Services() {
                             <Link href="/services-details-1">{title}</Link>
                           </h4>
                           <div className="sub-title mb-28 body-2">
-                            {description}
+                            {description.split('<br/>').map((line, index, array) => (
+                              <React.Fragment key={index}>
+                                {line}
+                                {index < array.length - 1 && <br />}
+                              </React.Fragment>
+                            ))}
                           </div>
                           <div className="benefit-lists mb-20">
                             {benefits.map((benefit, i) => (
@@ -91,13 +96,18 @@ export default function Services() {
                             <span>Learn More</span>
                           </Link>
                         </div>
-                        <div className="image">
+                        <div className="image" style={{ width: '100%', height: '100%', minHeight: '500px', position: 'relative', overflow: 'hidden' }}>
                           <Image
                             src={imgSrc}
                             alt={title}
                             className="lazyload"
-                            width={imgWidth}
-                            height={imgHeight}
+                            width={9}
+                            height={7}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                             
+                            }}
                           />
                         </div>
                       </div>
