@@ -17,7 +17,7 @@ export default function Hero() {
         nextEl: ".snbn7",
       }}
       autoplay={{
-        delay: 2000,
+        delay: 4000,
       }}
     >
       <div className="tf-btn-arrow arrow-left sw-auto-next snbp7">
