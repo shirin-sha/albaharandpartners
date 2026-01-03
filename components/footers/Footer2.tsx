@@ -64,11 +64,11 @@ export default function Footer2({
                   </Link>
                 </div>
                 <div className="text caption-1">
-                  Welcome to your trusted financial partner! Explore
+                  Welcome to Al Bahar & Partners (BPC). We deliver partner-led technology solutions across
                   <br />
-                  personalized strategies and expert guidance to secure
+                  banking, identity, infrastructure, and cybersecurity, supported by reliable implementation
                   <br />
-                  your financial future and achieve success.
+                  and long-term support.
                 </div>
                 <div className="footer-social">
                   <div className="title-footer">Follow Us:</div>
@@ -118,15 +118,12 @@ export default function Footer2({
               <div className="footer-right">
                 <div className="footer-subscribe">
                   <h4 className={`${light ? "" : "color-white"}`}>
-                    Subscribe For All
-                    <br />
-                    The Top News!
+                    Subscribe for Updates & Insights
                   </h4>
                   <div className="footer-subscribe-content">
-                    <NewsLetterForm />
+                    <NewsLetterForm placeholder="Enter your email address" />
                     <div className="text caption-2">
-                      Sign up for updates on our latest news and events. No
-                      spam, just valuable insights!
+                      Get occasional updates on solutions, case studies, and company news. No spam.
                     </div>
                   </div>
                 </div>
@@ -143,21 +140,21 @@ export default function Footer2({
                             <Link href={`/about-us`}>About Us</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/our-teams`}>Our Team</Link>
+                            <Link href={`/solutions`}>Solutions</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <a href="#">My Account</a>
+                            <Link href={`/case-studies-1`}>Case Studies</Link>
                           </li>
                         </ul>
                         <ul>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/blog-left-sidebar`}>Blog</Link>
+                            <Link href={`/our-partners`}>Our Partners</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/case-studies-1`}>Case studies</Link>
+                            <Link href={`/blog-left-sidebar`}>News & Insights</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/contact-us`}>Contact</Link>
+                            <Link href={`/careers`}>Careers</Link>
                           </li>
                         </ul>
                       </div>
@@ -165,19 +162,19 @@ export default function Footer2({
                   </div>
                   <div className="footer-content footer-col-block">
                     <div className="title-mobile label text-btn-uppercase mb-12">
-                      Working Time
+                      Service & Assistance
                       <i className="icon-arrow-51" />
                     </div>
                     <div className="tf-collapse-content">
                       <ul>
                         <li className="support-item-footer caption-1">
-                          <span>Mon-Fri: 9:00am - 17:00pm</span>
+                          <span>Service: +965 XXXXXX</span>
                         </li>
                         <li className="support-item-footer caption-1">
-                          <span>Satt: 10:00am - 18:00pm</span>
+                          <span>Complaints: +965 XXXXX</span>
                         </li>
                         <li className="support-item-footer caption-1">
-                          <span>Sun: Closed</span>
+                          <span>Help Mail: support@abahargroup.com</span>
                         </li>
                       </ul>
                     </div>
@@ -191,15 +188,14 @@ export default function Footer2({
                       <ul>
                         <li className="support-item-footer caption-1">
                           <span>
-                            101 E 129th St, East Chicago, IN <br />
-                            46312, US
+                            Kuwait City, Kuwait
                           </span>
                         </li>
                         <li className="support-item-footer caption-1">
-                          <span>1-555-678-8888</span>
+                          <span>Phone: +965 XXXXXXXX</span>
                         </li>
                         <li className="support-item-footer caption-1">
-                          <span>example@gmail.com</span>
+                          <span>Email: info@albahargroup.com</span>
                         </li>
                       </ul>
                     </div>
@@ -217,24 +213,19 @@ export default function Footer2({
               <div className="footer-bottom-inner">
                 <div className="left">
                   <div className="text caption-1">
-                    ©2025 FinWice. All Rights Reserved.
+                    © 2025 Al Bahar & Partners. All Rights Reserved.
                   </div>
                 </div>
                 <div className="right">
                   <ul>
                     <li>
-                      <a href="#" className="caption-1">
-                        Terms Of Services
-                      </a>
+                      <Link href={`/contact-us`} className="caption-1">
+                        Contact Us
+                      </Link>
                     </li>
                     <li>
                       <a href="#" className="caption-1">
-                        Privacy Policy
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" className="caption-1">
-                        Cookie Policy
+                        Support
                       </a>
                     </li>
                   </ul>
