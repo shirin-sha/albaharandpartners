@@ -89,13 +89,12 @@ export default function Contact() {
                     </div>
                     <div className="content wow fadeInUp" data-wow-delay=".1s">
                       <div className="caption-1 title-section-contact">
-                        Address Business
+                        Address
                       </div>
                       <a href="#" className="caption-1 text">
-                        101 E 129th St, East <br />
-                        Chicago, IN 46312,
-                        <br />
-                        US
+                      P.O. Box 148 Safat 13002-Kuwait,<br /> Block 1,  Street 3, <br />
+                          Shuwaikh Industrial 1
+                       
                       </a>
                     </div>
                   </div>
@@ -105,76 +104,29 @@ export default function Contact() {
                     </div>
                     <div className="content wow fadeInUp" data-wow-delay=".3s">
                       <div className="caption-1 title-section-contact">
-                        Contact Us
+                        Telephone
                       </div>
-                      <a href="#" className="caption-1 text">
-                        1-555-678-8888
-                        <br />
-                        1-333-123-6666
+                      <a href="tel:+9651848848" className="caption-1 text">
+                        +965 184 8848
                       </a>
                     </div>
                   </div>
                   <div className="box-contact-item style-bg-white">
                     <div className="icon wow fadeInUp" data-wow-delay=".4s">
-                      <svg
-                        width={33}
-                        height={33}
-                        viewBox="0 0 33 33"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clipPath="url(#clip0_9360_10609)">
-                          <path
-                            d="M16.3335 28.75C22.4086 28.75 27.3335 23.8251 27.3335 17.75C27.3335 11.6749 22.4086 6.75 16.3335 6.75C10.2584 6.75 5.3335 11.6749 5.3335 17.75C5.3335 23.8251 10.2584 28.75 16.3335 28.75Z"
-                            stroke="#24283E"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M7.3335 4.75L3.3335 8.75"
-                            stroke="#24283E"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M25.3335 4.75L29.3335 8.75"
-                            stroke="#24283E"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M16.3335 10.75V17.75H23.3335"
-                            stroke="#24283E"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </g>
-                        <defs>
-                          <clipPath>
-                            <rect
-                              width={32}
-                              height={32}
-                              fill="white"
-                              transform="translate(0.333496 0.75)"
-                            />
-                          </clipPath>
-                        </defs>
-                      </svg>
+                      <i className="icon-Envelope" />
                     </div>
                     <div className="content wow fadeInUp" data-wow-delay=".5s">
                       <div className="caption-1 title-section-contact">
-                        Working Time
+                        Email
                       </div>
-                      <a href="#" className="caption-1 text">
-                        Week-Day: 8:00 -
-                        <br />
-                        18:00 <br />
-                        Sunday: Closed
-                      </a>
+                      <div className="caption-1 text">
+                    
+                        <a href="mailto:info.bpc@albahargroup.com" className="caption-1 text">
+                          info.bpc@albahargroup.com
+                        </a>
+                       
+                      
+                      </div>
                     </div>
                   </div>
                 </div>

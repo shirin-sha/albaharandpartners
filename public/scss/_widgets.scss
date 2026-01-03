@@ -1497,6 +1497,8 @@
     @include mixin.flex(center, center);
     width: 60px;
     height: 60px;
+    min-width: 60px;
+    flex-shrink: 0;
     border-radius: 50%;
     border: 1px solid var(--bg-1);
     background-color: var(--bg-1);

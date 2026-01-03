@@ -3,7 +3,6 @@ import React from "react";
 
 import axios from "axios";
 import { useState } from "react";
-import DropdownSelect from "../common/DropdownSelect";
 
 export default function ContactForm() {
   const [success, setSuccess] = useState(true);
@@ -17,8 +16,8 @@ export default function ContactForm() {
   interface ContactFormElements extends HTMLFormControlsCollection {
     name: HTMLInputElement;
     email: HTMLInputElement;
-    phone: HTMLInputElement;
-    message: HTMLTextAreaElement;
+    subject: HTMLInputElement;
+    comment: HTMLTextAreaElement;
   }
 
   interface ContactFormElement extends HTMLFormElement {
@@ -29,13 +28,19 @@ export default function ContactForm() {
 
   const sendEmail = async (e: SendEmailEvent): Promise<void> => {
     e.preventDefault(); // Prevent default form submission behavior
-    const email = e.currentTarget.email.value;
+    const name = e.currentTarget.elements.name.value;
+    const email = e.currentTarget.elements.email.value;
+    const subject = e.currentTarget.elements.subject.value;
+    const comment = e.currentTarget.elements.comment.value;
 
     try {
       const response = await axios.post(
         "https://express-brevomail.vercel.app/api/contacts",
         {
+          name,
           email,
+          subject,
+          comment,
         }
       );
 
@@ -75,26 +80,20 @@ export default function ContactForm() {
           />
         </fieldset>
       </div>
-      <div className="cols">
-        <fieldset className="item">
-          <input type="number" name="phone" id="phone" placeholder="Phone" />
-        </fieldset>
-        <fieldset className="item">
-          <DropdownSelect
-            options={[
-              "How can we help you?",
-              "Option 1",
-              "Option 2",
-              "Option 3",
-            ]}
-          />
-        </fieldset>
-      </div>
+      <fieldset style={{ marginBottom: "19px" }}>
+        <input
+          type="text"
+          name="subject"
+          id="subject"
+          required
+          placeholder="Subject*"
+        />
+      </fieldset>
       <fieldset>
         <textarea
-          name="message"
-          id="message"
-          placeholder="Your Message*"
+          name="comment"
+          id="comment"
+          placeholder="Comment*"
           defaultValue={""}
           required
         />
@@ -116,7 +115,7 @@ export default function ContactForm() {
         type="submit"
         className="tf-btn style-1 w-full bg-on-suface-container text-center"
       >
-        <span>Submit Require</span>
+        <span>Send Message</span>
       </button>
     </form>
   );
