@@ -109,16 +109,7 @@ export default function ContactForm() {
         </fieldset>
       </div>
       <div className="cols">
-        <fieldset className="item">
-          <input
-            type="tel"
-            name="phone"
-            id="phone"
-            required
-            placeholder="Phone Number*"
-          />
-        </fieldset>
-        <fieldset className="item">
+      <fieldset className="item">
           <DropdownSelect
             options={[
               "Select Country",
@@ -143,6 +134,16 @@ export default function ContactForm() {
             onChange={(value) => setSelectedCountry(value)}
           />
         </fieldset>
+        <fieldset className="item">
+          <input
+            type="tel"
+            name="phone"
+            id="phone"
+            required
+            placeholder="Phone Number*"
+          />
+        </fieldset>
+     
       </div>
       <fieldset style={{ marginBottom: "19px" }}>
         <DropdownSelect
