@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { sectionServices } from "@/data/services";
+import { servicesData2 } from "@/data/services";
 import React from "react";
 
 export default function Services() {
@@ -9,7 +9,7 @@ export default function Services() {
       <div className="row">
         <div className="col-12">
           <div className="list-section-services-item tf-spacing-2">
-            {sectionServices.map((service, index) => (
+            {servicesData2.map((service, index) => (
               <div className="section-services-item style-border" key={index}>
                 <div className="image tf-animate-1">
                   <Link href={`/services-details-1`} className="link" />

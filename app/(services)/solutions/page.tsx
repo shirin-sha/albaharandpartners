@@ -19,20 +19,15 @@ export default function page() {
           <div className="page-title-content">
             <Breadcumb pageName="Solutions" />
             <h2 className="title-page-title">Solutions</h2>
-            <div className="sub-title body-2">
-              Discover a diverse array of services designed to help businesses
-              excel through our
-              <br />
-              customized strategies and expert guidance.
-            </div>
+          
           </div>
         </div>
       </div>
       <div className="main-content">
         <Services />
-        <Process />
+        {/* <Process />
         <Features />
-        <Cta />
+        <Cta /> */}
       </div>
     </>
   );
