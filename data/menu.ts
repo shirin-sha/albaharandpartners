@@ -133,7 +133,7 @@ export const solutionsLinks = [
 ];
 
 export const corpInfoLinks = [
-  { title: "Customer Stories", href: "/corp-information/customer-stories" },
+  { title: "Customer Stories", href: "/customer-stories" },
   { title: "News & Updates", href: "/news-updates" },
   { title: "Careers", href: "/career" },
 ];

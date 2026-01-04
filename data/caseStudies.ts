@@ -173,7 +173,7 @@ export const taxProjects = [
 export const caseStudiesData = [
   {
     id: 21,
-    imgSrc: "/image/case-studies-item/case-studies-5.jpg",
+    imgSrc: "/image/case-studies-item/case-studies-9.jpg",
     width: 473,
     height: 630,
     title: "Revamping Operations for Higher Efficiency",
@@ -183,7 +183,7 @@ export const caseStudiesData = [
   },
   {
     id: 22,
-    imgSrc: "/image/case-studies-item/case-studies-6.jpg",
+    imgSrc: "/image/case-studies-item/case-studies-10.jpg",
     width: 473,
     height: 630,
     title: "Strategic Growth Plan for Market Expansion",
@@ -193,7 +193,7 @@ export const caseStudiesData = [
   },
   {
     id: 23,
-    imgSrc: "/image/case-studies-item/case-studies-7.jpg",
+    imgSrc: "/image/case-studies-item/case-studies-11.jpg",
     width: 473,
     height: 630,
     title: "Financial Revamp for Sustainable Profitability",
@@ -203,7 +203,7 @@ export const caseStudiesData = [
   },
   {
     id: 24,
-    imgSrc: "/image/case-studies-item/case-studies-8.jpg",
+    imgSrc: "/image/case-studies-item/case-studies-12.jpg",
     width: 473,
     height: 630,
     title: "Technology Integration for Enhanced Performance",
