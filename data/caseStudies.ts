@@ -295,32 +295,35 @@ export const caseStudiesData = [
 export const smallCaseStudies = [
   {
     id: 30,
-    imgSrc: "/image/case-studies-item/case-studies-small-1.jpg",
-    title: "Revamping Operations for Higher Efficiency",
+    imgSrc: "/image/brand/entrust.png",
+    title: "Identities, Payments & Data Protection",
     label: "Operational Improvement",
     desc: "Our tailored strategy for a tech startup facilitated its entry into new markets, boosting market share...",
     categories: ["Retirement Planning", "Investment Advisory"],
+    region: "Kuwait",
   },
   {
     id: 31,
-    imgSrc: "/image/case-studies-item/case-studies-small-2.jpg",
-    title: "Strategic Growth Plan for Market Expansion",
+    imgSrc: "/image/brand/thales.png",
+    title: "Digital  Identity & Security",
     label: "Strategy Development",
     desc: "Our tailored strategy for a tech startup facilitated its entry into new markets, boosting market share...",
     categories: ["Retirement Planning", "Tax Optimization"],
+    region: "Kuwait",
   },
   {
     id: 32,
-    imgSrc: "/image/case-studies-item/case-studies-small-3.jpg",
-    title: "Financial Revamp for Sustainable Profitability",
+    imgSrc: "/image/brand/canon.png",
+    title: "Printing & Digital Imaging ",
     label: "Financial Advisory",
     desc: "Our tailored strategy for a tech startup facilitated its entry into new markets, boosting market share...",
     categories: ["Retirement Planning", "Estate Planning", "Tax Optimization"],
+    region: "International",
   },
   {
     id: 33,
-    imgSrc: "/image/case-studies-item/case-studies-small-4.jpg",
-    title: "Technology Integration for Enhanced Performance",
+    imgSrc: "/image/brand/lago.png",
+    title: "Lago",
     label: "Technology Integration",
     desc: "Our tailored strategy for a tech startup facilitated its entry into new markets, boosting market share...",
     categories: [
@@ -329,11 +332,12 @@ export const smallCaseStudies = [
 
       "Tax Optimization",
     ],
+    region: "International",
   },
   {
     id: 34,
-    imgSrc: "/image/case-studies-item/case-studies-small-5.jpg",
-    title: "Customer Retention Program for Long-Term Loyalty",
+    imgSrc: "/image/brand/lafra.png",
+    title: "Lafra",
     label: "Client Relationships",
     desc: "Our tailored strategy for a tech startup facilitated its entry into new markets, boosting market share...",
     categories: [
@@ -341,11 +345,12 @@ export const smallCaseStudies = [
       "Investment Advisory",
       "Estate Planning",
     ],
+    region: "Kuwait",
   },
   {
     id: 35,
-    imgSrc: "/image/case-studies-item/case-studies-small-6.jpg",
-    title: "Digital Transformation for Scalable Growth",
+    imgSrc: "/image/brand/germanica.png",
+    title: "Germanica",
     label: "Scalability",
     desc: "Our tailored strategy for a tech startup facilitated its entry into new markets, boosting market share...",
     categories: [
@@ -354,11 +359,12 @@ export const smallCaseStudies = [
       "Estate Planning",
       "Tax Optimization",
     ],
+    region: "International",
   },
   {
     id: 36,
-    imgSrc: "/image/case-studies-item/case-studies-small-7.jpg",
-    title: "Supply Chain Optimization for Cost Reduction",
+    imgSrc: "/image/brand/elite.png",
+    title: "Elite",
     label: "Cost Reduction",
     desc: "Our tailored strategy for a tech startup facilitated its entry into new markets, boosting market share...",
     categories: [
@@ -367,11 +373,12 @@ export const smallCaseStudies = [
       "Estate Planning",
       "Tax Optimization",
     ],
+    region: "Kuwait",
   },
   {
     id: 37,
-    imgSrc: "/image/case-studies-item/case-studies-small-8.jpg",
-    title: "Risk Management Strategy for Business Resilience",
+    imgSrc: "/image/brand/royxon.png",
+    title: "Royxon",
     label: "Business Continuity",
     desc: "Our tailored strategy for a tech startup facilitated its entry into new markets, boosting market share...",
     categories: [
@@ -380,11 +387,12 @@ export const smallCaseStudies = [
       "Estate Planning",
       "Tax Optimization",
     ],
+    region: "Kuwait",
   },
   {
     id: 38,
-    imgSrc: "/image/case-studies-item/case-studies-small-9.jpg",
-    title: "Data Analytics Driven Marketing Strategy",
+    imgSrc: "/image/brand/speed.png",
+    title: "Speed",
     label: "Data Analytics",
     desc: "Our tailored strategy for a tech startup facilitated its entry into new markets, boosting market share...",
     categories: [
@@ -393,6 +401,7 @@ export const smallCaseStudies = [
       "Estate Planning",
       "Tax Optimization",
     ],
+    region: "International",
   },
 ];
 

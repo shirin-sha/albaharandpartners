@@ -1,12 +1,12 @@
-import CaseStudies1 from "@/components/case-studies/CaseStudies1";
+import CaseStudies2 from "@/components/case-studies/CaseStudies2";
 import React from "react";
 import Breadcumb from "@/components/common/Breadcumb";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title:
-    "Brands || FinWice - Business & Finance Consulting - React Nextjs Template",
+    "Al bahar and partners",
   description:
-    "FinWice - Business & Finance Consulting - React Nextjs Template",
+    "",
 };
 export default function page() {
   return (
@@ -26,22 +26,8 @@ export default function page() {
         </div>
       </div>
       <div className="main-content">
-        <CaseStudies1 />
+        <CaseStudies2 />
       </div>
     </>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -7,27 +7,46 @@ import React, { useEffect, useState } from "react";
 
 export default function CaseStudies2() {
   const tabItems = [
-    { id: "tab-1", label: "Retirement Planning" },
-    { id: "tab-2", label: "Investment Advisory" },
-    { id: "tab-3", label: "Estate Planning" },
-    { id: "tab-4", label: "Tax Optimization" },
+    { id: "tab-1", label: "Kuwait" },
+    { id: "tab-2", label: "International" },
   ];
-  const [activeTab, setActiveTab] = useState("Retirement Planning");
-  const [filteres, setFilteres] = useState(smallCaseStudies);
+  const [activeTab, setActiveTab] = useState("Kuwait");
+  const [filteres, setFilteres] = useState(
+    smallCaseStudies.filter((elm) => elm.region === "Kuwait").slice(0, 6)
+  );
   const [isLoadedMore, setIsLoadedMore] = useState(false);
   useEffect(() => {
     if (isLoadedMore) {
       setFilteres(
-        smallCaseStudies.filter((elm) => elm.categories.includes(activeTab))
+        smallCaseStudies.filter((elm) => elm.region === activeTab)
       );
     } else {
       setFilteres(
         smallCaseStudies
+          .filter((elm) => elm.region === activeTab)
           .slice(0, 6)
-          .filter((elm) => elm.categories.includes(activeTab))
       );
     }
   }, [activeTab, isLoadedMore]);
+
+  useEffect(() => {
+    // Remove any overlays and ensure consistent image display
+    const style = document.createElement("style");
+    style.textContent = `
+      .tf-post-grid .image::before {
+        display: none !important;
+        background: transparent !important;
+      }
+      .tf-post-grid .image img {
+        filter: none !important;
+        opacity: 1 !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   return (
     <div className="page-case-content tf-spacing-2">
@@ -68,29 +87,45 @@ export default function CaseStudies2() {
                         style={{ display: "block" }}
                         key={index}
                       >
-                        <div className="image">
+                        <div 
+                          className="image" 
+                          style={{ 
+                            display: "flex", 
+                            alignItems: "center", 
+                            justifyContent: "center",
+                            backgroundColor: "#fff",
+                            padding: "40px",
+                            minHeight: "300px",
+                            position: "relative"
+                          }}
+                        >
                           <Image
                             src={item.imgSrc}
-                            alt=""
+                            alt={item.title}
                             className="lazyload"
-                            width={400}
-                            height={300}
+                            width={200}
+                            height={200}
+                            style={{ 
+                              objectFit: "contain",
+                              maxWidth: "100%",
+                              height: "auto"
+                            }}
                           />
                           <Link
-                            href={`/case-studies-details`}
+                            href={`#`}
                             className="link"
                           />
                         </div>
                         <div className="tf-grid-post-content">
-                          <div className="position label text-btn-uppercase">
+                          {/* <div className="position label text-btn-uppercase">
                             {item.label}
-                          </div>
+                          </div> */}
                           <h5 className="title-post">
-                            <Link href={`/case-studies-details`}>
+                            <Link href={`#`}>
                               {item.title}
                             </Link>
                           </h5>
-                          <div className="sub-title">{item.desc}</div>
+                          {/* <div className="sub-title">{item.desc}</div> */}
                         </div>
                       </div>
                     ))}
