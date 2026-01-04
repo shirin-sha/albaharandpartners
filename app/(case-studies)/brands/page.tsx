@@ -16,12 +16,12 @@ export default function page() {
           <div className="page-title-content">
             <Breadcumb pageName="Brands" />
             <h2 className="title-page-title">Brands</h2>
-            <div className="sub-title body-2">
+            {/* <div className="sub-title body-2">
               Explore success stories from businesses that achieved growth
               through our tailored
               <br />
               strategies and solutions.
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
