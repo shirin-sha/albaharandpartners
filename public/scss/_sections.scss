@@ -564,7 +564,27 @@
   }
 
   &.h-7 {
+    @media (min-width: 1920px) {
+      max-width: 1920px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    
     .page-title-inner {
+      @media (min-width: 1920px) {
+        width: 1920px;
+        max-width: 1920px;
+        height: 912px;
+        min-height: 912px;
+        max-height: 912px;
+        padding: 0;
+        margin: 0 auto;
+        
+        .page-title-content {
+          padding: 283px 0 243px;
+        }
+      }
+      
       padding: 283px 0 243px;
 
       &.img-h7-1 {
