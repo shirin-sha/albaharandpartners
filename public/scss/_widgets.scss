@@ -2403,7 +2403,7 @@
 
 .time-line-item {
   padding-top: 38px;
-  border-top: 2px solid var(--primary);
+  border-top: 2px solid var(--white);
   position: relative;
 
   &::before {
@@ -2428,33 +2428,33 @@
     transform: translateX(-50%);
     width: 2px;
     height: 38px;
-    background-color: var(--primary);
+    background-color: var(--white);
     z-index: -1;
   }
 
   &.active {
-    border-color: var(--primary);
+    border-color: var(--white);
 
     &::before {
       border-color: var(--white);
     }
 
     &::after {
-      background-color: var(--primary);
+      background-color: var(--white);
     }
 
     .time-line-content {
-      background-color: var(--primary);
+      background-color: var(--white);
 
       .label {
-        color: var(--white);
+        color: var(--on-suface-container);
       }
     }
   }
 }
 
 .time-line-content {
-  background-color: var(--primary);
+  background-color: var(--white);
   text-align: center;
   padding: 30px;
   min-height: 234px;
@@ -2462,7 +2462,7 @@
   @include mixin.transition3();
 
   .label {
-    color: var(--white);
+    color: var(--on-suface-container);
   }
 
   .heading {
@@ -2470,17 +2470,17 @@
 
     .label {
       margin-bottom: 8px;
-      color: var(--primary);
+      color: var(--on-suface-container);
       @include mixin.transition3();
     }
 
     .title-content {
-      color: var(--white);
+      color: var(--on-suface-container);
     }
   }
 
   .desc {
-    color: var(--white);
+    color: var(--on-suface-container);
   }
 }
 
