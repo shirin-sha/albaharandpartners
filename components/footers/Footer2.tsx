@@ -65,9 +65,9 @@ export default function Footer2({
                 </div>
                 <div className="text caption-1">
                   Welcome to Al Bahar & Partners (BPC). We deliver partner-led technology solutions across
-                  <br />
+                  
                   banking, identity, infrastructure, and cybersecurity, supported by reliable implementation
-                  <br />
+                  
                   and long-term support.
                 </div>
                 <div className="footer-social">
