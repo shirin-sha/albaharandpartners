@@ -2,18 +2,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { absolutePosts2, posts4 } from "@/data/blogs";
+import { absolutePosts } from "@/data/blogs";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 
 export default function Blogs3() {
-  const [filteres, setFilteres] = useState(posts4);
+  const [filteres, setFilteres] = useState(absolutePosts);
   const [isLoadedMore, setIsLoadedMore] = useState(false);
   useEffect(() => {
     if (isLoadedMore) {
-      setFilteres(posts4);
+      setFilteres(absolutePosts);
     } else {
-      setFilteres(posts4.slice(0, 6));
+      setFilteres(absolutePosts.slice(0, 6));
     }
   }, [isLoadedMore]);
   return (
@@ -21,7 +21,7 @@ export default function Blogs3() {
       <div className="row">
         <div className="col-12">
           <div className="blog-content blog-no-sidebar-content">
-            <div className="tf-slideshow blog-no-sidebar-slide">
+            {/* <div className="tf-slideshow blog-no-sidebar-slide">
               <Swiper
                 className="swiper sw-single"
                 modules={[Navigation]}
@@ -33,16 +33,12 @@ export default function Blogs3() {
                 <div className="tf-btn-arrow arrow-left sw-single-prev snbp1">
                   <i className="icon-arrow-left" />
                 </div>
-                {absolutePosts2.map((post, i) => (
+                {absolutePosts.map((post, i) => (
                   <SwiperSlide className="swiper-slide" key={i}>
-                    <div
-                      className={`tf-post-grid style-absolute ${
-                        post.animate ? "tf-animate-2" : ""
-                      }`}
-                    >
+                    <div className="tf-post-grid style-absolute">
                       <div className="image">
                         <Link
-                          href={`/blog-details-1/${post.id}`}
+                          href="#"
                           className="link"
                         />
                         <Image
@@ -57,31 +53,15 @@ export default function Blogs3() {
                           <span>{post.date.month}</span>
                         </a>
                       </div>
-                      <div
-                        className={`tf-post-grid-content ${
-                          post.animate ? "text-anime-wave" : ""
-                        }`}
-                      >
-                        <div
-                          className="position"
-                          {...(post.animate ? { "data-delay": ".3s" } : {})}
-                        >
+                      <div className="tf-post-grid-content">
+                        <div className="position">
                           {post.category}
                         </div>
-                        <h4
-                          className="title-post"
-                          {...(post.animate ? { "data-delay": ".3s" } : {})}
-                        >
-                          <Link href={`/blog-details-1/${post.id}`}>
+                        <h4 className="title-post">
+                          <Link href="#">
                             {post.title}
                           </Link>
                         </h4>
-                        <div
-                          className="sub-title body-2"
-                          {...(post.animate ? { "data-delay": ".3s" } : {})}
-                        >
-                          {post.description}
-                        </div>
                       </div>
                     </div>
                   </SwiperSlide>
@@ -90,7 +70,7 @@ export default function Blogs3() {
                   <i className="icon-arrow-right1" />
                 </div>
               </Swiper>
-            </div>
+            </div> */}
             <div className="layout-grid-3 loadmore-item">
               {filteres.map((post, index) => (
                 <div
@@ -99,7 +79,7 @@ export default function Blogs3() {
                 >
                   <div className="image">
                     <Link
-                      href={`/blog-details-2/${post.id}`}
+                      href="#"
                       className="link"
                     />
                     <Image
@@ -117,24 +97,16 @@ export default function Blogs3() {
                   <div className="tf-grid-post-content">
                     <div
                       className="position caption-1 wow fadeInUp"
-                      data-wow-delay={post.delay}
                     >
                       {post.category}
                     </div>
                     <h5
                       className="title-post wow fadeInUp"
-                      data-wow-delay={post.delay}
                     >
-                      <Link href={`/blog-details-2/${post.id}`}>
+                      <Link href="#">
                         {post.title}
                       </Link>
                     </h5>
-                    <div
-                      className="sub-title wow fadeInUp"
-                      data-wow-delay={post.delay}
-                    >
-                      {post.description}
-                    </div>
                   </div>
                 </div>
               ))}
