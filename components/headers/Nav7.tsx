@@ -25,7 +25,7 @@ export default function Nav7() {
           pathname === "/" ? "current-menu-item" : ""
         }`}
       >
-        <Link href="/" className="item-link">
+        <Link href="/" className="item-link" prefetch={true}>
           HOME
         </Link>
       </li>
@@ -34,7 +34,7 @@ export default function Nav7() {
           isMenuActive({ href: "/about-us" }) ? "current-menu-item" : ""
         }`}
       >
-        <Link href="/about-us" className="item-link">
+        <Link href="/about-us" className="item-link" prefetch={true}>
           ABOUT US
         </Link>
       </li>
@@ -43,7 +43,7 @@ export default function Nav7() {
           isMenuParentActive(solutionsLinks) ? "current-menu-item" : ""
         }`}
       >
-        <Link href="/solutions" className="item-link">
+        <Link href="/solutions" className="item-link" prefetch={true}>
           SOLUTIONS
         </Link>
         <ul className="sub-menu">
@@ -54,7 +54,7 @@ export default function Nav7() {
               }`}
               key={index}
             >
-              <Link href={item.href} className="item-link-2">
+              <Link href={item.href} className="item-link-2" prefetch={true}>
                 {item.title}
               </Link>
             </li>
@@ -66,7 +66,7 @@ export default function Nav7() {
           isMenuActive({ href: "/brands" }) ? "current-menu-item" : ""
         }`}
       >
-        <Link href="/brands" className="item-link">
+        <Link href="/brands" className="item-link" prefetch={true}>
           BRANDS
         </Link>
       </li>
@@ -86,7 +86,7 @@ export default function Nav7() {
               }`}
               key={index}
             >
-              <Link href={item.href} className="item-link-2">
+              <Link href={item.href} className="item-link-2" prefetch={true}>
                 {item.title}
               </Link>
             </li>
@@ -98,7 +98,7 @@ export default function Nav7() {
           isMenuActive({ href: "/support" }) ? "current-menu-item" : ""
         }`}
       >
-        <Link href="/support" className="item-link">
+        <Link href="/support" className="item-link" prefetch={true}>
           SUPPORT
         </Link>
       </li>
@@ -107,7 +107,7 @@ export default function Nav7() {
           isMenuActive({ href: "/contact-us" }) ? "current-menu-item" : ""
         }`}
       >
-        <Link href="/contact-us" className="item-link">
+        <Link href="/contact-us" className="item-link" prefetch={true}>
           CONTACT US
         </Link>
       </li>

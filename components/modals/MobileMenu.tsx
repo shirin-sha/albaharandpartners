@@ -64,7 +64,7 @@ export default function MobileMenu() {
                 pathname === "/" ? "current-menu-mobile-item" : ""
               }`}
                     >
-              <Link href="/">HOME</Link>
+              <Link href="/" prefetch={true}>HOME</Link>
             </li>
             <li
               className={`menu-item ${
@@ -73,7 +73,7 @@ export default function MobileMenu() {
                   : ""
               }`}
                     >
-              <Link href="/about-us">ABOUT US</Link>
+              <Link href="/about-us" prefetch={true}>ABOUT US</Link>
             </li>
             <li
               className={`menu-item ${
@@ -82,7 +82,7 @@ export default function MobileMenu() {
                   : ""
               }`}
                     >
-              <Link href="/solutions">SOLUTIONS</Link>
+              <Link href="/solutions" prefetch={true}>SOLUTIONS</Link>
             </li>
             <li
                       className={`menu-item ${
@@ -91,7 +91,7 @@ export default function MobileMenu() {
                   : ""
               }`}
                     >
-              <Link href="/brands">BRANDS</Link>
+              <Link href="/brands" prefetch={true}>BRANDS</Link>
             </li>
             <li
               className={`menu-item menu-item-has-children-mobile ${
@@ -120,7 +120,7 @@ export default function MobileMenu() {
                         isMenuActive(link) ? "current-menu-mobile-item" : ""
                       }`}
                     >
-                      <Link href={link.href}>{link.title}</Link>
+                      <Link href={link.href} prefetch={true}>{link.title}</Link>
                     </li>
                   ))}
                 </ul>
@@ -133,7 +133,7 @@ export default function MobileMenu() {
                   : ""
               }`}
             >
-              <Link href="/support">SUPPORT</Link>
+              <Link href="/support" prefetch={true}>SUPPORT</Link>
             </li>
             <li
               className={`menu-item ${
@@ -142,7 +142,7 @@ export default function MobileMenu() {
                   : ""
               }`}
             >
-              <Link href="/contact-us">CONTACT US</Link>
+              <Link href="/contact-us" prefetch={true}>CONTACT US</Link>
             </li>
           </ul>
           <div className="contact-mobile">
