@@ -125,11 +125,11 @@ export const navItemsStratagy = [
 
 // Menu data for Header7
 export const solutionsLinks = [
-  { title: "Banking, Payment and Identity Solutions", href: "/solutions/banking-payment-identity" },
-  { title: "Printing & Imaging", href: "/solutions/printing-imaging" },
-  { title: "Audio & Visual", href: "/solutions/audio-visual" },
-  { title: "IT Infrastructure, Support and Cloud", href: "/solutions/it-infrastructure" },
-  { title: "Information and Cyber Security", href: "/solutions/cyber-security" },
+  { title: "Banking, Payment and Identity Solutions", href: "#" },
+  { title: "Printing & Imaging", href: "#" },
+  { title: "Audio & Visual", href: "#" },
+  { title: "IT Infrastructure, Support and Cloud", href: "#" },
+  { title: "Information and Cyber Security", href: "#" },
 ];
 
 export const corpInfoLinks = [
