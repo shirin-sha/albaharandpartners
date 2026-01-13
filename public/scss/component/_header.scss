@@ -137,6 +137,15 @@
                     color: var(--white);
                     @include mixin.transition3();
                 }
+
+                svg {
+                    width: 20px;
+                    height: 20px;
+                    fill: var(--white);
+                    display: block;
+                    margin: 0 auto;
+                    @include mixin.transition3();
+                }
             }
 
             &:hover {
@@ -145,6 +154,10 @@
 
                 i {
                     color: var(--on-suface-container);
+                }
+
+                svg {
+                    fill: var(--on-suface-container);
                 }
             }
         }

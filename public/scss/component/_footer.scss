@@ -401,6 +401,42 @@
         .item {
             a {
                 border-color: var(--bg-1);
+                background-color: transparent !important;
+
+                &:hover {
+                    background-color: transparent !important;
+                    border-color: var(--bg-1);
+                }
+
+                .icon {
+                    @include mixin.flex(center, center);
+
+                    i {
+                        color: var(--white);
+                        @include mixin.transition3();
+                    }
+
+                    svg {
+                        width: 20px;
+                        height: 20px;
+                        fill: var(--white);
+                        display: block;
+                        margin: 0 auto;
+                        @include mixin.transition3();
+                    }
+                }
+
+                &:hover {
+                    .icon {
+                        i {
+                            color: var(--on-suface-container);
+                        }
+
+                        svg {
+                            fill: var(--on-suface-container);
+                        }
+                    }
+                }
             }
         }
     }
