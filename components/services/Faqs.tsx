@@ -7,7 +7,7 @@ export default function Faqs() {
       <div className="according-item style-arrow style-small">
         <h6>
           <a
-            href="#according1"
+            href="#"
             data-bs-toggle="collapse"
             className="title-according collapsed"
           >
@@ -28,7 +28,7 @@ export default function Faqs() {
       <div className="according-item style-arrow style-small">
         <h6>
           <a
-            href="#according2"
+            href="#"
             data-bs-toggle="collapse"
             className="title-according collapsed"
           >
@@ -49,7 +49,7 @@ export default function Faqs() {
       <div className="according-item style-arrow style-small">
         <h6>
           <a
-            href="#according3"
+            href="#"
             data-bs-toggle="collapse"
             className="title-according collapsed"
           >
@@ -70,7 +70,7 @@ export default function Faqs() {
       <div className="according-item style-arrow style-small">
         <h6>
           <a
-            href="#according4"
+            href="#"
             data-bs-toggle="collapse"
             className="title-according collapsed"
           >

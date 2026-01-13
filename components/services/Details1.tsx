@@ -141,7 +141,7 @@ export default function Details1() {
               <ul className="menu-sidebar-tab" role="tablist">
                 <li className="nav-tab-item" role="presentation">
                   <a
-                    href="#tab-1"
+                    href="#"
                     className="list-menu-item title active"
                     data-bs-toggle="tab"
                     role="tab"
@@ -151,7 +151,7 @@ export default function Details1() {
                 </li>
                 <li className="nav-tab-item" role="presentation">
                   <a
-                    href="#tab-2"
+                    href="#"
                     className="list-menu-item title"
                     data-bs-toggle="tab"
                     role="tab"
@@ -161,7 +161,7 @@ export default function Details1() {
                 </li>
                 <li className="nav-tab-item" role="presentation">
                   <a
-                    href="#tab-3"
+                    href="#"
                     className="list-menu-item title"
                     data-bs-toggle="tab"
                     role="tab"
@@ -171,7 +171,7 @@ export default function Details1() {
                 </li>
                 <li className="nav-tab-item" role="presentation">
                   <a
-                    href="#tab-4"
+                    href="#"
                     className="list-menu-item title"
                     data-bs-toggle="tab"
                     role="tab"

@@ -29,7 +29,7 @@ export default function Blogs() {
               </div>
               <div className="text-anime-wave-2">
                 <Link
-                  href={`/blog-left-sidebar`}
+                  href="/news-updates"
                   className="tf-btn style-1 bg-on-suface-container"
                 >
                   <span>View All Articles</span>
@@ -74,7 +74,7 @@ export default function Blogs() {
                         height={post.imgHeight}
                       />
                       <Link
-                        href={`/blog-details-1/${post.id}`}
+                        href="#"
                         className="link"
                       />
                       <a href="#" className="date">
@@ -87,7 +87,7 @@ export default function Blogs() {
                         {post.category}
                       </div>
                       <h5 className="title-post">
-                        <Link href={`/blog-details-1/${post.id}`}>
+                        <Link href="#">
                           {post.title}
                         </Link>
                       </h5>

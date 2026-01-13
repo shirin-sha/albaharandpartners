@@ -21,7 +21,7 @@ export default function CaseStudies1() {
         <div className="row">
           <div className="col-12">
             <div className="flat-animate-tab">
-              <div className="case-list">
+                  <div className="case-list">
                     <div className="layout-grid-3 g-30 loadmore-item style-2 mb-40">
                       {filteres.map((item, index) => (
                         <div
@@ -38,12 +38,12 @@ export default function CaseStudies1() {
                               height={630}
                             />
                             <Link
-                              href={`/case-studies-details`}
+                              href="#"
                               className="link"
                             />
                           </div>
                           <Link
-                            href={`/case-studies-details`}
+                            href="#"
                             className="btn-arrow-item"
                           >
                             <i className="icon-arrowRight" />
@@ -51,7 +51,7 @@ export default function CaseStudies1() {
                           <div className="case-studies-content">
                             <h5>
                               <Link
-                                href={`/case-studies-details`}
+                                href="#"
                                 className="name"
                               >
                                 {item.title}
@@ -74,7 +74,7 @@ export default function CaseStudies1() {
                     ) : (
                       ""
                     )}
-                  </div>
+              </div>
             </div>
           </div>
         </div>

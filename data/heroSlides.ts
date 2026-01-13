@@ -69,7 +69,7 @@ export const slides4 = [
     subtitle:
       "From payment technologies to identity and security, we enable safer transactions and smarter customer experiences.",
     buttonText: "View Banking Solutions",
-    buttonLink: "/solutions/banking-payments",
+    buttonLink: "/solutions",
     image: "/image/hero/hero-2.jpg",
   },
   {

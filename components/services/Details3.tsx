@@ -17,7 +17,7 @@ export default function Details3() {
               <li className="nav-tab-item" role="presentation">
                 <h6>
                   <a
-                    href="#tab-1"
+                    href="#"
                     data-bs-toggle="tab"
                     role="tab"
                     className="active"
@@ -28,21 +28,21 @@ export default function Details3() {
               </li>
               <li className="nav-tab-item" role="presentation">
                 <h6>
-                  <a href="#tab-2" data-bs-toggle="tab" role="tab">
+                  <a href="#" data-bs-toggle="tab" role="tab">
                     Investment Advisory
                   </a>
                 </h6>
               </li>
               <li className="nav-tab-item" role="presentation">
                 <h6>
-                  <a href="#tab-3" data-bs-toggle="tab" role="tab">
+                  <a href="#" data-bs-toggle="tab" role="tab">
                     Estate Planning
                   </a>
                 </h6>
               </li>
               <li className="nav-tab-item" role="presentation">
                 <h6>
-                  <a href="#tab-4" data-bs-toggle="tab" role="tab">
+                  <a href="#" data-bs-toggle="tab" role="tab">
                     Tax Optimization
                   </a>
                 </h6>

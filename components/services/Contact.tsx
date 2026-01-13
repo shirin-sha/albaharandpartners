@@ -14,7 +14,7 @@ export default function Contact() {
         <div className="section-content position-relative">
           <div className="heading-section style-color-white">
             <Link
-              href={`/contact-us`}
+              href="#"
               className="tag label text-btn-uppercase color-white mb-16"
             >
               Contact US
@@ -121,7 +121,7 @@ export default function Contact() {
             </div>
           </div>
           <Link
-            href={`/contact-us`}
+            href="#"
             className="tf-btn style-1 bg-white bg-white-style-2 w-full text-center"
           >
             <span> Contact Us </span>

@@ -36,7 +36,7 @@ export default function Performance() {
                 <ul className="tab-product mb-0" role="tablist">
                   <li className="nav-tab-item" role="presentation">
                     <a
-                      href="#weekly"
+                      href="#"
                       data-bs-toggle="tab"
                       role="tab"
                       className="active text-btn"
@@ -46,7 +46,7 @@ export default function Performance() {
                   </li>
                   <li className="nav-tab-item" role="presentation">
                     <a
-                      href="#monthly"
+                      href="#"
                       data-bs-toggle="tab"
                       role="tab"
                       className="text-btn"

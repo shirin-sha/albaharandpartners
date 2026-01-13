@@ -50,7 +50,7 @@ export default function Footer2({
             <div className="footer-top">
               <div className="footer-left">
                 <div className="logo-footer">
-                  <Link href={`/`} className="logo">
+                  <Link href="#" className="logo">
                     <Image
                       alt=""
                       src={
@@ -80,14 +80,7 @@ export default function Footer2({
                     <li className="item">
                       <a href="#">
                         <div className="icon">
-                          <i className="icon-messenger" />
-                        </div>
-                      </a>
-                    </li>
-                    <li className="item">
-                      <a href="#">
-                        <div className="icon">
-                          <i className="icon-x" />
+                          <i className="icon-linkedin" />
                         </div>
                       </a>
                     </li>
@@ -101,14 +94,14 @@ export default function Footer2({
                     <li className="item">
                       <a href="#">
                         <div className="icon">
-                          <i className="icon-skype" />
+                          <i className="icon-x" />
                         </div>
                       </a>
                     </li>
                     <li className="item">
                       <a href="#">
                         <div className="icon">
-                          <i className="icon-telegram" />
+                          <i className="icon-facebook" />
                         </div>
                       </a>
                     </li>
@@ -137,24 +130,24 @@ export default function Footer2({
                       <div className="flex g-12">
                         <ul>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/about-us`}>About Us</Link>
+                            <Link href="#">About Us</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/solutions`}>Solutions</Link>
+                            <Link href="#">Solutions</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/case-studies-1`}>Case Studies</Link>
+                            <Link href="#">Case Studies</Link>
                           </li>
                         </ul>
                         <ul>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/our-partners`}>Our Partners</Link>
+                            <Link href="#">Our Partners</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/blog-left-sidebar`}>News & Insights</Link>
+                            <Link href="#">News & Insights</Link>
                           </li>
                           <li className="support-item-footer caption-1">
-                            <Link href={`/careers`}>Careers</Link>
+                            <Link href="#">Careers</Link>
                           </li>
                         </ul>
                       </div>
@@ -219,7 +212,7 @@ export default function Footer2({
                 <div className="right">
                   <ul>
                     <li>
-                      <Link href={`/contact-us`} className="caption-1">
+                      <Link href="#" className="caption-1">
                         Contact Us
                       </Link>
                     </li>

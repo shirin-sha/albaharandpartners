@@ -58,7 +58,7 @@ export default function CaseStudies() {
           {caseStudySlides.map((item, index) => (
             <SwiperSlide className="swiper-slide" key={index}>
               <div className="case-studies-item style-bg-content hover-img style-2">
-                <Link href={`/case-studies-details`} className="image d-block">
+                <Link href="#" className="image d-block">
                   <Image
                     src={item.imgSrc}
                     alt=""
@@ -67,18 +67,18 @@ export default function CaseStudies() {
                     height={630}
                   />
                 </Link>
-                <Link href={`/case-studies-details`} className="btn-arrow-item">
+                <Link href="#" className="btn-arrow-item">
                   <i className="icon-arrowRight" />
                 </Link>
                 <div className="case-studies-content">
                   <h5>
-                    <Link href={`/case-studies-details`} className="name">
+                    <Link href="#" className="name">
                       {item.title}
                     </Link>
                   </h5>
                   <div className="desc">{item.description}</div>
                   <Link
-                    href={`/case-studies-details`}
+                    href="#"
                     className="tf-btn-arrow-t-r"
                   >
                     <span>View Case Study</span>
