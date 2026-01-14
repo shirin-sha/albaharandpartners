@@ -66,7 +66,7 @@ export default function Nav7() {
           isMenuActive({ href: "/brands" }) ? "current-menu-item" : ""
         }`}
       >
-        <Link href="/brands" className="item-link" prefetch={true}>
+        <Link href="#" className="item-link" prefetch={true}>
           BRANDS
         </Link>
       </li>

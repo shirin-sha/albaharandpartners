@@ -91,7 +91,7 @@ export default function MobileMenu() {
                   : ""
               }`}
                     >
-              <Link href="/brands" prefetch={true}>BRANDS</Link>
+              <Link href="#" prefetch={true}>BRANDS</Link>
             </li>
             <li
               className={`menu-item menu-item-has-children-mobile ${
