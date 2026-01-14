@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function page() {
   return (
     <>
-      <div className="page-title style-1 bg-img-2">
+      <div className="page-title style-1 bg-img-8">
         <div className="tf-container">
           <div className="row">
             <div className="col-12">

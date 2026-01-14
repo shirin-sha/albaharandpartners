@@ -7,18 +7,18 @@ import Breadcumb from "@/components/common/Breadcumb";
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title:
-    "Career || FinWice - Business & Finance Consulting - React Nextjs Template",
+    "Careers ",
   description:
-    "FinWice - Business & Finance Consulting - React Nextjs Template",
+    "Al bahar and partners",
 };
 export default function page() {
   return (
     <>
-      <div className="page-title style-1 bg-img-19">
+      <div className="page-title style-1 bg-img-8">
         <div className="tf-container">
           <div className="page-title-content">
             <Breadcumb pageName="Career" />
-            <h2 className="title-page-title">Career</h2>
+            <h2 className="title-page-title">Careers</h2>
             <div className="sub-title body-2">
               Join our team of industry experts and make a meaningful impact.
               Discover

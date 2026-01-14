@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   title:
     "Contact Us || Al Bahar & Partners - Technology Solutions",
   description:
-    "FinWice - Business & Finance Consulting - React Nextjs Template",
+    "Al Bahar & Partners - Technology Solutions",
 };
 export default function page() {
   return (
     <>
-      <div className="page-title style-1 bg-img-13">
+      <div className="page-title style-1 bg-img-8">
         <div className="tf-container position-relative">
           <div className="page-title-content">
             <Breadcumb pageName="Contact Us" />

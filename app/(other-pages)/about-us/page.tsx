@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function page() {
   return (
     <>
-      <div className="page-title style-1 bg-img-4">
+      <div className="page-title style-1 bg-img-8">
         <div className="tf-container">
           <div className="page-title-content">
             <Breadcumb pageName="About Us" />
