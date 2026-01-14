@@ -16,12 +16,9 @@ export default function page() {
           <div className="page-title-content">
             <Breadcumb pageName="Customer Stories" />
             <h2 className="title-page-title">Customer Stories</h2>
-            {/* <div className="sub-title body-2">
-              Explore success stories from businesses that achieved growth
-              through our tailored
-              <br />
-              strategies and solutions.
-            </div> */}
+            <div className="sub-title body-2">
+            See how Al Bahar & Partners helps organizations strengthen security, improve visibility,<br /> and modernize IT through proven technology deployments.
+            </div>
           </div>
         </div>
       </div>
