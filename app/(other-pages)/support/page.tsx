@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 import Awards from "@/components/common/Awards";
-import Contact from "@/components/common/Contact";
+import SupportContact from "@/components/otherPages/SupportContact";
 import Cta from "@/components/common/Cta";
-import Services from "@/components/otherPages/Services";
+import SupportServices from "@/components/otherPages/SupportServices";
 import React from "react";
 import Breadcumb from "@/components/common/Breadcumb";
 import { Metadata } from "next";
@@ -22,19 +22,18 @@ export default function page() {
             <Breadcumb pageName="Support" />
             <h2 className="title-page-title">Support</h2>
             <div className="sub-title body-2">
-              Explore success stories from businesses that achieved growth
-              through our tailored
+              From incident resolution to preventive maintenance, our support teams keep
               <br />
-              strategies and solutions.
+              your operations secure, stable, and always available.
             </div>
           </div>
         </div>
       </div>
       <div className="main-content">
-        <Services />
-        <Contact />
-        <Awards parentClass="section-awards h-1 tf-spacing-18" />
-        <Cta />
+        <SupportServices />
+        <SupportContact />
+        {/* <Awards parentClass="section-awards h-1 tf-spacing-18" /> */}
+        {/* <Cta /> */}
       </div>
     </>
   );
