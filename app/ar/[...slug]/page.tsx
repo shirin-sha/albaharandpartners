@@ -27,13 +27,14 @@ import NewsUpdatesCMS from "@/components/blogs/NewsUpdatesCMS";
 import BrandsCMS from "@/components/case-studies/BrandsCMS";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string[];
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const slug = params.slug?.[0] || '';
+  const { slug: slugArray } = await params;
+  const slug = slugArray?.[0] || '';
   const pageName = slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
   
   return {
@@ -43,7 +44,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ArabicPage({ params }: PageProps) {
-  const slug = params.slug?.[0] || '';
+  const { slug: slugArray } = await params;
+  const slug = slugArray?.[0] || '';
   const language: 'ltr' | 'rtl' = 'rtl';
 
   // If no slug, redirect to home (handled by /ar/page.tsx)
