@@ -1,0 +1,57 @@
+import Image from "next/image";
+import React from "react";
+import { BrandsSection as BrandsSectionType } from "@/types/homepage";
+
+interface BrandsSectionProps {
+  content: BrandsSectionType;
+  language?: 'ltr' | 'rtl';
+}
+
+export default function BrandsSection({ content, language = 'ltr' }: BrandsSectionProps) {
+  if (!content.isActive) {
+    return null;
+  }
+
+  const activeBrands = content.brands
+    .filter(brand => brand.isActive)
+    .sort((a, b) => a.order - b.order);
+
+  if (activeBrands.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="section-brand h-7 section-one-page" id="brands" dir={language}>
+      <div className="tf-container">
+        <div className="row">
+          <div className="col-12">
+            <div className="text-heading">
+              <h5>
+                <span>{content.heading}</span>
+              </h5>
+            </div>
+            <div className="tf-marquee tf-spacing-25">
+              <div className="marquee-wrapper">
+                <div className="initial-child-container">
+                  {activeBrands.map((brand, index) => (
+                    <div className="marquee-child-item" style={{ marginRight: '60px' }} key={index}>
+                      <a href={brand.link || "#"} className="brand-item">
+                        <Image
+                          alt={brand.name}
+                          src={brand.imagePath}
+                          width={280}
+                          height={55}
+                          style={{ width: '280px', height: '55px', objectFit: 'contain' }}
+                        />
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

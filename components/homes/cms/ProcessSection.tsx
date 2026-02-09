@@ -1,0 +1,80 @@
+"use client";
+import Link from "next/link";
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { ProcessSection as ProcessSectionType } from "@/types/homepage";
+
+interface ProcessSectionProps {
+  content: ProcessSectionType;
+  language?: 'ltr' | 'rtl';
+}
+
+export default function ProcessSection({ content, language = 'ltr' }: ProcessSectionProps) {
+  if (!content.isActive) {
+    return null;
+  }
+
+  const activeSteps = content.steps
+    .filter(step => step.isActive)
+    .sort((a, b) => a.order - b.order);
+
+  if (activeSteps.length === 0) {
+    return null;
+  }
+
+  return (
+    <section className="section-process h-8 tf-spacing-2 hover-active-step" dir={language}>
+      <div className="tf-container position-relative">
+        <div className="row">
+          <div className="col-12">
+            <div className="heading-section style-2 style-color-white">
+              <div className="left">
+                <div className="text-anime-wave">
+                  <a href="#" className="tag label text-btn-uppercase color-white">
+                    {content.tag}
+                  </a>
+                </div>
+                <h3 className="title-section mb-12 text-anime-wave">
+                  {content.heading}
+                </h3>
+                <div className="sub-title body-2 text-anime-wave">
+                  {content.subheading}
+                </div>
+              </div>
+              <div className="text-anime-wave-2">
+                <Link href={content.buttonLink || '/contact-us'} className="tf-btn style-1 bg-white">
+                  <span>{content.buttonText}</span>
+                </Link>
+              </div>
+            </div>
+            <Swiper
+              className="sw-case-studies swiper sw-layout"
+              spaceBetween={10}
+              dir="ltr"
+              breakpoints={{
+                0: { slidesPerView: 1 },
+                575: { slidesPerView: 2 },
+                768: { slidesPerView: 3, spaceBetween: 20 },
+                1200: { slidesPerView: 4, spaceBetween: 20 },
+              }}
+            >
+              {activeSteps.map((step, index) => (
+                <SwiperSlide className="swiper-slide" key={index}>
+                  <div className="process-item bg-1 bg-1-style-2 step-hover">
+                    <div className="process-top">
+                      <div className="icon" dangerouslySetInnerHTML={{ __html: step.icon }} />
+                      <span className="label text-btn-uppercase">{step.title}</span>
+                    </div>
+                    <div className="process-content">
+                      <div className="desc">{step.description}</div>
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

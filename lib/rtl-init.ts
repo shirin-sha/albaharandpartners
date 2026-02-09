@@ -1,11 +1,11 @@
-// Runs before React to set <html dir> and the .rtl class using the "rtl" cookie.
+// Runs before React to set <html dir> and the .rtl class based on route pathname.
 // Keeps SSR/Hydration consistent and prevents layout flashing.
 export const rtlInitScript = `
 (function() {
   try {
-    // Read cookie
-    var m = document.cookie.match(/(?:^|; )rtl=([^;]+)/);
-    var isRtl = m && decodeURIComponent(m[1]) === 'true';
+    // Check if pathname starts with /ar for RTL
+    var pathname = window.location.pathname;
+    var isRtl = pathname && pathname.startsWith('/ar');
 
     // Apply to <html> immediately
     var html = document.documentElement;

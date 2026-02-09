@@ -32,6 +32,15 @@ export default function ScrollTop() {
     };
   }, []);
 
+  // Calculate strokeDashoffset safely (avoid NaN)
+  const calculateOffset = () => {
+    if (!scrollHeight || scrollHeight === 0) {
+      return 307.919; // Default to full circle when no scroll
+    }
+    const offset = 307.919 - (scrolled / scrollHeight) * 307.919;
+    return isNaN(offset) ? 307.919 : offset;
+  };
+
   return (
     <div
       className={`progress-wrap ${scrolled > 150 ? "active-progress" : ""}`}
@@ -48,7 +57,7 @@ export default function ScrollTop() {
           style={{
             strokeDasharray: "307.919, 307.919",
             transition: "none",
-            strokeDashoffset: 307.919 - (scrolled / scrollHeight) * 307.919,
+            strokeDashoffset: calculateOffset(),
           }}
         />
       </svg>

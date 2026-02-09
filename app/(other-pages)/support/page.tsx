@@ -1,39 +1,52 @@
-import Link from "next/link";
-
-import Awards from "@/components/common/Awards";
-import SupportContact from "@/components/otherPages/SupportContact";
-import Cta from "@/components/common/Cta";
-import SupportServices from "@/components/otherPages/SupportServices";
 import React from "react";
 import Breadcumb from "@/components/common/Breadcumb";
 import { Metadata } from "next";
+import SupportServicesCMS from "@/components/otherPages/SupportServicesCMS";
+import SupportContactCMS from "@/components/otherPages/SupportContactCMS";
+import { SupportContent } from "@/types/support";
+import { getSupportContent } from "@/lib/data-fetch";
+
 export const metadata: Metadata = {
-  title:
-    "Support",
-  description:
-    "Al Bahar & Partners - Technology Solutions",
+  title: "Support - Al Bahar & Partners",
+  description: "From incident resolution to preventive maintenance, our support teams keep your operations secure, stable, and always available.",
 };
-export default function page() {
+
+// Static generation with on-demand revalidation (triggered from admin panel)
+
+export default async function SupportPage() {
+  const content = await getSupportContent();
+
+  // Fallback content if CMS data is not available
+  const headerData = content?.header || {
+    breadcrumb: "Support",
+    title: "Support",
+    subtitle: "From incident resolution to preventive maintenance, our support teams keep your operations secure, stable, and always available.",
+    language: "ltr" as const,
+    isActive: true,
+  };
+
   return (
     <>
-      <div className="page-title style-1 bg-img-8">
-        <div className="tf-container">
-          <div className="page-title-content">
-            <Breadcumb pageName="Support" />
-            <h2 className="title-page-title">Support</h2>
-            <div className="sub-title body-2">
-              From incident resolution to preventive maintenance, our support teams keep
-              <br />
-              your operations secure, stable, and always available.
+      {headerData.isActive && (
+        <div className="page-title style-1 bg-img-8">
+          <div className="tf-container">
+            <div className="page-title-content">
+              <Breadcumb pageName={headerData.breadcrumb} />
+              <h2 className="title-page-title">{headerData.title}</h2>
+              {headerData.subtitle && (
+                <div className="sub-title body-2" dangerouslySetInnerHTML={{ __html: headerData.subtitle.replace(/\n/g, '<br />') }} />
+              )}
             </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="main-content">
-        <SupportServices />
-        <SupportContact />
-        {/* <Awards parentClass="section-awards h-1 tf-spacing-18" /> */}
-        {/* <Cta /> */}
+        {content && (
+          <>
+            <SupportServicesCMS data={content} />
+            <SupportContactCMS data={content} />
+          </>
+        )}
       </div>
     </>
   );

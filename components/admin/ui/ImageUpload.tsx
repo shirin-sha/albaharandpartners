@@ -1,0 +1,193 @@
+'use client';
+import React, { useState, useRef, useId } from 'react';
+
+interface ImageUploadProps {
+  label?: string;
+  value: string;
+  onChange: (value: string) => void;
+  helperText?: string;
+  placeholder?: string;
+  className?: string;
+  folder?: string; // Optional folder path (e.g., 'hero', 'blog', 'brand')
+}
+
+export default function ImageUpload({
+  label,
+  value,
+  onChange,
+  helperText = 'Upload an image file',
+  placeholder = '/image/...',
+  className = '',
+  folder,
+}: ImageUploadProps) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputId = useId();
+
+  // Extract folder from existing value if not provided
+  const getFolderFromValue = (path: string): string => {
+    if (!path) return folder || 'general';
+    
+    // Handle paths like /image/hero/slide-1.jpg
+    if (path.startsWith('/image/')) {
+      const parts = path.split('/').filter(p => p); // Remove empty strings
+      if (parts.length >= 2 && parts[0] === 'image') {
+        return parts[1]; // Return the folder name (e.g., 'hero', 'blog', 'brand')
+      }
+    }
+    
+    // Handle paths like image/hero/slide-1.jpg (without leading slash)
+    if (path.startsWith('image/')) {
+      const parts = path.split('/').filter(p => p);
+      if (parts.length >= 2 && parts[0] === 'image') {
+        return parts[1];
+      }
+    }
+    
+    return folder || 'general';
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Invalid file type. Only images (JPEG, PNG, GIF, WebP, SVG) are allowed.');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      setError('File size exceeds 10MB limit.');
+      return;
+    }
+
+    setError(null);
+    setUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Determine folder: use prop, or extract from existing value, or default to 'general'
+      const uploadFolder = folder || getFolderFromValue(value) || 'general';
+      formData.append('folder', uploadFolder);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        onChange(result.path);
+        setError(null);
+      } else {
+        setError(result.message || 'Failed to upload image');
+      }
+    } catch (err) {
+      console.error('Upload error:', err);
+      setError('Failed to upload image. Please try again.');
+    } finally {
+      setUploading(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleRemove = () => {
+    // Only clear the field in the form; actual file cleanup is handled on save / backend
+    onChange('');
+    setError(null);
+  };
+
+  return (
+    <div className={className}>
+      {label && (
+        <label className="form-label fw-semibold mb-2" style={{ fontSize: '0.95rem' }}>
+          {label}
+        </label>
+      )}
+      
+      <div className="d-flex flex-column gap-2">
+        {/* File Upload Button */}
+        <div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/svg+xml"
+            onChange={handleFileChange}
+            disabled={uploading}
+            className="d-none"
+            id={`file-upload-${label?.replace(/\s+/g, '-') || 'image'}-${inputId}`}
+          />
+          <label
+            htmlFor={`file-upload-${label?.replace(/\s+/g, '-') || 'image'}-${inputId}`}
+            className={`btn btn-sm ${uploading ? 'btn-secondary' : 'btn-primary'} d-inline-flex align-items-center gap-2`}
+            style={{ cursor: uploading ? 'not-allowed' : 'pointer' }}
+          >
+            {uploading ? (
+              <>
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Uploading...
+              </>
+            ) : (
+              <>
+                <span>📤</span>
+                {value ? 'Replace Image' : 'Upload Image'}
+              </>
+            )}
+          </label>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="alert alert-danger py-2 px-3 mb-0" style={{ fontSize: '0.875rem' }}>
+            {error}
+          </div>
+        )}
+
+        {/* Current Image Display */}
+        {value && (
+          <div className="mt-2">
+            <div className="d-flex align-items-center gap-2 mb-2">
+              <span className="text-muted small">Current image:</span>
+              <code className="small bg-light px-2 py-1 rounded">{value}</code>
+              <button
+                type="button"
+                onClick={handleRemove}
+                className="btn btn-sm btn-outline-danger ms-auto"
+                title="Remove image"
+              >
+                ✕ Remove
+              </button>
+            </div>
+            <div className="border rounded p-2 bg-light" style={{ maxWidth: '300px' }}>
+              <img
+                src={value}
+                alt="Preview"
+                className="img-fluid rounded"
+                style={{ maxHeight: '200px', width: 'auto' }}
+                onError={(e) => {
+                  e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EImage not found%3C/text%3E%3C/svg%3E';
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Helper Text */}
+        {helperText && !value && (
+          <small className="text-muted">{helperText}</small>
+        )}
+      </div>
+    </div>
+  );
+}

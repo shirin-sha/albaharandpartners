@@ -1,63 +1,60 @@
 import Link from "next/link";
-
-import Benefits from "@/components/common/Benefits";
-import About from "@/components/common/About";
 import React from "react";
-import History from "@/components/otherPages/History";
-import Features from "@/components/common/Features2";
-import Testimonials from "@/components/otherPages/Testimonials";
-import Cta from "@/components/common/Cta2";
-import Awards from "@/components/common/Awards";
-import Breadcumb from "@/components/common/Breadcumb";
 import { Metadata } from "next";
-import AboutAlBahar from "@/components/otherPages/AboutAlBahar";
-import Team from "@/components/homes/digital-transformation/Team";
-import Faqs from "@/components/homes/home-1/Faqs";
-import VisionMissionValues from "@/components/otherPages/VisionMissionValues";
-import Heritage from "@/components/otherPages/Heritage";
-import AboutBPC from "@/components/otherPages/AboutBPC";
-import AboutBDS from "@/components/otherPages/AboutBDS";
-import Contact from "@/components/homes/digital-transformation/Contact";
+import Breadcumb from "@/components/common/Breadcumb";
+import AboutAlBaharCMS from "@/components/otherPages/AboutAlBaharCMS";
+import VisionMissionValuesCMS from "@/components/otherPages/VisionMissionValuesCMS";
+import HeritageCMS from "@/components/otherPages/HeritageCMS";
+import AboutBDSCMS from "@/components/otherPages/AboutBDSCMS";
+import AboutBPCCMS from "@/components/otherPages/AboutBPCCMS";
+import TeamCMS from "@/components/otherPages/TeamCMS";
+import HistoryCMS from "@/components/otherPages/HistoryCMS";
+import FaqsCMS from "@/components/otherPages/FaqsCMS";
+import { AboutUsContent } from "@/types/aboutus";
+import { getAboutUsContent } from "@/lib/data-fetch";
+
 export const metadata: Metadata = {
-  title:
-    "About us || Al bahar and partners",
-  description:
-    "Al bahar and partners",
+  title: "About us || Al bahar and partners",
+  description: "Al bahar and partners",
 };
-export default function page() {
+
+// Static generation with on-demand revalidation (triggered from admin panel)
+
+export default async function AboutUsPage() {
+  const content = await getAboutUsContent();
+
+  // Fallback content if CMS data is not available
+  const headerData = content?.header || {
+    breadcrumb: "About Us",
+    title: "About Us",
+    subtitle: "Discover our mission to empower clients with expert solutions for confident, sustainable growth and success.",
+    language: "ltr" as const,
+    isActive: true,
+  };
+
   return (
     <>
-      <div className="page-title style-1 bg-img-8">
-        <div className="tf-container">
-          <div className="page-title-content">
-            <Breadcumb pageName="About Us" />
-            <h2 className="title-page-title">About Us</h2>
-            <div className="sub-title body-2">
-              Discover our mission to empower clients with expert solutions for
-              confident,
-              <br />
-              sustainable growth and success.
+      {headerData.isActive && (
+        <div className="page-title style-1 bg-img-8">
+          <div className="tf-container">
+            <div className="page-title-content">
+              <Breadcumb pageName={headerData.breadcrumb} />
+              <h2 className="title-page-title">{headerData.title}</h2>
+              <div className="sub-title body-2" dangerouslySetInnerHTML={{ __html: headerData.subtitle }} />
             </div>
           </div>
         </div>
-      </div>
+      )}
+      
       <div className="main-content">
-        <AboutAlBahar />
-        <VisionMissionValues />
-        <Heritage />
-        <AboutBDS />
-        <Contact />
-     
-      
-     
-        <Team />
-      
-      
-        <History />
-        <Faqs />
-    
-      
-   \
+        {content?.aboutAlBahar && <AboutAlBaharCMS data={content.aboutAlBahar} />}
+        {content?.visionMissionValues && <VisionMissionValuesCMS data={content.visionMissionValues} />}
+        {content?.heritage && <HeritageCMS data={content.heritage} />}
+        {content?.aboutBDS && <AboutBDSCMS data={content.aboutBDS} />}
+        {content?.aboutBPC && <AboutBPCCMS data={content.aboutBPC} />}
+        {content?.team && <TeamCMS data={content.team} />}
+        {content?.history && <HistoryCMS data={content.history} />}
+        {content?.faqs && <FaqsCMS data={content.faqs} />}
       </div>
     </>
   );

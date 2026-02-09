@@ -1,32 +1,46 @@
-import CaseStudies2 from "@/components/case-studies/CaseStudies2";
 import React from "react";
 import Breadcumb from "@/components/common/Breadcumb";
 import { Metadata } from "next";
+import BrandsCMS from "@/components/case-studies/BrandsCMS";
+import { BrandsContent } from "@/types/brands";
+import { getBrandsContent } from "@/lib/data-fetch";
+
 export const metadata: Metadata = {
-  title:
-    "Al bahar and partners",
-  description:
-    "",
+  title: "Brands - Al bahar and partners",
+  description: "Our trusted partner brands",
 };
-export default function page() {
+
+// Static generation with on-demand revalidation (triggered from admin panel)
+
+export default async function BrandsPage() {
+  const content = await getBrandsContent();
+
+  // Fallback content if CMS data is not available
+  const headerData = content?.header || {
+    breadcrumb: "Brands",
+    title: "Brands",
+    subtitle: "",
+    language: "ltr" as const,
+    isActive: true,
+  };
+
   return (
     <>
-      <div className="page-title style-1 bg-img-8">
-        <div className="tf-container">
-          <div className="page-title-content">
-            <Breadcumb pageName="Brands" />
-            <h2 className="title-page-title">Brands</h2>
-            {/* <div className="sub-title body-2">
-              Explore success stories from businesses that achieved growth
-              through our tailored
-              <br />
-              strategies and solutions.
-            </div> */}
+      {headerData.isActive && (
+        <div className="page-title style-1 bg-img-8">
+          <div className="tf-container">
+            <div className="page-title-content">
+              <Breadcumb pageName={headerData.breadcrumb} />
+              <h2 className="title-page-title">{headerData.title}</h2>
+              {headerData.subtitle && (
+                <div className="sub-title body-2" dangerouslySetInnerHTML={{ __html: headerData.subtitle }} />
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="main-content">
-        <CaseStudies2 />
+        {content && <BrandsCMS data={content} />}
       </div>
     </>
   );
