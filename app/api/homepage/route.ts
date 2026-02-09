@@ -119,21 +119,21 @@ export async function PUT(request: NextRequest) {
     const objectId = new ObjectId(_id);
     
     // Get old document to find images that need to be deleted
-    const oldDocument = await collection.findOne({ _id: objectId });
+    const oldDocument = await collection.findOne({ _id: objectId as any });
     
     // Deactivate other content for the same language if this is active
     if (updateData.isActive) {
       await collection.updateMany(
         { 
           language: updateData.language,
-          _id: { $ne: objectId }
+          _id: { $ne: objectId as any }
         },
         { $set: { isActive: false } }
       );
     }
     
     const result = await collection.updateOne(
-      { _id: objectId },
+      { _id: objectId as any },
       {
         $set: {
           ...updateData,
@@ -209,9 +209,9 @@ export async function DELETE(request: NextRequest) {
     const objectId = new ObjectId(id);
     
     // Get document before deleting to clean up images
-    const documentToDelete = await collection.findOne({ _id: objectId });
+    const documentToDelete = await collection.findOne({ _id: objectId as any });
     
-    const result = await collection.deleteOne({ _id: objectId });
+    const result = await collection.deleteOne({ _id: objectId as any });
     
     if (result.deletedCount === 0) {
       return NextResponse.json(

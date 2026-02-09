@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { HomepageContent, HeroSlide, ServiceItem, ProcessStep, BrandItem, BlogPostItem, Counter, FeatureItem } from '@/types/homepage';
+import { HomepageContent, HeroSlide, ServiceItem, ProcessStep, Brand, BlogPost, Counter } from '@/types/homepage';
 import {
   Button,
   Input,
@@ -79,8 +79,7 @@ export default function HomepageManager() {
     _id: '',
     language,
     isActive: true,
-    createdAt: '',
-    updatedAt: '',
+    // createdAt and updatedAt are optional Date fields, omit them for new content
     heroSlides: [],
     aboutSection: {
       tag: '', heading: '', description: '', buttonText: '', buttonLink: '',
@@ -94,12 +93,12 @@ export default function HomepageManager() {
       tag: '', heading: '', subheading: '', services: [], language, isActive: true,
     },
     testimonialSection: {
-      tag: '', heading: '', subheading: '', description: '',
-      personImage: '', personName: '', personPosition: '',
-      companyDescription: '', companySubDescription: '', language, isActive: true,
+      tag: '', heading: '', description: '',
+      imagePath: '', personName: '', personTitle: '',
+      secondaryHeading: '', secondaryDescription: '', language, isActive: true,
     },
     brandsSection: {
-      tag: '', heading: '', subheading: '', brands: [], language, isActive: true,
+      heading: '', brands: [], language, isActive: true,
     },
     caseStudiesSection: {
       tag: '', heading: '', subheading: '', caseStudies: [], language, isActive: true,
@@ -473,9 +472,12 @@ function ProcessTab({ content, setContent }: TabProps) {
           items={content.processSection.steps}
           onAdd={() => {
             const newStep: ProcessStep = {
-              number: String(content.processSection.steps.length + 1),
               title: '',
               description: '',
+              icon: '',
+              order: content.processSection.steps.length,
+              language: content.language,
+              isActive: true,
             };
             setContent({
               ...content,
@@ -501,13 +503,7 @@ function ProcessTab({ content, setContent }: TabProps) {
             })
           }
           renderItem={(step, index, onChange) => (
-            <FormGrid columns={3}>
-              <Input
-                label="Step Number"
-                value={step.number}
-                onChange={(value) => onChange({ ...step, number: value })}
-                placeholder="01"
-              />
+            <FormGrid columns={2}>
               <Input
                 label="Title"
                 value={step.title}
@@ -515,12 +511,25 @@ function ProcessTab({ content, setContent }: TabProps) {
                 placeholder="Step title"
                 required
               />
+              <Input
+                label="Icon (SVG or class)"
+                value={step.icon}
+                onChange={(value) => onChange({ ...step, icon: value })}
+                placeholder="icon-name or SVG"
+              />
               <Textarea
                 label="Description"
                 value={step.description}
                 onChange={(value) => onChange({ ...step, description: value })}
                 placeholder="Step description"
                 rows={2}
+              />
+              <Input
+                label="Order"
+                type="number"
+                value={String(step.order)}
+                onChange={(value) => onChange({ ...step, order: Number(value) })}
+                placeholder="0"
               />
             </FormGrid>
           )}
@@ -623,24 +632,13 @@ function TestimonialTab({ content, setContent }: TabProps) {
           }
           placeholder="What Our Clients Say"
         />
-        <Input
-          label="Subheading"
-          value={content.testimonialSection.subheading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              testimonialSection: { ...content.testimonialSection, subheading: value },
-            })
-          }
-          placeholder="Real feedback from real clients"
-        />
         <ImageUpload
           label="Person Image"
-          value={content.testimonialSection.personImage}
+          value={content.testimonialSection.imagePath}
           onChange={(value) =>
             setContent({
               ...content,
-              testimonialSection: { ...content.testimonialSection, personImage: value },
+              testimonialSection: { ...content.testimonialSection, imagePath: value },
             })
           }
         />
@@ -670,34 +668,34 @@ function TestimonialTab({ content, setContent }: TabProps) {
           placeholder="John Doe"
         />
         <Input
-          label="Person Position"
-          value={content.testimonialSection.personPosition}
+          label="Person Title"
+          value={content.testimonialSection.personTitle}
           onChange={(value) =>
             setContent({
               ...content,
-              testimonialSection: { ...content.testimonialSection, personPosition: value },
+              testimonialSection: { ...content.testimonialSection, personTitle: value },
             })
           }
           placeholder="CEO, Company Name"
         />
         <Input
-          label="Company Description"
-          value={content.testimonialSection.companyDescription}
+          label="Secondary Heading"
+          value={content.testimonialSection.secondaryHeading}
           onChange={(value) =>
             setContent({
               ...content,
-              testimonialSection: { ...content.testimonialSection, companyDescription: value },
+              testimonialSection: { ...content.testimonialSection, secondaryHeading: value },
             })
           }
           placeholder="About the company"
         />
         <Input
-          label="Company Sub-Description"
-          value={content.testimonialSection.companySubDescription}
+          label="Secondary Description"
+          value={content.testimonialSection.secondaryDescription}
           onChange={(value) =>
             setContent({
               ...content,
-              testimonialSection: { ...content.testimonialSection, companySubDescription: value },
+              testimonialSection: { ...content.testimonialSection, secondaryDescription: value },
             })
           }
           placeholder="Additional info"
@@ -721,18 +719,7 @@ function BrandsTab({ content, setContent }: TabProps) {
           })
         }
       />
-      <FormGrid columns={2}>
-        <Input
-          label="Section Tag"
-          value={content.brandsSection.tag}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              brandsSection: { ...content.brandsSection, tag: value },
-            })
-          }
-          placeholder="OUR PARTNERS"
-        />
+      <FormGrid columns={1}>
         <Input
           label="Heading"
           value={content.brandsSection.heading}
@@ -744,17 +731,6 @@ function BrandsTab({ content, setContent }: TabProps) {
           }
           placeholder="Trusted By Industry Leaders"
         />
-        <Input
-          label="Subheading"
-          value={content.brandsSection.subheading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              brandsSection: { ...content.brandsSection, subheading: value },
-            })
-          }
-          placeholder="We work with the best"
-        />
       </FormGrid>
 
       <div className="mt-6">
@@ -762,10 +738,12 @@ function BrandsTab({ content, setContent }: TabProps) {
         <ArrayManager
           items={content.brandsSection.brands}
           onAdd={() => {
-            const newBrand: BrandItem = {
+            const newBrand: Brand = {
               name: '',
-              logo: '',
+              imagePath: '',
               link: '',
+              order: content.brandsSection.brands.length,
+              isActive: true,
             };
             setContent({
               ...content,
@@ -801,8 +779,8 @@ function BrandsTab({ content, setContent }: TabProps) {
               />
               <ImageUpload
                 label="Logo URL"
-                value={brand.logo}
-                onChange={(value) => onChange({ ...brand, logo: value })}
+                value={brand.imagePath}
+                onChange={(value) => onChange({ ...brand, imagePath: value })}
                 placeholder="/image/brands/logo.png"
               />
               <Input
