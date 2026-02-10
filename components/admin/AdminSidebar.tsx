@@ -15,7 +15,7 @@ interface DropdownItem {
 }
 
 const menuItems: MenuItem[] = [
-  { label: "Dashboard", href: "/admin/dashboard", icon: "icon-House" },
+  { label: "Homepage", href: "/admin/homepage", icon: "icon-House" },
 ];
 
 const cmsItems: DropdownItem[] = [
@@ -63,7 +63,7 @@ export default function AdminSidebar() {
           borderBottom: "1px solid var(--outline)",
         }}
       >
-        <Link href="/admin/dashboard">
+        <Link href="/admin/homepage">
           <img
             src="/image/logo/logo-2.png"
             alt="Al Bahar & Partners"

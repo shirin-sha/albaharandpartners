@@ -62,8 +62,8 @@ export default function AdminLogin() {
       localStorage.setItem('adminToken', data.token);
       localStorage.setItem('adminUser', JSON.stringify(data.user));
       
-      // Redirect to admin dashboard
-      router.push('/admin/dashboard');
+      // Redirect to admin homepage
+      router.push('/admin/homepage');
     } catch (err) {
       setError('Login failed. Please try again.');
       console.error('Login error:', err);
@@ -274,11 +274,7 @@ export default function AdminLogin() {
             textAlign: "center",
           }}
         >
-          <strong>Setup Required:</strong>
-          <br />
-          Make sure to create an admin user in MongoDB.
-          <br />
-          See ADMIN_SETUP.md for instructions.
+        
         </div>
       </div>
     </div>
