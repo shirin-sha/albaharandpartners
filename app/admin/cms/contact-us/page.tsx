@@ -142,8 +142,9 @@ export default function ContactUsManager() {
                 <Button 
                   onClick={handleSave} 
                   disabled={saving}
-                  size="lg"
-                  variant="primary"
+                  size="md"
+                  variant="success"
+                  className="px-4"
                 >
                   {saving ? 'Saving...' : 'Save Changes'}
                 </Button>

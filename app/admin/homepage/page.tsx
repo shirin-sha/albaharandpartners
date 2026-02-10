@@ -180,9 +180,10 @@ export default function HomepageManager() {
                 onClick={handleSave}
                 disabled={saving}
                 variant="success"
-                size="lg"
+                size="md"
+                className="px-4"
               >
-                {saving ? '⏳ Saving...' : '💾 Save Changes'}
+                {saving ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
           </div>
