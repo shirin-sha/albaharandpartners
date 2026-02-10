@@ -48,16 +48,18 @@ export default function ContactForm() {
       return;
     }
     
-    const name = e.currentTarget.elements.name.value;
-    const email = e.currentTarget.elements.email.value;
-    const phone = e.currentTarget.elements.phone.value;
+    const form = e.currentTarget as ContactFormElement;
+
+    const name = form.elements.name.value;
+    const email = form.elements.email.value;
+    const phone = form.elements.phone.value;
     const country = selectedCountry;
     const subject = selectedSubject;
-    const comment = e.currentTarget.elements.comment.value;
+    const comment = form.elements.comment.value;
 
     try {
       const response = await axios.post(
-        "https://express-brevomail.vercel.app/api/contacts",
+        "/api/enquiries",
         {
           name,
           email,
@@ -69,7 +71,7 @@ export default function ContactForm() {
       );
 
       if ([200, 201].includes(response.status)) {
-        e.currentTarget.reset(); // Reset the form
+        form.reset(); // Reset the form
         setSelectedCountry(""); // Reset country selection
         setSelectedSubject(""); // Reset subject selection
         setSuccess(true); // Set success state
@@ -81,7 +83,7 @@ export default function ContactForm() {
     } catch (error) {
       setSuccess(false); // Set error state
       handleShowMessage();
-      e.currentTarget.reset(); // Reset the form
+      form.reset(); // Reset the form
       setSelectedCountry(""); // Reset country selection
       setSelectedSubject(""); // Reset subject selection
     }

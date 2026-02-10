@@ -15,7 +15,7 @@ interface DropdownItem {
 }
 
 const menuItems: MenuItem[] = [
-  // { label: "Homepage", href: "/admin/homepage", icon: "icon-House" },
+  { label: "Enquiries", href: "/admin/enquiries", icon: "icon-ChatCircleText" },
 ];
 
 const cmsItems: DropdownItem[] = [
