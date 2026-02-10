@@ -159,7 +159,7 @@ export default function ImageUpload({
           <div className="mt-2">
             <div className="d-flex align-items-center gap-2 mb-2">
               <span className="text-muted small">Current image:</span>
-              <code className="small bg-light px-2 py-1 rounded">{value}</code>
+              <code className="small px-2 py-1 rounded">{value}</code>
               <button
                 type="button"
                 onClick={handleRemove}
@@ -169,7 +169,7 @@ export default function ImageUpload({
                 ✕ Remove
               </button>
             </div>
-            <div className="border rounded p-2 bg-light" style={{ maxWidth: '300px' }}>
+            <div  style={{ maxWidth: '300px' }}>
               <img
                 src={value}
                 alt="Preview"
