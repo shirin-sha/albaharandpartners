@@ -64,8 +64,10 @@ export async function POST(request: NextRequest) {
     }
 
     const now = new Date();
+    // Exclude _id so MongoDB can generate a proper ObjectId
+    const { _id, ...bodyWithoutId } = body;
     const newContent = {
-      ...body,
+      ...bodyWithoutId,
       createdAt: now,
       updatedAt: now,
     };
