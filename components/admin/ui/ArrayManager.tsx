@@ -75,7 +75,12 @@ export default function ArrayManager<T>({
           </div>
           {canAdd && (
             <div className="mt-3">
-              <Button onClick={onAdd} variant="ghost" size="md" className="w-100 border-2 border-dashed">
+              <Button
+                onClick={onAdd}
+                variant="ghost"
+                size="md"
+                className="border-2 border-dashed px-4 py-3 d-inline-flex align-items-center justify-content-center"
+              >
                 + {addButtonText}
               </Button>
             </div>
