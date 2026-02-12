@@ -17,7 +17,7 @@ export default function HeaderCMS({ data }: Props) {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 21) {
+      if (window.scrollY > 56) {
         setIsFixed(true);
       } else {
         setIsFixed(false);
@@ -49,16 +49,16 @@ export default function HeaderCMS({ data }: Props) {
 
   return (
     <header
-      className={`header style-1 style-absolute no-bg style-border-radius no-header-bg header-fixed ${
+      className={`header style-1 style-absolute header-fixed ${
         isFixed ? "is-fixed" : ""
-      }`}
+      } `}
       id="header"
     >
       <div className="tf-container w-1870">
         <div className="row">
           <div className="col-12">
             <div className="header-content">
-              <div className="header-left gap-66">
+              <div className="header-left">
                 <div className="logo">
                   <Link href={addLanguagePrefix(data.logo.link, pathname)}>
                     <Image
@@ -126,7 +126,7 @@ export default function HeaderCMS({ data }: Props) {
                 <div className="nav-btn">
                   <Link
                     href={addLanguagePrefix(data.buttonLink, pathname)}
-                    className="tf-btn bg-on-suface-container style-1"
+                    className="tf-btn bg-white style-1 hover-bg-primary"
                   >
                     <span>{data.buttonText}</span>
                   </Link>

@@ -28,6 +28,7 @@ import {
   getCustomerStoriesContent,
   getSolutionsContent,
 } from "@/lib/data-fetch";
+import Topbar1 from "@/components/headers/Topbar1";
 
 export const metadata: Metadata = {
   title: "Al bahar partners",
@@ -75,9 +76,8 @@ export default async function Page() {
 
   return (
     <>
-      <div className="mb-20" />
-      {headerContent ? <HeaderCMS data={headerContent} /> : <Header7 />}
-      
+      <Topbar1 />
+      {headerContent && <HeaderCMS data={headerContent} /> }
       {/* CMS-driven Hero Section */}
       {content?.heroSlides && content.heroSlides.length > 0 ? (
         <HeroSlider slides={content.heroSlides} language={language} />

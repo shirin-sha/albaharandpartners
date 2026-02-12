@@ -26,7 +26,7 @@ export default function AboutBPCCMS({ data }: Props) {
       id="cta"
     >
       <div className="left">
-        <div className="image tf-animate-1">
+        {/* <div className="image tf-animate-1">
           <Image
             src={data.imagePath}
             alt={data.heading}
@@ -34,7 +34,7 @@ export default function AboutBPCCMS({ data }: Props) {
             width={960}
             height={706}
           />
-        </div>
+        </div> */}
       </div>
       <div className="tf-container position-relative">
         <div className="row">

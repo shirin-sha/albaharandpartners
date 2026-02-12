@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 export default function LanguageDropdown() {
-  const languages = ["EN", "VN"];
+  const languages = ["EN", "AR"];
   const [selectedLang, setSelectedLang] = useState("EN");
 
   const handleSelect = (lang: string) => {
