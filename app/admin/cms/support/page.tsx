@@ -171,17 +171,22 @@ export default function SupportManager() {
         {/* Main Content */}
         <Card className="shadow-sm">
           <div className="card-body p-4">
-            <Section title="Page Header" description="Manage the page title and breadcrumb">
-              <Toggle
-                label="Section Active"
-                checked={content.header.isActive}
-                onChange={(value) =>
-                  setContent({
-                    ...content,
-                    header: { ...content.header, isActive: value },
-                  })
-                }
-              />
+            <Section 
+              title="Page Header" 
+              description="Manage the page title and breadcrumb"
+              actions={
+                <Toggle
+                  label="Section Active"
+                  checked={content.header.isActive}
+                  onChange={(value) =>
+                    setContent({
+                      ...content,
+                      header: { ...content.header, isActive: value },
+                    })
+                  }
+                />
+              }
+            >
               <FormGrid columns={2}>
                 <Input
                   label="Breadcrumb Text"
@@ -221,17 +226,22 @@ export default function SupportManager() {
             </Section>
 
             <div className="mt-5">
-              <Section title="Support Services Section" description="Manage industries and support services">
-                <Toggle
-                  label="Section Active"
-                  checked={content.servicesSection.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      servicesSection: { ...content.servicesSection, isActive: value },
-                    })
-                  }
-                />
+              <Section 
+                title="Support Services Section" 
+                description="Manage industries and support services"
+                actions={
+                  <Toggle
+                    label="Section Active"
+                    checked={content.servicesSection.isActive}
+                    onChange={(value) =>
+                      setContent({
+                        ...content,
+                        servicesSection: { ...content.servicesSection, isActive: value },
+                      })
+                    }
+                  />
+                }
+              >
                 <FormGrid columns={2}>
                   <Input
                     label="Section Tag"
@@ -354,17 +364,22 @@ export default function SupportManager() {
             </div>
 
             <div className="mt-5">
-              <Section title="Contact Section" description="Manage contact information and benefits">
-                <Toggle
-                  label="Section Active"
-                  checked={content.contactSection.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      contactSection: { ...content.contactSection, isActive: value },
-                    })
-                  }
-                />
+              <Section 
+                title="Contact Section" 
+                description="Manage contact information and benefits"
+                actions={
+                  <Toggle
+                    label="Section Active"
+                    checked={content.contactSection.isActive}
+                    onChange={(value) =>
+                      setContent({
+                        ...content,
+                        contactSection: { ...content.contactSection, isActive: value },
+                      })
+                    }
+                  />
+                }
+              >
                 <FormGrid columns={2}>
                   <Input
                     label="Section Tag"

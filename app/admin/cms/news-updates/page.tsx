@@ -153,17 +153,22 @@ export default function NewsUpdatesManager() {
         {/* Main Content */}
         <Card className="shadow-sm">
           <div className="card-body p-4">
-            <Section title="Page Header" description="Manage the page title and breadcrumb">
-              <Toggle
-                label="Section Active"
-                checked={content.header.isActive}
-                onChange={(value) =>
-                  setContent({
-                    ...content,
-                    header: { ...content.header, isActive: value },
-                  })
-                }
-              />
+            <Section 
+              title="Page Header" 
+              description="Manage the page title and breadcrumb"
+              actions={
+                <Toggle
+                  label="Section Active"
+                  checked={content.header.isActive}
+                  onChange={(value) =>
+                    setContent({
+                      ...content,
+                      header: { ...content.header, isActive: value },
+                    })
+                  }
+                />
+              }
+            >
               <FormGrid columns={2}>
                 <Input
                   label="Breadcrumb Text"
@@ -203,17 +208,22 @@ export default function NewsUpdatesManager() {
             </Section>
 
             <div className="mt-5">
-              <Section title="News Posts List" description="Add and manage news articles and blog posts">
-                <Toggle
-                  label="Section Active"
-                  checked={content.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      isActive: value,
-                    })
-                  }
-                />
+              <Section 
+                title="News Posts List" 
+                description="Add and manage news articles and blog posts"
+                actions={
+                  <Toggle
+                    label="Section Active"
+                    checked={content.isActive}
+                    onChange={(value) =>
+                      setContent({
+                        ...content,
+                        isActive: value,
+                      })
+                    }
+                  />
+                }
+              >
                 <ArrayManager
                   items={content.posts || []}
                   onAdd={() => {

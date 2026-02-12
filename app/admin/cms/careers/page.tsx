@@ -21,6 +21,7 @@ export default function CareersManager() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [content, setContent] = useState<CareersContent | null>(null);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   useEffect(() => {
     loadContent();
@@ -76,11 +77,17 @@ export default function CareersManager() {
     
     setSaving(true);
     try {
+      // Remove order field from jobs before saving (not needed anymore)
+      const jobsWithoutOrder = (content.jobs || []).map(({ order, ...job }) => ({
+        ...job,
+        order: 0, // Keep order field for API compatibility but set to 0
+      }));
+
       const method = content._id ? 'PUT' : 'POST';
       const response = await fetch('/api/careers', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...content, language }),
+        body: JSON.stringify({ ...content, jobs: jobsWithoutOrder, language }),
       });
 
       const result = await response.json();
@@ -89,6 +96,7 @@ export default function CareersManager() {
       
       if (result.success) {
         showMessage('success', result.message || 'Content saved successfully!');
+        setEditingIndex(null); // Close any open edit views
         await loadContent();
       } else {
         showMessage('error', result.message || 'Failed to save content');
@@ -155,17 +163,22 @@ export default function CareersManager() {
         {/* Main Content */}
         <Card className="shadow-sm">
           <div className="card-body p-4">
-            <Section title="Page Header" description="Manage the page title and breadcrumb">
-              <Toggle
-                label="Section Active"
-                checked={content.header.isActive}
-                onChange={(value) =>
-                  setContent({
-                    ...content,
-                    header: { ...content.header, isActive: value },
-                  })
-                }
-              />
+            <Section 
+              title="Page Header" 
+              description="Manage the page title and breadcrumb"
+              actions={
+                <Toggle
+                  label="Section Active"
+                  checked={content.header.isActive}
+                  onChange={(value) =>
+                    setContent({
+                      ...content,
+                      header: { ...content.header, isActive: value },
+                    })
+                  }
+                />
+              }
+            >
               <FormGrid columns={2}>
                 <Input
                   label="Breadcrumb Text"
@@ -205,17 +218,22 @@ export default function CareersManager() {
             </Section>
 
             <div className="mt-5">
-              <Section title="Careers Section" description="Manage the careers section heading">
-                <Toggle
-                  label="Section Active"
-                  checked={content.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      isActive: value,
-                    })
-                  }
-                />
+              <Section 
+                title="Careers Section" 
+                description="Manage the careers section heading"
+                actions={
+                  <Toggle
+                    label="Section Active"
+                    checked={content.isActive}
+                    onChange={(value) =>
+                      setContent({
+                        ...content,
+                        isActive: value,
+                      })
+                    }
+                  />
+                }
+              >
                 <FormGrid columns={2}>
                   <Input
                     label="Section Tag"
@@ -257,119 +275,329 @@ export default function CareersManager() {
 
             <div className="mt-5">
               <Section title="Job Listings" description="Add and manage job openings">
-                <ArrayManager
-                  items={content.jobs || []}
-                  onAdd={() => {
-                    const newOrder = (content.jobs || []).length;
-                    setContent({
-                      ...content,
-                      jobs: [
-                        ...(content.jobs || []),
-                        {
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <p className="text-muted mb-0">
+                    {content.jobs?.length || 0} job{content.jobs?.length !== 1 ? 's' : ''} listed
+                  </p>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => {
+                      const newJob: Job = {
+                        title: '',
+                        description: '',
+                        responsibilities: [],
+                        salary: { amount: '', period: '/Month' },
+                        applyLink: '#',
+                        order: 0,
+                        isActive: true,
+                      };
+                      // Add new job at the beginning (latest first)
+                      setContent({
+                        ...content,
+                        jobs: [newJob, ...(content.jobs || [])],
+                      });
+                      setEditingIndex(0);
+                    }}
+                  >
+                    + Add New Job
+                  </Button>
+                </div>
+
+                {(!content.jobs || content.jobs.length === 0) ? (
+                  <div className="text-center py-5 border border-dashed rounded bg-light">
+                    <p className="text-muted mb-3">No job listings added yet.</p>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={() => {
+                        const newJob: Job = {
                           title: '',
                           description: '',
                           responsibilities: [],
                           salary: { amount: '', period: '/Month' },
                           applyLink: '#',
-                          order: newOrder,
+                          order: 0,
                           isActive: true,
-                        },
-                      ],
-                    });
-                  }}
-                  onRemove={(index) => {
-                    setContent({
-                      ...content,
-                      jobs: (content.jobs || []).filter((_, i) => i !== index),
-                    });
-                  }}
-                  onChange={(jobs) =>
-                    setContent({
-                      ...content,
-                      jobs,
-                    })
-                  }
-                  renderItem={(job, index, onChange) => (
-                    <div>
-                      <Toggle
-                        label="Job Active"
-                        checked={job.isActive}
-                        onChange={(value) => onChange({ ...job, isActive: value })}
-                      />
-                      <FormGrid columns={2}>
-                        <Input
-                          label="Job Title"
-                          value={job.title}
-                          onChange={(value) => onChange({ ...job, title: value })}
-                          placeholder="Business Development Manager"
-                        />
-                        <Input
-                          label="Display Order"
-                          type="number"
-                          value={String(job.order)}
-                          onChange={(value) => onChange({ ...job, order: Number(value) })}
-                          placeholder="0"
-                          helperText="Lower numbers appear first"
-                        />
-                      </FormGrid>
-                      <Textarea
-                        label="Job Description"
-                        value={job.description}
-                        onChange={(value) => onChange({ ...job, description: value })}
-                        placeholder="Drive growth by developing new business opportunities..."
-                        rows={3}
-                      />
-                      <div className="mt-3">
-                        <h5 className="mb-2">Responsibilities (The Work You'll Do)</h5>
-                        <ArrayManager
-                          items={job.responsibilities || []}
-                          onAdd={() => {
-                            onChange({ ...job, responsibilities: [...(job.responsibilities || []), ''] });
-                          }}
-                          onRemove={(respIndex) => {
-                            onChange({
-                              ...job,
-                              responsibilities: (job.responsibilities || []).filter((_, i) => i !== respIndex),
-                            });
-                          }}
-                          onChange={(responsibilities) => onChange({ ...job, responsibilities })}
-                          renderItem={(responsibility, respIndex, onRespChange) => (
-                            <Input
-                              label={`Responsibility ${respIndex + 1}`}
-                              value={responsibility}
-                              onChange={onRespChange}
-                              placeholder="Expand client portfolio through new business opportunities."
-                            />
-                          )}
-                          addButtonText="Add Responsibility"
-                          emptyMessage="No responsibilities added. Add job responsibilities."
-                        />
-                      </div>
-                      <FormGrid columns={3}>
-                        <Input
-                          label="Salary Amount"
-                          value={job.salary.amount}
-                          onChange={(value) => onChange({ ...job, salary: { ...job.salary, amount: value } })}
-                          placeholder="$10 - $15"
-                        />
-                        <Input
-                          label="Salary Period"
-                          value={job.salary.period}
-                          onChange={(value) => onChange({ ...job, salary: { ...job.salary, period: value } })}
-                          placeholder="/Month"
-                        />
-                        <Input
-                          label="Apply Link"
-                          value={job.applyLink}
-                          onChange={(value) => onChange({ ...job, applyLink: value })}
-                          placeholder="#"
-                        />
-                      </FormGrid>
-                    </div>
-                  )}
-                  addButtonText="Add Job Listing"
-                  emptyMessage="No job listings added. Add your career opportunities."
-                />
+                        };
+                        setContent({
+                          ...content,
+                          jobs: [newJob],
+                        });
+                        setEditingIndex(0);
+                      }}
+                    >
+                      Add Your First Job Listing
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="d-flex flex-column gap-3">
+                    {/* Jobs are stored with latest first (index 0 is newest) */}
+                    {(content.jobs || []).map((job, index) => {
+                      const actualIndex = index;
+                      const isEditing = editingIndex === index;
+
+                      return (
+                        <Card key={actualIndex} className="border-0 border-bottom rounded-0">
+                          <div className="card-body py-2 px-0">
+                            {!isEditing ? (
+                              // Collapsed view - single line
+                              <div className="d-flex justify-content-between align-items-center gap-2">
+                                <div className="flex-grow-1 d-flex align-items-center gap-2">
+                                  <h6 className="mb-0 fw-semibold" style={{ minWidth: '200px' }}>
+                                    {job.title || 'Untitled Job'}
+                                  </h6>
+                                  <span
+                                    className={`badge rounded-pill px-2 py-1 ${job.isActive ? 'bg-success' : 'bg-secondary'}`}
+                                  >
+                                    {job.isActive ? 'Active' : 'Inactive'}
+                                  </span>
+                                  {job.salary.amount && (
+                                    <span className="text-muted small">
+                                      {job.salary.amount} {job.salary.period}
+                                    </span>
+                                  )}
+                                  {job.description && (
+                                    <span className="text-muted small text-truncate" style={{ maxWidth: '260px' }}>
+                                      {job.description.substring(0, 60)}
+                                      {job.description.length > 60 ? '...' : ''}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="d-flex gap-2 ms-2">
+                                  <button
+                                    type="button"
+                                    className="btn btn-link p-0 border-0"
+                                    onClick={() => setEditingIndex(actualIndex)}
+                                    title="Edit job"
+                                  >
+                                    {/* Pencil icon - green */}
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="#28a745"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    >
+                                      <path d="M12 20h9" />
+                                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
+                                    </svg>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="btn btn-link p-0 border-0"
+                                    onClick={() => {
+                                      if (confirm('Are you sure you want to delete this job listing?')) {
+                                        const updatedJobs = (content.jobs || []).filter((_, i) => i !== actualIndex);
+                                        setContent({ ...content, jobs: updatedJobs });
+                                        if (editingIndex === actualIndex) {
+                                          setEditingIndex(null);
+                                        }
+                                      }
+                                    }}
+                                    title="Delete job"
+                                  >
+                                    {/* Trash / bin icon - red */}
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="#dc3545"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    >
+                                      <polyline points="3 6 5 6 21 6" />
+                                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                      <path d="M10 11v6" />
+                                      <path d="M14 11v6" />
+                                      <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              // Expanded edit view
+                              <div>
+                                {/* Header row for the editor */}
+                                <div className="d-flex justify-content-between align-items-center mb-3">
+                                  <div>
+                                    <h5 className="mb-0">Editing: {job.title || 'New Job'}</h5>
+                                    <p className="text-muted small mb-0">
+                                      Update the job details below, then click “Done Editing”.
+                                    </p>
+                                  </div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      // Get the current job from state to ensure we have the latest data
+                                      const currentJob = content.jobs?.[actualIndex];
+                                      // If it's a new job (no title or empty title), remove it from the list
+                                      const isNewJob = !currentJob?.title || String(currentJob?.title || '').trim() === '';
+                                      
+                                      if (isNewJob) {
+                                        const updatedJobs = (content.jobs || []).filter((_, i) => i !== actualIndex);
+                                        setContent({ ...content, jobs: updatedJobs });
+                                        setEditingIndex(null);
+                                      } else {
+                                        setEditingIndex(null);
+                                      }
+                                    }}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
+
+                                {/* Basic job info */}
+                                <div className="mb-3">
+                                  <p className="text-muted small mb-2">Basic information</p>
+                                  <div className="d-flex align-items-center gap-3 mb-2">
+                                    <Toggle
+                                      label="Job Active"
+                                      checked={job.isActive}
+                                      onChange={(value) => {
+                                        const updatedJobs = [...(content.jobs || [])];
+                                        updatedJobs[actualIndex] = { ...job, isActive: value };
+                                        setContent({ ...content, jobs: updatedJobs });
+                                      }}
+                                    />
+                                  </div>
+                                  <FormGrid columns={2}>
+                                    <Input
+                                      label="Job Title"
+                                      value={job.title}
+                                      onChange={(value) => {
+                                        const updatedJobs = [...(content.jobs || [])];
+                                        updatedJobs[actualIndex] = { ...job, title: value };
+                                        setContent({ ...content, jobs: updatedJobs });
+                                      }}
+                                      placeholder="Business Development Manager"
+                                    />
+                                    <Input
+                                      label="Apply Link"
+                                      value={job.applyLink}
+                                      onChange={(value) => {
+                                        const updatedJobs = [...(content.jobs || [])];
+                                        updatedJobs[actualIndex] = { ...job, applyLink: value };
+                                        setContent({ ...content, jobs: updatedJobs });
+                                      }}
+                                      placeholder="https://..."
+                                    />
+                                  </FormGrid>
+                                </div>
+
+                                {/* Description */}
+                                <div className="mb-3">
+                                  <p className="text-muted small mb-2">Short description</p>
+                                  <Textarea
+                                    label="Job Description"
+                                    value={job.description}
+                                    onChange={(value) => {
+                                      const updatedJobs = [...(content.jobs || [])];
+                                      updatedJobs[actualIndex] = { ...job, description: value };
+                                      setContent({ ...content, jobs: updatedJobs });
+                                    }}
+                                    placeholder="Summarize the role in 2–3 sentences..."
+                                    rows={3}
+                                  />
+                                </div>
+
+                                {/* Responsibilities */}
+                                <div className="mb-3">
+                                  <p className="text-muted small mb-2">Key responsibilities</p>
+                                  <ArrayManager
+                                    items={job.responsibilities || []}
+                                    onAdd={() => {
+                                      const updatedJobs = [...(content.jobs || [])];
+                                      updatedJobs[actualIndex] = {
+                                        ...job,
+                                        responsibilities: [...(job.responsibilities || []), ''],
+                                      };
+                                      setContent({ ...content, jobs: updatedJobs });
+                                    }}
+                                    onRemove={(respIndex) => {
+                                      const updatedJobs = [...(content.jobs || [])];
+                                      updatedJobs[actualIndex] = {
+                                        ...job,
+                                        responsibilities: (job.responsibilities || []).filter((_, i) => i !== respIndex),
+                                      };
+                                      setContent({ ...content, jobs: updatedJobs });
+                                    }}
+                                    onChange={(responsibilities) => {
+                                      const updatedJobs = [...(content.jobs || [])];
+                                      updatedJobs[actualIndex] = { ...job, responsibilities };
+                                      setContent({ ...content, jobs: updatedJobs });
+                                    }}
+                                    renderItem={(responsibility, respIndex, onRespChange) => (
+                                      <Input
+                                        label={`Responsibility ${respIndex + 1}`}
+                                        value={responsibility}
+                                        onChange={onRespChange}
+                                        placeholder="Example: Expand client portfolio through new business opportunities."
+                                      />
+                                    )}
+                                    addButtonText="Add Responsibility"
+                                    emptyMessage="No responsibilities added. Add job responsibilities."
+                                  />
+                                </div>
+
+                                {/* Compensation */}
+                                <div className="mb-2">
+                                  <p className="text-muted small mb-2">Compensation</p>
+                                  <FormGrid columns={3}>
+                                    <Input
+                                      label="Salary Amount"
+                                      value={job.salary.amount}
+                                      onChange={(value) => {
+                                        const updatedJobs = [...(content.jobs || [])];
+                                        updatedJobs[actualIndex] = {
+                                          ...job,
+                                          salary: { ...job.salary, amount: value },
+                                        };
+                                        setContent({ ...content, jobs: updatedJobs });
+                                      }}
+                                      placeholder="$10,000"
+                                    />
+                                    <Input
+                                      label="Salary Period"
+                                      value={job.salary.period}
+                                      onChange={(value) => {
+                                        const updatedJobs = [...(content.jobs || [])];
+                                        updatedJobs[actualIndex] = {
+                                          ...job,
+                                          salary: { ...job.salary, period: value },
+                                        };
+                                        setContent({ ...content, jobs: updatedJobs });
+                                      }}
+                                      placeholder="/Month"
+                                    />
+                                    <div className="d-flex align-items-end">
+                                      <Button
+                                        variant="success"
+                                        size="sm"
+                                        className="ms-auto"
+                                        onClick={() => setEditingIndex(null)}
+                                      >
+                                        Done Editing
+                                      </Button>
+                                    </div>
+                                  </FormGrid>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                )}
               </Section>
             </div>
           </div>

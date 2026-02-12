@@ -156,17 +156,22 @@ export default function CustomerStoriesManager() {
         {/* Main Content */}
         <Card className="shadow-sm">
           <div className="card-body p-4">
-            <Section title="Page Header" description="Manage the page title and breadcrumb">
-              <Toggle
-                label="Section Active"
-                checked={content.header.isActive}
-                onChange={(value) =>
-                  setContent({
-                    ...content,
-                    header: { ...content.header, isActive: value },
-                  })
-                }
-              />
+            <Section 
+              title="Page Header" 
+              description="Manage the page title and breadcrumb"
+              actions={
+                <Toggle
+                  label="Section Active"
+                  checked={content.header.isActive}
+                  onChange={(value) =>
+                    setContent({
+                      ...content,
+                      header: { ...content.header, isActive: value },
+                    })
+                  }
+                />
+              }
+            >
               <FormGrid columns={2}>
                 <Input
                   label="Breadcrumb Text"
@@ -206,17 +211,22 @@ export default function CustomerStoriesManager() {
             </Section>
 
             <div className="mt-5">
-              <Section title="Stories Section" description="Manage the stories section heading">
-                <Toggle
-                  label="Section Active"
-                  checked={content.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      isActive: value,
-                    })
-                  }
-                />
+              <Section 
+                title="Stories Section" 
+                description="Manage the stories section heading"
+                actions={
+                  <Toggle
+                    label="Section Active"
+                    checked={content.isActive}
+                    onChange={(value) =>
+                      setContent({
+                        ...content,
+                        isActive: value,
+                      })
+                    }
+                  />
+                }
+              >
                 <FormGrid columns={2}>
                   <Input
                     label="Section Tag"

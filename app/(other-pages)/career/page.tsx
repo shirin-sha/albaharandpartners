@@ -1,7 +1,6 @@
 import React from "react";
 import Breadcumb from "@/components/common/Breadcumb";
 import { Metadata } from "next";
-import About from "@/components/otherPages/About";
 import CareerCMS from "@/components/otherPages/CareerCMS";
 import { CareersContent } from "@/types/careers";
 import { getCareersContent } from "@/lib/data-fetch";
@@ -41,7 +40,6 @@ export default async function CareersPage() {
         </div>
       )}
       <div className="main-content">
-        <About />
         {content && <CareerCMS data={content} />}
       </div>
     </>

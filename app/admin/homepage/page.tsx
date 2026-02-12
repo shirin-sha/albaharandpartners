@@ -239,12 +239,17 @@ interface TabProps {
 // Hero Tab
 function HeroTab({ content, setContent }: TabProps) {
   return (
-    <Section title="Hero Slider" description="Create engaging hero slides for your homepage">
-      <Toggle
-        label="Section Active"
-        checked={content.heroSlides.length > 0}
-        onChange={() => {}}
-      />
+    <Section 
+      title="Hero Slider" 
+      description="Create engaging hero slides for your homepage"
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.heroSlides.length > 0}
+          onChange={() => {}}
+        />
+      }
+    >
       <ArrayManager
         items={content.heroSlides}
         onAdd={() => {
@@ -317,17 +322,22 @@ function HeroTab({ content, setContent }: TabProps) {
 // About Tab
 function AboutTab({ content, setContent }: TabProps) {
   return (
-    <Section title="About Section" description="Tell visitors about your company">
-      <Toggle
-        label="Section Active"
-        checked={content.aboutSection.isActive}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            aboutSection: { ...content.aboutSection, isActive: value },
-          })
-        }
-      />
+    <Section 
+      title="About Section" 
+      description="Tell visitors about your company"
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.aboutSection.isActive}
+          onChange={(value) =>
+            setContent({
+              ...content,
+              aboutSection: { ...content.aboutSection, isActive: value },
+            })
+          }
+        />
+      }
+    >
       <FormGrid columns={2}>
         <Input
           label="Section Tag"
@@ -419,17 +429,22 @@ function AboutTab({ content, setContent }: TabProps) {
 // Process Tab
 function ProcessTab({ content, setContent }: TabProps) {
   return (
-    <Section title="Process Section" description="Showcase your process or advantages">
-      <Toggle
-        label="Section Active"
-        checked={content.processSection.isActive}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            processSection: { ...content.processSection, isActive: value },
-          })
-        }
-      />
+    <Section 
+      title="Process Section" 
+      description="Showcase your process or advantages"
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.processSection.isActive}
+          onChange={(value) =>
+            setContent({
+              ...content,
+              processSection: { ...content.processSection, isActive: value },
+            })
+          }
+        />
+      }
+    >
       <FormGrid columns={3}>
         <Input
           label="Section Tag"
@@ -545,17 +560,22 @@ function ProcessTab({ content, setContent }: TabProps) {
 // Services Tab
 function ServicesTab({ content, setContent }: TabProps) {
   return (
-    <Section title="Services Section" description="Configure the section wrapper. Services are pulled from Solutions CMS.">
-      <Toggle
-        label="Section Active"
-        checked={content.servicesSection.isActive}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            servicesSection: { ...content.servicesSection, isActive: value },
-          })
-        }
-      />
+    <Section 
+      title="Services Section" 
+      description="Configure the section wrapper. Services are pulled from Solutions CMS."
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.servicesSection.isActive}
+          onChange={(value) =>
+            setContent({
+              ...content,
+              servicesSection: { ...content.servicesSection, isActive: value },
+            })
+          }
+        />
+      }
+    >
       <FormGrid columns={3}>
         <Input
           label="Section Tag"
@@ -599,17 +619,22 @@ function ServicesTab({ content, setContent }: TabProps) {
 // Testimonial Tab
 function TestimonialTab({ content, setContent }: TabProps) {
   return (
-    <Section title="Testimonial Section" description="Feature a customer testimonial or founder message">
-      <Toggle
-        label="Section Active"
-        checked={content.testimonialSection.isActive}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            testimonialSection: { ...content.testimonialSection, isActive: value },
-          })
-        }
-      />
+    <Section 
+      title="Testimonial Section" 
+      description="Feature a customer testimonial or founder message"
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.testimonialSection.isActive}
+          onChange={(value) =>
+            setContent({
+              ...content,
+              testimonialSection: { ...content.testimonialSection, isActive: value },
+            })
+          }
+        />
+      }
+    >
       <FormGrid columns={2}>
         <Input
           label="Section Tag"
@@ -709,17 +734,22 @@ function TestimonialTab({ content, setContent }: TabProps) {
 // Brands Tab
 function BrandsTab({ content, setContent }: TabProps) {
   return (
-    <Section title="Brands Section" description="Showcase your partner brands and logos">
-      <Toggle
-        label="Section Active"
-        checked={content.brandsSection.isActive}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            brandsSection: { ...content.brandsSection, isActive: value },
-          })
-        }
-      />
+    <Section 
+      title="Brands Section" 
+      description="Showcase your partner brands and logos"
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.brandsSection.isActive}
+          onChange={(value) =>
+            setContent({
+              ...content,
+              brandsSection: { ...content.brandsSection, isActive: value },
+            })
+          }
+        />
+      }
+    >
       <FormGrid columns={1}>
         <Input
           label="Heading"
@@ -802,17 +832,22 @@ function BrandsTab({ content, setContent }: TabProps) {
 // Case Studies Tab
 function CaseStudiesTab({ content, setContent }: TabProps) {
   return (
-    <Section title="Case Studies Section" description="Configure the section wrapper. Case studies are pulled from Customer Stories CMS.">
-      <Toggle
-        label="Section Active"
-        checked={content.caseStudiesSection.isActive}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            caseStudiesSection: { ...content.caseStudiesSection, isActive: value },
-          })
-        }
-      />
+    <Section 
+      title="Case Studies Section" 
+      description="Configure the section wrapper. Case studies are pulled from Customer Stories CMS."
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.caseStudiesSection.isActive}
+          onChange={(value) =>
+            setContent({
+              ...content,
+              caseStudiesSection: { ...content.caseStudiesSection, isActive: value },
+            })
+          }
+        />
+      }
+    >
       <FormGrid columns={3}>
         <Input
           label="Section Tag"
@@ -855,17 +890,22 @@ function CaseStudiesTab({ content, setContent }: TabProps) {
 // Features Tab
 function FeaturesTab({ content, setContent }: TabProps) {
   return (
-    <Section title="Features Section" description="Showcase your key features and statistics">
-      <Toggle
-        label="Section Active"
-        checked={content.featuresSection.isActive}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            featuresSection: { ...content.featuresSection, isActive: value },
-          })
-        }
-      />
+    <Section 
+      title="Features Section" 
+      description="Showcase your key features and statistics"
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.featuresSection.isActive}
+          onChange={(value) =>
+            setContent({
+              ...content,
+              featuresSection: { ...content.featuresSection, isActive: value },
+            })
+          }
+        />
+      }
+    >
       <FormGrid columns={2}>
         <Input
           label="Section Tag"
@@ -1054,17 +1094,19 @@ function BlogsTab({ content, setContent }: TabProps) {
     <Section
       title="Blogs Section"
       description="Control the homepage News & Updates heading and button. The posts themselves come from the News & Updates CMS."
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.blogsSection.isActive}
+          onChange={(value) =>
+            setContent({
+              ...content,
+              blogsSection: { ...content.blogsSection, isActive: value },
+            })
+          }
+        />
+      }
     >
-      <Toggle
-        label="Section Active"
-        checked={content.blogsSection.isActive}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            blogsSection: { ...content.blogsSection, isActive: value },
-          })
-        }
-      />
       <FormGrid columns={3}>
         <Input
           label="Section Tag"
@@ -1129,17 +1171,22 @@ function BlogsTab({ content, setContent }: TabProps) {
 // CTA Tab
 function CtaTab({ content, setContent }: TabProps) {
   return (
-    <Section title="Call to Action Section" description="Encourage visitors to get in touch">
-      <Toggle
-        label="Section Active"
-        checked={content.ctaSection.isActive}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            ctaSection: { ...content.ctaSection, isActive: value },
-          })
-        }
-      />
+    <Section 
+      title="Call to Action Section" 
+      description="Encourage visitors to get in touch"
+      actions={
+        <Toggle
+          label="Section Active"
+          checked={content.ctaSection.isActive}
+          onChange={(value) =>
+            setContent({
+              ...content,
+              ctaSection: { ...content.ctaSection, isActive: value },
+            })
+          }
+        />
+      }
+    >
       <FormGrid columns={2}>
         <Input
           label="Section Tag"
