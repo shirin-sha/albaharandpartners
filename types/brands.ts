@@ -5,7 +5,6 @@ export interface Brand {
   name: string;
   imagePath: string;
   link: string;
-  order: number;
   isActive: boolean;
 }
 

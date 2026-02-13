@@ -13,8 +13,7 @@ export default function BrandsSection({ content, language = 'ltr' }: BrandsSecti
   }
 
   const activeBrands = content.brands
-    .filter(brand => brand.isActive)
-    .sort((a, b) => a.order - b.order);
+    .filter(brand => brand.isActive);
 
   if (activeBrands.length === 0) {
     return null;

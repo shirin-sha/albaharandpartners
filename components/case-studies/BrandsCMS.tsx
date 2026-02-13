@@ -10,8 +10,7 @@ export default function BrandsCMS({ data }: Props) {
   if (!data.isActive) return null;
 
   const activeBrands = (data.brands || [])
-    .filter(brand => brand.isActive)
-    .sort((a, b) => a.order - b.order);
+    .filter(brand => brand.isActive);
 
   if (activeBrands.length === 0) return null;
 

@@ -280,85 +280,7 @@ export default function SupportManager() {
                 />
                 
                 <div className="mt-4">
-                  <h4>Support Services</h4>
-                  <ArrayManager
-                    items={content.servicesSection.services || []}
-                    onAdd={() => {
-                      const newOrder = (content.servicesSection.services || []).length;
-                      setContent({
-                        ...content,
-                        servicesSection: {
-                          ...content.servicesSection,
-                          services: [
-                            ...(content.servicesSection.services || []),
-                            {
-                              title: '',
-                              description: '',
-                              iconClass: '',
-                              order: newOrder,
-                              isActive: true,
-                            },
-                          ],
-                        },
-                      });
-                    }}
-                    onRemove={(index) => {
-                      setContent({
-                        ...content,
-                        servicesSection: {
-                          ...content.servicesSection,
-                          services: (content.servicesSection.services || []).filter((_, i) => i !== index),
-                        },
-                      });
-                    }}
-                    onChange={(services) =>
-                      setContent({
-                        ...content,
-                        servicesSection: { ...content.servicesSection, services },
-                      })
-                    }
-                    renderItem={(service, index, onChange) => (
-                      <div>
-                        <Toggle
-                          label="Service Active"
-                          checked={service.isActive}
-                          onChange={(value) => onChange({ ...service, isActive: value })}
-                        />
-                        <FormGrid columns={2}>
-                          <Input
-                            label="Service Title"
-                            value={service.title}
-                            onChange={(value) => onChange({ ...service, title: value })}
-                            placeholder="Financial Services"
-                          />
-                          <Input
-                            label="Display Order"
-                            type="number"
-                            value={String(service.order)}
-                            onChange={(value) => onChange({ ...service, order: Number(value) })}
-                            placeholder="0"
-                            helperText="Lower numbers appear first"
-                          />
-                          <Input
-                            label="Icon Class (e.g., icon-Bank)"
-                            value={service.iconClass || ''}
-                            onChange={(value) => onChange({ ...service, iconClass: value })}
-                            placeholder="icon-Bank"
-                            helperText="Leave empty if using SVG"
-                          />
-                        </FormGrid>
-                        <Textarea
-                          label="Service Description"
-                          value={service.description}
-                          onChange={(value) => onChange({ ...service, description: value })}
-                          placeholder="Secure, compliant support for banking..."
-                          rows={2}
-                        />
-                      </div>
-                    )}
-                    addButtonText="Add Support Service"
-                    emptyMessage="No support services added. Add industries and services."
-                  />
+                  <SupportServicesList content={content} setContent={setContent} />
                 </div>
               </Section>
             </div>
@@ -557,5 +479,301 @@ export default function SupportManager() {
         </Card>
       </div>
     </div>
+  );
+}
+
+// Support Services List Component
+function SupportServicesList({ content, setContent }: { content: SupportContent; setContent: React.Dispatch<React.SetStateAction<SupportContent | null>> }) {
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  return (
+    <>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h4 className="mb-0">Support Services</h4>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => {
+            const newService: SupportService = {
+              title: '',
+              description: '',
+              iconClass: '',
+              isActive: true,
+            };
+            // Add new service at the beginning (latest first)
+            setContent({
+              ...content,
+              servicesSection: {
+                ...content.servicesSection,
+                services: [newService, ...(content.servicesSection.services || [])],
+              },
+            });
+            setEditingIndex(0);
+          }}
+        >
+          + Add New Service
+        </Button>
+      </div>
+
+      {(!content.servicesSection.services || content.servicesSection.services.length === 0) ? (
+        <div className="text-center py-5 border border-dashed rounded bg-light">
+          <p className="text-muted mb-3">No support services added yet.</p>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => {
+              const newService: SupportService = {
+                title: '',
+                description: '',
+                iconClass: '',
+                isActive: true,
+              };
+              setContent({
+                ...content,
+                servicesSection: {
+                  ...content.servicesSection,
+                  services: [newService],
+                },
+              });
+              setEditingIndex(0);
+            }}
+          >
+            Add Your First Service
+          </Button>
+        </div>
+      ) : (
+        <div className="d-flex flex-column gap-3">
+          {content.servicesSection.services.map((service, index) => {
+            const actualIndex = index;
+            const isEditing = editingIndex === index;
+
+            return (
+              <Card key={actualIndex} className="border-0 border-bottom rounded-0">
+                <div className="card-body py-2 px-0">
+                  {!isEditing ? (
+                    // Collapsed view - single line
+                    <div className="d-flex justify-content-between align-items-center gap-2">
+                      <div className="flex-grow-1 d-flex align-items-center gap-2">
+                        <h6 className="mb-0 fw-semibold" style={{ minWidth: '200px' }}>
+                          {service.title || 'Untitled Service'}
+                        </h6>
+                        <span
+                          className={`badge rounded-pill px-2 py-1 ${service.isActive ? 'bg-success' : 'bg-secondary'}`}
+                        >
+                          {service.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                        {service.iconClass && (
+                          <span className="text-muted small">
+                            Icon: {service.iconClass}
+                          </span>
+                        )}
+                        {service.description && (
+                          <span className="text-muted small text-truncate" style={{ maxWidth: '260px' }}>
+                            {service.description.substring(0, 60)}
+                            {service.description.length > 60 ? '...' : ''}
+                          </span>
+                        )}
+                      </div>
+                      <div className="d-flex gap-2 ms-2">
+                        <button
+                          type="button"
+                          className="btn btn-link p-0 border-0"
+                          onClick={() => setEditingIndex(actualIndex)}
+                          title="Edit service"
+                          style={{ color: '#28a745' }}
+                        >
+                          {/* Pencil icon - green */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-link p-0 border-0"
+                          onClick={() => {
+                            if (confirm('Are you sure you want to delete this service?')) {
+                              const updatedServices = content.servicesSection.services.filter((_, i) => i !== actualIndex);
+                              setContent({
+                                ...content,
+                                servicesSection: {
+                                  ...content.servicesSection,
+                                  services: updatedServices,
+                                },
+                              });
+                              if (editingIndex === actualIndex) {
+                                setEditingIndex(null);
+                              }
+                            }
+                          }}
+                          title="Delete service"
+                          style={{ color: '#dc3545' }}
+                        >
+                          {/* Trash / bin icon - red */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    // Expanded edit view
+                    <div>
+                      {/* Header row for the editor */}
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                          <h5 className="mb-0">Editing: {service.title || 'New Service'}</h5>
+                          <p className="text-muted small mb-0">
+                            Update the service details below, then click "Done Editing".
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            // Get the current service from state to ensure we have the latest data
+                            const currentService = content.servicesSection.services[actualIndex];
+                            // If it's a new service (no title or empty title), remove it from the list
+                            const isNewService = !currentService?.title || String(currentService?.title || '').trim() === '';
+                            
+                            if (isNewService) {
+                              const updatedServices = content.servicesSection.services.filter((_, i) => i !== actualIndex);
+                              setContent({
+                                ...content,
+                                servicesSection: {
+                                  ...content.servicesSection,
+                                  services: updatedServices,
+                                },
+                              });
+                              setEditingIndex(null);
+                            } else {
+                              setEditingIndex(null);
+                            }
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+
+                      {/* Service form */}
+                      <div className="mb-3">
+                        <p className="text-muted small mb-2">Basic information</p>
+                        <div className="d-flex align-items-center gap-3 mb-2">
+                          <Toggle
+                            label="Service Active"
+                            checked={service.isActive}
+                            onChange={(value) => {
+                              const updatedServices = [...content.servicesSection.services];
+                              updatedServices[actualIndex] = { ...service, isActive: value };
+                              setContent({
+                                ...content,
+                                servicesSection: {
+                                  ...content.servicesSection,
+                                  services: updatedServices,
+                                },
+                              });
+                            }}
+                          />
+                        </div>
+                        <FormGrid columns={2}>
+                          <Input
+                            label="Service Title"
+                            value={service.title}
+                            onChange={(value) => {
+                              const updatedServices = [...content.servicesSection.services];
+                              updatedServices[actualIndex] = { ...service, title: value };
+                              setContent({
+                                ...content,
+                                servicesSection: {
+                                  ...content.servicesSection,
+                                  services: updatedServices,
+                                },
+                              });
+                            }}
+                            placeholder="Financial Services"
+                          />
+                          <Input
+                            label="Icon Class (e.g., icon-Bank)"
+                            value={service.iconClass || ''}
+                            onChange={(value) => {
+                              const updatedServices = [...content.servicesSection.services];
+                              updatedServices[actualIndex] = { ...service, iconClass: value };
+                              setContent({
+                                ...content,
+                                servicesSection: {
+                                  ...content.servicesSection,
+                                  services: updatedServices,
+                                },
+                              });
+                            }}
+                            placeholder="icon-Bank"
+                            helperText="Leave empty if using SVG"
+                          />
+                        </FormGrid>
+                      </div>
+
+                      {/* Description */}
+                      <div className="mb-2">
+                        <p className="text-muted small mb-2">Service description</p>
+                        <Textarea
+                          label="Description"
+                          value={service.description}
+                          onChange={(value) => {
+                            const updatedServices = [...content.servicesSection.services];
+                            updatedServices[actualIndex] = { ...service, description: value };
+                            setContent({
+                              ...content,
+                              servicesSection: {
+                                ...content.servicesSection,
+                                services: updatedServices,
+                              },
+                            });
+                          }}
+                          placeholder="Secure, compliant support for banking..."
+                          rows={3}
+                        />
+                        <div className="d-flex justify-content-end mt-3">
+                          <Button
+                            variant="success"
+                            size="sm"
+                            onClick={() => setEditingIndex(null)}
+                          >
+                            Done Editing
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 }

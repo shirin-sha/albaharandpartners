@@ -20,6 +20,7 @@ import { HeaderContent } from "@/types/header";
 import { NewsUpdatesContent } from "@/types/news-updates";
 import { CustomerStoriesContent } from "@/types/customer-stories";
 import { SolutionsContent } from "@/types/solutions";
+import { BrandsContent } from "@/types/brands";
 import {
   getHomepageContent,
   getHeaderContent,
@@ -27,6 +28,7 @@ import {
   getNewsUpdatesContent,
   getCustomerStoriesContent,
   getSolutionsContent,
+  getBrandsContent,
 } from "@/lib/data-fetch";
 import Topbar1 from "@/components/headers/Topbar1";
 
@@ -49,6 +51,7 @@ export default async function Page() {
     newsUpdatesContent,
     customerStoriesContent,
     solutionsContent,
+    brandsContent,
   ] = await Promise.all([
     getHomepageContent(language),
     getHeaderContent(language),
@@ -56,6 +59,7 @@ export default async function Page() {
     getNewsUpdatesContent(language),
     getCustomerStoriesContent(language),
     getSolutionsContent(language),
+    getBrandsContent(language),
   ]);
 
   // Log what we got
@@ -145,10 +149,34 @@ export default async function Page() {
           <TestimonialSection content={content.testimonialSection} language={language} />
         )}
         
-        {/* CMS-driven Brands Section */}
-        {content?.brandsSection && (
-          <BrandsSection content={content.brandsSection} language={language} />
-        )}
+        {/* CMS-driven Brands Section (Brands preview from single Brands CMS) */}
+        {content?.brandsSection && (() => {
+          const baseSection = content.brandsSection;
+
+          // Build brands array from Brands CMS (single source of truth)
+          const mappedBrands = brandsContent?.brands
+            ?.filter((b) => b.isActive)
+            .map((b) => ({
+              _id: b._id,
+              name: b.name,
+              imagePath: b.imagePath,
+              link: b.link,
+              isActive: b.isActive,
+            })) || [];
+
+          const brandsSectionForHome = {
+            ...baseSection,
+            brands: mappedBrands,
+          };
+
+          if (brandsSectionForHome.brands.length === 0) {
+            return null;
+          }
+
+          return (
+            <BrandsSection content={brandsSectionForHome} language={language} />
+          );
+        })()}
         
         {/* CMS-driven Case Studies Section (Customer Stories preview from single Customer Stories CMS) */}
         {content?.caseStudiesSection && (() => {
@@ -195,7 +223,6 @@ export default async function Page() {
           // Build posts array from News & Updates CMS (single source of truth)
           const mappedPosts = newsUpdatesContent?.posts
             ?.filter((p) => p.isActive)
-            .sort((a, b) => a.order - b.order)
             .slice(0, 3)
             .map((p) => ({
               _id: p._id,
@@ -204,7 +231,7 @@ export default async function Page() {
               imagePath: p.imagePath,
               date: p.date,
               link: p.link,
-              order: p.order,
+              order: 0,
               language: baseSection.language,
               isActive: p.isActive,
             })) || [];

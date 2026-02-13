@@ -14,15 +14,15 @@ export default function NewsUpdatesCMS({ data }: Props) {
 
   useEffect(() => {
     if (isLoadedMore) {
-      setFilteres(data.posts.filter(p => p.isActive).sort((a, b) => a.order - b.order));
+      setFilteres(data.posts.filter(p => p.isActive));
     } else {
-      setFilteres(data.posts.filter(p => p.isActive).sort((a, b) => a.order - b.order).slice(0, 6));
+      setFilteres(data.posts.filter(p => p.isActive).slice(0, 6));
     }
   }, [isLoadedMore, data.posts]);
 
   if (!data.isActive) return null;
 
-  const activePosts = data.posts.filter(p => p.isActive).sort((a, b) => a.order - b.order);
+  const activePosts = data.posts.filter(p => p.isActive);
   if (activePosts.length === 0) return null;
 
   return (

@@ -12,7 +12,6 @@ export interface NewsPost {
     month: string;
   };
   link: string;
-  order: number;
   isActive: boolean;
 }
 

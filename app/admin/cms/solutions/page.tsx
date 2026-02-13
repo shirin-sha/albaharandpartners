@@ -211,111 +211,337 @@ export default function SolutionsManager() {
 
             <div className="mt-5">
               <Section title="Solutions List" description="Manage all solution items">
-                <ArrayManager
-                  items={content.solutions || []}
-                  onAdd={() => {
-                    setContent({
-                      ...content,
-                      solutions: [
-                        ...(content.solutions || []),
-                        {
-                          id: '',
-                          tabTitle: '',
-                          title: '',
-                          description: '',
-                          benefits: [],
-                          imgSrc: '',
-                          imgWidth: 960,
-                          imgHeight: 720,
-                          isActive: true,
-                        },
-                      ],
-                    });
-                  }}
-                  onRemove={(index) => {
-                    setContent({
-                      ...content,
-                      solutions: (content.solutions || []).filter((_, i) => i !== index),
-                    });
-                  }}
-                  onChange={(solutions) =>
-                    setContent({
-                      ...content,
-                      solutions,
-                    })
-                  }
-                  renderItem={(solution, index, onChange) => (
+                <SolutionsList content={content} setContent={setContent} />
+              </Section>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// Solutions List Component
+function SolutionsList({ content, setContent }: { content: SolutionsContent; setContent: React.Dispatch<React.SetStateAction<SolutionsContent | null>> }) {
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  return (
+    <>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <p className="text-muted mb-0">
+          {content.solutions?.length || 0} solution{content.solutions?.length !== 1 ? 's' : ''} listed
+        </p>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => {
+            const newSolution: SolutionItem = {
+              id: '',
+              tabTitle: '',
+              title: '',
+              description: '',
+              benefits: [],
+              imgSrc: '',
+              imgWidth: 960,
+              imgHeight: 720,
+              isActive: true,
+            };
+            // Add new solution at the beginning (latest first)
+            setContent({
+              ...content,
+              solutions: [newSolution, ...(content.solutions || [])],
+            });
+            setEditingIndex(0);
+          }}
+        >
+          + Add New Solution
+        </Button>
+      </div>
+
+      {(!content.solutions || content.solutions.length === 0) ? (
+        <div className="text-center py-5 border border-dashed rounded bg-light">
+          <p className="text-muted mb-3">No solutions added yet.</p>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => {
+              const newSolution: SolutionItem = {
+                id: '',
+                tabTitle: '',
+                title: '',
+                description: '',
+                benefits: [],
+                imgSrc: '',
+                imgWidth: 960,
+                imgHeight: 720,
+                isActive: true,
+              };
+              setContent({
+                ...content,
+                solutions: [newSolution],
+              });
+              setEditingIndex(0);
+            }}
+          >
+            Add Your First Solution
+          </Button>
+        </div>
+      ) : (
+        <div className="d-flex flex-column gap-3">
+          {content.solutions.map((solution, index) => {
+            const actualIndex = index;
+            const isEditing = editingIndex === index;
+
+            return (
+              <Card key={actualIndex} className="border-0 border-bottom rounded-0">
+                <div className="card-body py-2 px-0">
+                  {!isEditing ? (
+                    // Collapsed view - single line
+                    <div className="d-flex justify-content-between align-items-center gap-2">
+                      <div className="flex-grow-1 d-flex align-items-center gap-2">
+                        <h6 className="mb-0 fw-semibold" style={{ minWidth: '200px' }}>
+                          {solution.title || 'Untitled Solution'}
+                        </h6>
+                        <span
+                          className={`badge rounded-pill px-2 py-1 ${solution.isActive ? 'bg-success' : 'bg-secondary'}`}
+                        >
+                          {solution.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                        {solution.tabTitle && (
+                          <span className="text-muted small">
+                            Tab: {solution.tabTitle}
+                          </span>
+                        )}
+                        {solution.description && (
+                          <span className="text-muted small text-truncate" style={{ maxWidth: '260px' }}>
+                            {solution.description.substring(0, 60)}
+                            {solution.description.length > 60 ? '...' : ''}
+                          </span>
+                        )}
+                        {solution.benefits && solution.benefits.length > 0 && (
+                          <span className="text-muted small">
+                            {solution.benefits.length} benefit{solution.benefits.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                      </div>
+                      <div className="d-flex gap-2 ms-2">
+                        <button
+                          type="button"
+                          className="btn btn-link p-0 border-0"
+                          onClick={() => setEditingIndex(actualIndex)}
+                          title="Edit solution"
+                          style={{ color: '#28a745' }}
+                        >
+                          {/* Pencil icon - green */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-link p-0 border-0"
+                          onClick={() => {
+                            if (confirm('Are you sure you want to delete this solution?')) {
+                              const updatedSolutions = content.solutions.filter((_, i) => i !== actualIndex);
+                              setContent({ ...content, solutions: updatedSolutions });
+                              if (editingIndex === actualIndex) {
+                                setEditingIndex(null);
+                              }
+                            }
+                          }}
+                          title="Delete solution"
+                          style={{ color: '#dc3545' }}
+                        >
+                          {/* Trash / bin icon - red */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    // Expanded edit view
                     <div>
-                      <Toggle
-                        label="Solution Active"
-                        checked={solution.isActive}
-                        onChange={(value) => onChange({ ...solution, isActive: value })}
-                      />
-                      <FormGrid columns={2}>
-                        <Input
-                          label="Solution ID"
-                          value={solution.id}
-                          onChange={(value) => onChange({ ...solution, id: value })}
-                          placeholder="banking-payment-identity"
-                          helperText="Unique identifier (lowercase, hyphens)"
+                      {/* Header row for the editor */}
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                          <h5 className="mb-0">Editing: {solution.title || 'New Solution'}</h5>
+                          <p className="text-muted small mb-0">
+                            Update the solution details below, then click "Done Editing".
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            // Get the current solution from state to ensure we have the latest data
+                            const currentSolution = content.solutions[actualIndex];
+                            // If it's a new solution (no title or empty title), remove it from the list
+                            const isNewSolution = !currentSolution?.title || String(currentSolution?.title || '').trim() === '';
+                            
+                            if (isNewSolution) {
+                              const updatedSolutions = content.solutions.filter((_, i) => i !== actualIndex);
+                              setContent({ ...content, solutions: updatedSolutions });
+                              setEditingIndex(null);
+                            } else {
+                              setEditingIndex(null);
+                            }
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+
+                      {/* Solution form */}
+                      <div className="mb-3">
+                        <p className="text-muted small mb-2">Basic information</p>
+                        <div className="d-flex align-items-center gap-3 mb-2">
+                          <Toggle
+                            label="Solution Active"
+                            checked={solution.isActive}
+                            onChange={(value) => {
+                              const updatedSolutions = [...content.solutions];
+                              updatedSolutions[actualIndex] = { ...solution, isActive: value };
+                              setContent({ ...content, solutions: updatedSolutions });
+                            }}
+                          />
+                        </div>
+                        <FormGrid columns={2}>
+                          <Input
+                            label="Solution ID"
+                            value={solution.id}
+                            onChange={(value) => {
+                              const updatedSolutions = [...content.solutions];
+                              updatedSolutions[actualIndex] = { ...solution, id: value };
+                              setContent({ ...content, solutions: updatedSolutions });
+                            }}
+                            placeholder="banking-payment-identity"
+                            helperText="Unique identifier (lowercase, hyphens)"
+                          />
+                          <Input
+                            label="Tab Title"
+                            value={solution.tabTitle}
+                            onChange={(value) => {
+                              const updatedSolutions = [...content.solutions];
+                              updatedSolutions[actualIndex] = { ...solution, tabTitle: value };
+                              setContent({ ...content, solutions: updatedSolutions });
+                            }}
+                            placeholder="Banking, Payment & Identity"
+                          />
+                          <Input
+                            label="Solution Title"
+                            value={solution.title}
+                            onChange={(value) => {
+                              const updatedSolutions = [...content.solutions];
+                              updatedSolutions[actualIndex] = { ...solution, title: value };
+                              setContent({ ...content, solutions: updatedSolutions });
+                            }}
+                            placeholder="Banking, Payment & Identity Solutions"
+                          />
+                          <ImageUpload
+                            label="Solution Image"
+                            value={solution.imgSrc}
+                            onChange={(value) => {
+                              const updatedSolutions = [...content.solutions];
+                              updatedSolutions[actualIndex] = { ...solution, imgSrc: value };
+                              setContent({ ...content, solutions: updatedSolutions });
+                            }}
+                            placeholder="/image/section/service-1.jpg"
+                          />
+                        </FormGrid>
+                        <FormGrid columns={2}>
+                          <Input
+                            label="Image Width"
+                            type="number"
+                            value={String(solution.imgWidth)}
+                            onChange={(value) => {
+                              const updatedSolutions = [...content.solutions];
+                              updatedSolutions[actualIndex] = { ...solution, imgWidth: Number(value) };
+                              setContent({ ...content, solutions: updatedSolutions });
+                            }}
+                            placeholder="960"
+                          />
+                          <Input
+                            label="Image Height"
+                            type="number"
+                            value={String(solution.imgHeight)}
+                            onChange={(value) => {
+                              const updatedSolutions = [...content.solutions];
+                              updatedSolutions[actualIndex] = { ...solution, imgHeight: Number(value) };
+                              setContent({ ...content, solutions: updatedSolutions });
+                            }}
+                            placeholder="720"
+                          />
+                        </FormGrid>
+                      </div>
+
+                      {/* Description */}
+                      <div className="mb-3">
+                        <p className="text-muted small mb-2">Solution description</p>
+                        <Textarea
+                          label="Description"
+                          value={solution.description}
+                          onChange={(value) => {
+                            const updatedSolutions = [...content.solutions];
+                            updatedSolutions[actualIndex] = { ...solution, description: value };
+                            setContent({ ...content, solutions: updatedSolutions });
+                          }}
+                          placeholder="Enable secure customer experiences..."
+                          rows={3}
                         />
-                        <Input
-                          label="Tab Title"
-                          value={solution.tabTitle}
-                          onChange={(value) => onChange({ ...solution, tabTitle: value })}
-                          placeholder="Banking, Payment & Identity"
-                        />
-                        <Input
-                          label="Solution Title"
-                          value={solution.title}
-                          onChange={(value) => onChange({ ...solution, title: value })}
-                          placeholder="Banking, Payment & Identity Solutions"
-                        />
-                        <ImageUpload
-                          label="Solution Image"
-                          value={solution.imgSrc}
-                          onChange={(value) => onChange({ ...solution, imgSrc: value })}
-                          placeholder="/image/section/service-1.jpg"
-                        />
-                      </FormGrid>
-                      <FormGrid columns={2}>
-                        <Input
-                          label="Image Width"
-                          type="number"
-                          value={String(solution.imgWidth)}
-                          onChange={(value) => onChange({ ...solution, imgWidth: Number(value) })}
-                          placeholder="960"
-                        />
-                        <Input
-                          label="Image Height"
-                          type="number"
-                          value={String(solution.imgHeight)}
-                          onChange={(value) => onChange({ ...solution, imgHeight: Number(value) })}
-                          placeholder="720"
-                        />
-                      </FormGrid>
-                      <Textarea
-                        label="Description"
-                        value={solution.description}
-                        onChange={(value) => onChange({ ...solution, description: value })}
-                        placeholder="Enable secure customer experiences..."
-                        rows={3}
-                      />
-                      
-                      <div className="mt-3">
-                        <h5 className="mb-2">Benefits List</h5>
+                      </div>
+
+                      {/* Benefits */}
+                      <div className="mb-2">
+                        <p className="text-muted small mb-2">Solution benefits</p>
                         <ArrayManager
                           items={solution.benefits || []}
                           onAdd={() => {
-                            onChange({ ...solution, benefits: [...(solution.benefits || []), ''] });
+                            const updatedSolutions = [...content.solutions];
+                            updatedSolutions[actualIndex] = {
+                              ...solution,
+                              benefits: [...(solution.benefits || []), ''],
+                            };
+                            setContent({ ...content, solutions: updatedSolutions });
                           }}
                           onRemove={(benefitIndex) => {
-                            onChange({
+                            const updatedSolutions = [...content.solutions];
+                            updatedSolutions[actualIndex] = {
                               ...solution,
                               benefits: (solution.benefits || []).filter((_, i) => i !== benefitIndex),
-                            });
+                            };
+                            setContent({ ...content, solutions: updatedSolutions });
                           }}
-                          onChange={(benefits) => onChange({ ...solution, benefits })}
+                          onChange={(benefits) => {
+                            const updatedSolutions = [...content.solutions];
+                            updatedSolutions[actualIndex] = { ...solution, benefits };
+                            setContent({ ...content, solutions: updatedSolutions });
+                          }}
                           renderItem={(benefit, benefitIndex, onBenefitChange) => (
                             <Input
                               label={`Benefit ${benefitIndex + 1}`}
@@ -327,17 +553,24 @@ export default function SolutionsManager() {
                           addButtonText="Add Benefit"
                           emptyMessage="No benefits added. Add solution benefits."
                         />
+                        <div className="d-flex justify-content-end mt-3">
+                          <Button
+                            variant="success"
+                            size="sm"
+                            onClick={() => setEditingIndex(null)}
+                          >
+                            Done Editing
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   )}
-                  addButtonText="Add Solution"
-                  emptyMessage="No solutions added. Add your solutions."
-                />
-              </Section>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 }
