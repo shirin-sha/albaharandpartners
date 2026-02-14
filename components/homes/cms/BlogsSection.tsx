@@ -17,8 +17,7 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
   }
 
   const activePosts = content.posts
-    .filter(post => post.isActive)
-    .sort((a, b) => a.order - b.order);
+    .filter(post => post.isActive);
 
   if (activePosts.length === 0) {
     return null;

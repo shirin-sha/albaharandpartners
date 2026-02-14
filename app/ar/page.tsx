@@ -123,14 +123,12 @@ export default async function Page() {
             const mappedCaseStudies =
               customerStoriesContent?.stories
                 ?.filter((s) => s.isActive)
-                .sort((a, b) => a.order - b.order)
                 .map((s) => ({
                   _id: s._id,
                   title: s.title,
                   description: s.description,
                   imagePath: s.imagePath,
                   link: s.link,
-                  order: s.order,
                   language: baseSection.language,
                   isActive: s.isActive,
                 })) || [];
@@ -158,7 +156,17 @@ export default async function Page() {
             const mappedPosts =
               newsUpdatesContent?.posts
                 ?.filter((p) => p.isActive)
-                .sort((a, b) => a.order - b.order)
+                .sort((a, b) => {
+                  // Sort by date if available (latest first)
+                  if (a.date && b.date) {
+                    const dateA = typeof a.date === 'string' ? new Date(a.date).getTime() : 
+                                 (a.date.day && a.date.month ? new Date(`${a.date.month} ${a.date.day}`).getTime() : 0);
+                    const dateB = typeof b.date === 'string' ? new Date(b.date).getTime() : 
+                                 (b.date.day && b.date.month ? new Date(`${b.date.month} ${b.date.day}`).getTime() : 0);
+                    return dateB - dateA;
+                  }
+                  return 0;
+                })
                 .slice(0, 3)
                 .map((p) => ({
                   _id: p._id,
@@ -167,7 +175,6 @@ export default async function Page() {
                   imagePath: p.imagePath,
                   date: p.date,
                   link: p.link,
-                  order: p.order,
                   language: baseSection.language,
                   isActive: p.isActive,
                 })) || [];

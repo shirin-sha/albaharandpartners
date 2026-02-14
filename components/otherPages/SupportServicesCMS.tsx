@@ -10,8 +10,7 @@ export default function SupportServicesCMS({ data }: Props) {
   if (!data.servicesSection.isActive) return null;
 
   const activeServices = (data.servicesSection.services || [])
-    .filter(service => service.isActive)
-    .sort((a, b) => a.order - b.order);
+    .filter(service => service.isActive);
 
   if (activeServices.length === 0) return null;
 

@@ -17,8 +17,7 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
   }
 
   const activeCaseStudies = content.caseStudies
-    .filter(cs => cs.isActive)
-    .sort((a, b) => a.order - b.order);
+    .filter(cs => cs.isActive);
 
   if (activeCaseStudies.length === 0) {
     return null;

@@ -6,7 +6,6 @@ export interface SupportService {
   description: string;
   iconClass?: string;
   iconSvg?: string;
-  order: number;
   isActive: boolean;
 }
 

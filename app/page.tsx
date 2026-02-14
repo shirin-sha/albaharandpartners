@@ -185,14 +185,12 @@ export default async function Page() {
           // Build case studies array from Customer Stories CMS (single source of truth)
           const mappedCaseStudies = customerStoriesContent?.stories
             ?.filter((s) => s.isActive)
-            .sort((a, b) => a.order - b.order)
             .map((s) => ({
               _id: s._id,
               title: s.title,
               description: s.description,
               imagePath: s.imagePath,
               link: s.link,
-              order: s.order,
               language: baseSection.language,
               isActive: s.isActive,
             })) || [];

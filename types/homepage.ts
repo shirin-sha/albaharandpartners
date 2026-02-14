@@ -117,7 +117,6 @@ export interface CaseStudy {
   description: string;
   imagePath: string;
   link: string;
-  order: number;
   language: 'ltr' | 'rtl';
   isActive: boolean;
 }
@@ -164,7 +163,6 @@ export interface BlogPost {
     month: string;
   };
   link: string;
-  order: number;
   language: 'ltr' | 'rtl';
   isActive: boolean;
 }
