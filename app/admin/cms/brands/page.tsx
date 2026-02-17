@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { BrandsContent, Brand } from '@/types/brands';
+import { BrandsContent } from '@/types/brands';
+import Link from 'next/link';
 import {
   Button,
   Input,
@@ -267,276 +268,20 @@ export default function BrandsManager() {
             </div>
 
             <div className="mt-5">
-              <Section title="Brands List" description="Add and manage partner brand logos">
-                <BrandsList content={content} setContent={setContent} />
+              <Section title="Brands Management" description="Manage brands separately">
+                <div className="alert alert-info">
+                  <p className="mb-2">
+                    <strong>Brand Management:</strong> Brands are managed separately.
+                  </p>
+                  <a href="/admin/cms/brands/manage" className="btn btn-primary btn-sm">
+                    Go to Brand Management →
+                  </a>
+                </div>
               </Section>
             </div>
           </div>
         </Card>
       </div>
     </div>
-  );
-}
-
-// Brands List Component
-function BrandsList({ content, setContent }: { content: BrandsContent; setContent: React.Dispatch<React.SetStateAction<BrandsContent | null>> }) {
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-
-  return (
-    <>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <p className="text-muted mb-0">
-          {content.brands?.length || 0} brand{content.brands?.length !== 1 ? 's' : ''} listed
-        </p>
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => {
-            const newBrand: Brand = {
-              name: '',
-              imagePath: '',
-              link: '#',
-              isActive: true,
-            };
-            // Add new brand at the beginning (latest first)
-            setContent({
-              ...content,
-              brands: [newBrand, ...(content.brands || [])],
-            });
-            setEditingIndex(0);
-          }}
-        >
-          + Add New Brand
-        </Button>
-      </div>
-
-      {(!content.brands || content.brands.length === 0) ? (
-        <div className="text-center py-5 border border-dashed rounded bg-light">
-          <p className="text-muted mb-3">No brands added yet.</p>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => {
-              const newBrand: Brand = {
-                name: '',
-                imagePath: '',
-                link: '#',
-                isActive: true,
-              };
-              setContent({
-                ...content,
-                brands: [newBrand],
-              });
-              setEditingIndex(0);
-            }}
-          >
-            Add Your First Brand
-          </Button>
-        </div>
-      ) : (
-        <div className="d-flex flex-column gap-3">
-          {content.brands.map((brand, index) => {
-            const actualIndex = index;
-            const isEditing = editingIndex === index;
-
-            return (
-              <Card key={actualIndex} className="border-0 border-bottom rounded-0">
-                <div className="card-body py-2 px-0">
-                  {!isEditing ? (
-                    // Collapsed view - single line
-                    <div className="d-flex justify-content-between align-items-center gap-2">
-                      <div className="flex-grow-1 d-flex align-items-center gap-2">
-                        {brand.imagePath && (
-                          <div style={{ width: '120px', height: '60px', flexShrink: 0 }}>
-                            <img
-                              src={brand.imagePath}
-                              alt={brand.name || 'Brand logo'}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'contain',
-                                borderRadius: '4px',
-                                border: '1px solid #e0e0e0',
-                                background: '#fff',
-                                padding: '6px',
-                              }}
-                              onError={(e) => {
-                                e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="60"%3E%3Crect fill="%23f0f0f0" width="120" height="60"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em" font-size="12"%3ENo Image%3C/text%3E%3C/svg%3E';
-                              }}
-                            />
-                          </div>
-                        )}
-                        <h6 className="mb-0 fw-semibold" style={{ minWidth: '200px' }}>
-                          {brand.name || 'Untitled Brand'}
-                        </h6>
-                        <span
-                          className={`badge rounded-pill px-2 py-1 ${brand.isActive ? 'bg-success' : 'bg-secondary'}`}
-                        >
-                          {brand.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                        {brand.link && brand.link !== '#' && (
-                          <span className="text-muted small text-truncate" style={{ maxWidth: '200px' }}>
-                            Link: {brand.link}
-                          </span>
-                        )}
-                      </div>
-                      <div className="d-flex gap-2 ms-2">
-                        <button
-                          type="button"
-                          className="btn btn-link p-0 border-0"
-                          onClick={() => setEditingIndex(actualIndex)}
-                          title="Edit brand"
-                          style={{ color: '#28a745' }}
-                        >
-                          {/* Pencil icon - green */}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-link p-0 border-0"
-                          onClick={() => {
-                            if (confirm('Are you sure you want to delete this brand?')) {
-                              const updatedBrands = content.brands.filter((_, i) => i !== actualIndex);
-                              setContent({ ...content, brands: updatedBrands });
-                              if (editingIndex === actualIndex) {
-                                setEditingIndex(null);
-                              }
-                            }
-                          }}
-                          title="Delete brand"
-                          style={{ color: '#dc3545' }}
-                        >
-                          {/* Trash / bin icon - red */}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    // Expanded edit view
-                    <div>
-                      {/* Header row for the editor */}
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                          <h5 className="mb-0">Editing: {brand.name || 'New Brand'}</h5>
-                          <p className="text-muted small mb-0">
-                            Update the brand details below, then click "Done Editing".
-                          </p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            // Get the current brand from state to ensure we have the latest data
-                            const currentBrand = content.brands[actualIndex];
-                            // If it's a new brand (no name or empty name), remove it from the list
-                            const isNewBrand = !currentBrand?.name || String(currentBrand?.name || '').trim() === '';
-                            
-                            if (isNewBrand) {
-                              const updatedBrands = content.brands.filter((_, i) => i !== actualIndex);
-                              setContent({ ...content, brands: updatedBrands });
-                              setEditingIndex(null);
-                            } else {
-                              setEditingIndex(null);
-                            }
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-
-                      {/* Brand form */}
-                      <div className="mb-3">
-                        <p className="text-muted small mb-2">Basic information</p>
-                        <div className="d-flex align-items-center gap-3 mb-2">
-                          <Toggle
-                            label="Brand Active"
-                            checked={brand.isActive}
-                            onChange={(value) => {
-                              const updatedBrands = [...content.brands];
-                              updatedBrands[actualIndex] = { ...brand, isActive: value };
-                              setContent({ ...content, brands: updatedBrands });
-                            }}
-                          />
-                        </div>
-                        <FormGrid columns={3}>
-                          <ImageUpload
-                            label="Brand Logo"
-                            value={brand.imagePath}
-                            onChange={(value) => {
-                              const updatedBrands = [...content.brands];
-                              updatedBrands[actualIndex] = { ...brand, imagePath: value };
-                              setContent({ ...content, brands: updatedBrands });
-                            }}
-                            placeholder="/image/brand/logo.png"
-                          />
-                          <Input
-                            label="Brand Name"
-                            value={brand.name}
-                            onChange={(value) => {
-                              const updatedBrands = [...content.brands];
-                              updatedBrands[actualIndex] = { ...brand, name: value };
-                              setContent({ ...content, brands: updatedBrands });
-                            }}
-                            placeholder="Fortinet"
-                          />
-                          <Input
-                            label="Brand Link"
-                            value={brand.link}
-                            onChange={(value) => {
-                              const updatedBrands = [...content.brands];
-                              updatedBrands[actualIndex] = { ...brand, link: value };
-                              setContent({ ...content, brands: updatedBrands });
-                            }}
-                            placeholder="https://www.brand.com"
-                          />
-                        </FormGrid>
-                        <div className="d-flex justify-content-end mt-3">
-                          <Button
-                            variant="success"
-                            size="sm"
-                            onClick={() => setEditingIndex(null)}
-                          >
-                            Done Editing
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Card>
-            );
-          })}
-        </div>
-      )}
-    </>
   );
 }

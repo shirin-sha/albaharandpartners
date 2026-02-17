@@ -167,16 +167,16 @@ export default function CareersManager() {
               title="Page Header" 
               description="Manage the page title and breadcrumb"
               actions={
-                <Toggle
-                  label="Section Active"
-                  checked={content.header.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      header: { ...content.header, isActive: value },
-                    })
-                  }
-                />
+              <Toggle
+                label="Section Active"
+                checked={content.header.isActive}
+                onChange={(value) =>
+                  setContent({
+                    ...content,
+                    header: { ...content.header, isActive: value },
+                  })
+                }
+              />
               }
             >
               <FormGrid columns={2}>
@@ -222,16 +222,16 @@ export default function CareersManager() {
                 title="Careers Section" 
                 description="Manage the careers section heading"
                 actions={
-                  <Toggle
-                    label="Section Active"
-                    checked={content.isActive}
-                    onChange={(value) =>
-                      setContent({
-                        ...content,
-                        isActive: value,
-                      })
-                    }
-                  />
+                <Toggle
+                  label="Section Active"
+                  checked={content.isActive}
+                  onChange={(value) =>
+                    setContent({
+                      ...content,
+                      isActive: value,
+                    })
+                  }
+                />
                 }
               >
                 <FormGrid columns={2}>
@@ -293,8 +293,8 @@ export default function CareersManager() {
                         isActive: true,
                       };
                       // Add new job at the beginning (latest first)
-                      setContent({
-                        ...content,
+                    setContent({
+                      ...content,
                         jobs: [newJob, ...(content.jobs || [])],
                       });
                       setEditingIndex(0);
@@ -320,8 +320,8 @@ export default function CareersManager() {
                           order: 0,
                           isActive: true,
                         };
-                        setContent({
-                          ...content,
+                    setContent({
+                      ...content,
                           jobs: [newJob],
                         });
                         setEditingIndex(0);
@@ -427,7 +427,7 @@ export default function CareersManager() {
                               <div>
                                 {/* Header row for the editor */}
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                  <div>
+                    <div>
                                     <h5 className="mb-0">Editing: {job.title || 'New Job'}</h5>
                                     <p className="text-muted small mb-0">
                                       Update the job details below, then click “Done Editing”.
@@ -459,28 +459,28 @@ export default function CareersManager() {
                                 <div className="mb-3">
                                   <p className="text-muted small mb-2">Basic information</p>
                                   <div className="d-flex align-items-center gap-3 mb-2">
-                                    <Toggle
-                                      label="Job Active"
-                                      checked={job.isActive}
+                      <Toggle
+                        label="Job Active"
+                        checked={job.isActive}
                                       onChange={(value) => {
                                         const updatedJobs = [...(content.jobs || [])];
                                         updatedJobs[actualIndex] = { ...job, isActive: value };
                                         setContent({ ...content, jobs: updatedJobs });
                                       }}
-                                    />
+                      />
                                   </div>
-                                  <FormGrid columns={2}>
-                                    <Input
-                                      label="Job Title"
-                                      value={job.title}
+                      <FormGrid columns={2}>
+                        <Input
+                          label="Job Title"
+                          value={job.title}
                                       onChange={(value) => {
                                         const updatedJobs = [...(content.jobs || [])];
                                         updatedJobs[actualIndex] = { ...job, title: value };
                                         setContent({ ...content, jobs: updatedJobs });
                                       }}
-                                      placeholder="Business Development Manager"
-                                    />
-                                    <Input
+                          placeholder="Business Development Manager"
+                        />
+                        <Input
                                       label="Apply Link"
                                       value={job.applyLink}
                                       onChange={(value) => {
@@ -489,72 +489,72 @@ export default function CareersManager() {
                                         setContent({ ...content, jobs: updatedJobs });
                                       }}
                                       placeholder="https://..."
-                                    />
-                                  </FormGrid>
+                        />
+                      </FormGrid>
                                 </div>
 
                                 {/* Description */}
                                 <div className="mb-3">
                                   <p className="text-muted small mb-2">Short description</p>
-                                  <Textarea
-                                    label="Job Description"
-                                    value={job.description}
+                      <Textarea
+                        label="Job Description"
+                        value={job.description}
                                     onChange={(value) => {
                                       const updatedJobs = [...(content.jobs || [])];
                                       updatedJobs[actualIndex] = { ...job, description: value };
                                       setContent({ ...content, jobs: updatedJobs });
                                     }}
                                     placeholder="Summarize the role in 2–3 sentences..."
-                                    rows={3}
-                                  />
+                        rows={3}
+                      />
                                 </div>
 
                                 {/* Responsibilities */}
                                 <div className="mb-3">
                                   <p className="text-muted small mb-2">Key responsibilities</p>
-                                  <ArrayManager
-                                    items={job.responsibilities || []}
-                                    onAdd={() => {
+                        <ArrayManager
+                          items={job.responsibilities || []}
+                          onAdd={() => {
                                       const updatedJobs = [...(content.jobs || [])];
                                       updatedJobs[actualIndex] = {
                                         ...job,
                                         responsibilities: [...(job.responsibilities || []), ''],
                                       };
                                       setContent({ ...content, jobs: updatedJobs });
-                                    }}
-                                    onRemove={(respIndex) => {
+                          }}
+                          onRemove={(respIndex) => {
                                       const updatedJobs = [...(content.jobs || [])];
                                       updatedJobs[actualIndex] = {
-                                        ...job,
-                                        responsibilities: (job.responsibilities || []).filter((_, i) => i !== respIndex),
+                              ...job,
+                              responsibilities: (job.responsibilities || []).filter((_, i) => i !== respIndex),
                                       };
                                       setContent({ ...content, jobs: updatedJobs });
-                                    }}
+                          }}
                                     onChange={(responsibilities) => {
                                       const updatedJobs = [...(content.jobs || [])];
                                       updatedJobs[actualIndex] = { ...job, responsibilities };
                                       setContent({ ...content, jobs: updatedJobs });
                                     }}
-                                    renderItem={(responsibility, respIndex, onRespChange) => (
-                                      <Input
-                                        label={`Responsibility ${respIndex + 1}`}
-                                        value={responsibility}
-                                        onChange={onRespChange}
+                          renderItem={(responsibility, respIndex, onRespChange) => (
+                            <Input
+                              label={`Responsibility ${respIndex + 1}`}
+                              value={responsibility}
+                              onChange={onRespChange}
                                         placeholder="Example: Expand client portfolio through new business opportunities."
-                                      />
-                                    )}
-                                    addButtonText="Add Responsibility"
-                                    emptyMessage="No responsibilities added. Add job responsibilities."
-                                  />
-                                </div>
+                            />
+                          )}
+                          addButtonText="Add Responsibility"
+                          emptyMessage="No responsibilities added. Add job responsibilities."
+                        />
+                      </div>
 
                                 {/* Compensation */}
                                 <div className="mb-2">
                                   <p className="text-muted small mb-2">Compensation</p>
-                                  <FormGrid columns={3}>
-                                    <Input
-                                      label="Salary Amount"
-                                      value={job.salary.amount}
+                      <FormGrid columns={3}>
+                        <Input
+                          label="Salary Amount"
+                          value={job.salary.amount}
                                       onChange={(value) => {
                                         const updatedJobs = [...(content.jobs || [])];
                                         updatedJobs[actualIndex] = {
@@ -564,10 +564,10 @@ export default function CareersManager() {
                                         setContent({ ...content, jobs: updatedJobs });
                                       }}
                                       placeholder="$10,000"
-                                    />
-                                    <Input
-                                      label="Salary Period"
-                                      value={job.salary.period}
+                        />
+                        <Input
+                          label="Salary Period"
+                          value={job.salary.period}
                                       onChange={(value) => {
                                         const updatedJobs = [...(content.jobs || [])];
                                         updatedJobs[actualIndex] = {
@@ -576,8 +576,8 @@ export default function CareersManager() {
                                         };
                                         setContent({ ...content, jobs: updatedJobs });
                                       }}
-                                      placeholder="/Month"
-                                    />
+                          placeholder="/Month"
+                        />
                                     <div className="d-flex align-items-end">
                                       <Button
                                         variant="success"
@@ -588,7 +588,7 @@ export default function CareersManager() {
                                         Done Editing
                                       </Button>
                                     </div>
-                                  </FormGrid>
+                      </FormGrid>
                                 </div>
                               </div>
                             )}
@@ -596,8 +596,8 @@ export default function CareersManager() {
                         </Card>
                       );
                     })}
-                  </div>
-                )}
+                    </div>
+                  )}
               </Section>
             </div>
           </div>

@@ -16,6 +16,7 @@ interface DropdownItem {
 
 const menuItems: MenuItem[] = [
   { label: "Enquiries", href: "/admin/enquiries", icon: "icon-ChatCircleText" },
+  { label: "Brand Management", href: "/admin/cms/brands/manage", icon: "icon-Edit" },
 ];
 
 const cmsItems: DropdownItem[] = [
@@ -83,7 +84,7 @@ export default function AdminSidebar() {
       >
         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
           {menuItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || (item.href === "/admin/cms/brands/manage" && pathname.startsWith("/admin/cms/brands/manage"));
             return (
               <li key={item.href} style={{ marginBottom: "4px" }}>
                 <Link

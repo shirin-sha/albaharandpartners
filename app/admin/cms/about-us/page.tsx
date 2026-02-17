@@ -310,16 +310,16 @@ function HeaderTab({ content, setContent }: TabProps) {
       title="Page Header" 
       description="Manage the page title and breadcrumb"
       actions={
-        <Toggle
-          label="Section Active"
-          checked={content.header.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              header: { ...content.header, isActive: value },
-            })
-          }
-        />
+      <Toggle
+        label="Section Active"
+        checked={content.header.isActive}
+        onChange={(value) =>
+          setContent({
+            ...content,
+            header: { ...content.header, isActive: value },
+          })
+        }
+      />
       }
     >
       <FormGrid columns={2}>
@@ -369,16 +369,16 @@ function AboutAlBaharTab({ content, setContent }: TabProps) {
       title="About Al-Bahar Section" 
       description="Company introduction with counter and tabs"
       actions={
-        <Toggle
-          label="Section Active"
-          checked={content.aboutAlBahar.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutAlBahar: { ...content.aboutAlBahar, isActive: value },
-            })
-          }
-        />
+      <Toggle
+        label="Section Active"
+        checked={content.aboutAlBahar.isActive}
+        onChange={(value) =>
+          setContent({
+            ...content,
+            aboutAlBahar: { ...content.aboutAlBahar, isActive: value },
+          })
+        }
+      />
       }
     >
       <FormGrid columns={2}>
@@ -496,16 +496,16 @@ function VisionMissionValuesTab({ content, setContent }: TabProps) {
       title="Vision, Mission & Values Section" 
       description="Three pillars that guide the company"
       actions={
-        <Toggle
-          label="Section Active"
-          checked={content.visionMissionValues.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              visionMissionValues: { ...content.visionMissionValues, isActive: value },
-            })
-          }
-        />
+      <Toggle
+        label="Section Active"
+        checked={content.visionMissionValues.isActive}
+        onChange={(value) =>
+          setContent({
+            ...content,
+            visionMissionValues: { ...content.visionMissionValues, isActive: value },
+          })
+        }
+      />
       }
     >
       <FormGrid columns={2}>
@@ -657,16 +657,16 @@ function HeritageTab({ content, setContent }: TabProps) {
       title="Heritage Section" 
       description="About the founder and company history"
       actions={
-        <Toggle
-          label="Section Active"
-          checked={content.heritage.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              heritage: { ...content.heritage, isActive: value },
-            })
-          }
-        />
+      <Toggle
+        label="Section Active"
+        checked={content.heritage.isActive}
+        onChange={(value) =>
+          setContent({
+            ...content,
+            heritage: { ...content.heritage, isActive: value },
+          })
+        }
+      />
       }
     >
       <FormGrid columns={2}>
@@ -758,16 +758,16 @@ function AboutBDSTab({ content, setContent }: TabProps) {
       title="About BDS Section" 
       description="Business Digital Solutions division information"
       actions={
-        <Toggle
-          label="Section Active"
-          checked={content.aboutBDS.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutBDS: { ...content.aboutBDS, isActive: value },
-            })
-          }
-        />
+      <Toggle
+        label="Section Active"
+        checked={content.aboutBDS.isActive}
+        onChange={(value) =>
+          setContent({
+            ...content,
+            aboutBDS: { ...content.aboutBDS, isActive: value },
+          })
+        }
+      />
       }
     >
       <FormGrid columns={2}>
@@ -869,16 +869,16 @@ function AboutBPCTab({ content, setContent }: TabProps) {
       title="About BPC Section" 
       description="Business Partnership Corporation information"
       actions={
-        <Toggle
-          label="Section Active"
-          checked={content.aboutBPC.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutBPC: { ...content.aboutBPC, isActive: value },
-            })
-          }
-        />
+      <Toggle
+        label="Section Active"
+        checked={content.aboutBPC.isActive}
+        onChange={(value) =>
+          setContent({
+            ...content,
+            aboutBPC: { ...content.aboutBPC, isActive: value },
+          })
+        }
+      />
       }
     >
       <FormGrid columns={2}>
@@ -1034,16 +1034,16 @@ function TeamTab({ content, setContent }: TabProps) {
       title="Team Section" 
       description="Manage team members displayed on About Us page"
       actions={
-        <Toggle
-          label="Section Active"
-          checked={content.team.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              team: { ...content.team, isActive: value },
-            })
-          }
-        />
+      <Toggle
+        label="Section Active"
+        checked={content.team.isActive}
+        onChange={(value) =>
+          setContent({
+            ...content,
+            team: { ...content.team, isActive: value },
+          })
+        }
+      />
       }
     >
       <FormGrid columns={2}>
@@ -1148,16 +1148,16 @@ function HistoryTab({ content, setContent }: TabProps) {
       title="History Section" 
       description="Manage company timeline and milestones"
       actions={
-        <Toggle
-          label="Section Active"
-          checked={content.history.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              history: { ...content.history, isActive: value },
-            })
-          }
-        />
+      <Toggle
+        label="Section Active"
+        checked={content.history.isActive}
+        onChange={(value) =>
+          setContent({
+            ...content,
+            history: { ...content.history, isActive: value },
+          })
+        }
+      />
       }
     >
       <FormGrid columns={2}>
@@ -1324,16 +1324,16 @@ function FAQsTab({ content, setContent }: TabProps) {
       title="FAQs Section" 
       description="Manage frequently asked questions"
       actions={
-        <Toggle
-          label="Section Active"
-          checked={content.faqs.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              faqs: { ...content.faqs, isActive: value },
-            })
-          }
-        />
+      <Toggle
+        label="Section Active"
+        checked={content.faqs.isActive}
+        onChange={(value) =>
+          setContent({
+            ...content,
+            faqs: { ...content.faqs, isActive: value },
+          })
+        }
+      />
       }
     >
       <FormGrid columns={2}>

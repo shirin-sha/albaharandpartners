@@ -278,6 +278,14 @@ export async function getBrandsContent(language: 'ltr' | 'rtl' = 'ltr'): Promise
     return {
       ...content,
       _id: content._id?.toString(),
+      brands: content.brands?.map((brand) => ({
+        ...brand,
+        _id: brand._id?.toString(),
+        products: brand.products?.map((product) => ({
+          ...product,
+          _id: product._id?.toString(),
+        })) || [],
+      })) || [],
     } as BrandsContent;
   } catch (error) {
     console.error('Error fetching brands content:', error);

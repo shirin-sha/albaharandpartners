@@ -1,10 +1,19 @@
 // Brands Page Content Types
 
+export interface BrandProduct {
+  _id?: string;
+  name: string;
+  imagePath: string;
+  description?: string;
+}
+
 export interface Brand {
   _id?: string;
   name: string;
   imagePath: string;
   link: string;
+  description?: string;
+  products?: BrandProduct[];
   isActive: boolean;
 }
 
