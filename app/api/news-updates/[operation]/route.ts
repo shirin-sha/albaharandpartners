@@ -1,0 +1,226 @@
+import { NextRequest, NextResponse } from 'next/server';
+import clientPromise from '@/lib/mongodb';
+import { NewsPost } from '@/types/news-updates';
+import { revalidatePath } from 'next/cache';
+
+const DB_NAME = 'albaharpartners1';
+const COLLECTION_NAME = 'newsupdates';
+
+// POST - Add a new post to the posts array
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ operation: string }> }
+) {
+  try {
+    const { operation } = await params;
+    const body = await request.json();
+    const { language = 'ltr', post } = body;
+
+    if (operation !== 'add') {
+      return NextResponse.json({
+        success: false,
+        message: 'Invalid operation',
+      }, { status: 400 });
+    }
+
+    if (!post) {
+      return NextResponse.json({
+        success: false,
+        message: 'Post data is required',
+      }, { status: 400 });
+    }
+
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+
+    // Add post to the beginning of the array
+    const result = await collection.findOneAndUpdate(
+      { language },
+      {
+        $push: {
+          posts: {
+            $each: [post],
+            $position: 0,
+          } as any,
+        },
+        $set: {
+          updatedAt: new Date(),
+        },
+      },
+      { returnDocument: 'after', upsert: false }
+    );
+
+    if (!result) {
+      return NextResponse.json({
+        success: false,
+        message: 'News & Updates content not found. Please create it first.',
+      }, { status: 404 });
+    }
+
+    revalidatePath('/news-updates');
+    revalidatePath('/');
+
+    return NextResponse.json({
+      success: true,
+      message: 'Post added successfully',
+      data: result,
+    });
+  } catch (error) {
+    console.error('Error adding post:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to add post',
+    }, { status: 500 });
+  }
+}
+
+// PUT - Update a specific post in the posts array
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ operation: string }> }
+) {
+  try {
+    const { operation } = await params;
+    const body = await request.json();
+    const { language = 'ltr', postIndex, post } = body;
+
+    if (operation !== 'update') {
+      return NextResponse.json({
+        success: false,
+        message: 'Invalid operation',
+      }, { status: 400 });
+    }
+
+    if (postIndex === undefined || !post) {
+      return NextResponse.json({
+        success: false,
+        message: 'Post index and post data are required',
+      }, { status: 400 });
+    }
+
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+
+    // Update the specific post at the given index
+    const result = await collection.findOneAndUpdate(
+      { language },
+      {
+        $set: {
+          [`posts.${postIndex}`]: post,
+          updatedAt: new Date(),
+        },
+      },
+      { returnDocument: 'after' }
+    );
+
+    if (!result) {
+      return NextResponse.json({
+        success: false,
+        message: 'News & Updates content not found',
+      }, { status: 404 });
+    }
+
+    revalidatePath('/news-updates');
+    revalidatePath('/');
+
+    return NextResponse.json({
+      success: true,
+      message: 'Post updated successfully',
+      data: result,
+    });
+  } catch (error) {
+    console.error('Error updating post:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to update post',
+    }, { status: 500 });
+  }
+}
+
+// DELETE - Remove a specific post from the posts array
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ operation: string }> }
+) {
+  try {
+    const { operation } = await params;
+    const searchParams = request.nextUrl.searchParams;
+    const language = searchParams.get('language') || 'ltr';
+    const postIndex = searchParams.get('index');
+
+    if (operation !== 'delete') {
+      return NextResponse.json({
+        success: false,
+        message: 'Invalid operation',
+      }, { status: 400 });
+    }
+
+    if (postIndex === null) {
+      return NextResponse.json({
+        success: false,
+        message: 'Post index is required',
+      }, { status: 400 });
+    }
+
+    const client = await clientPromise;
+    const db = client.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+
+    const index = parseInt(postIndex, 10);
+    if (isNaN(index)) {
+      return NextResponse.json({
+        success: false,
+        message: 'Invalid post index',
+      }, { status: 400 });
+    }
+
+    // Get the post to delete (to verify it exists)
+    const content = await collection.findOne({ language });
+    if (!content) {
+      return NextResponse.json({
+        success: false,
+        message: 'News & Updates content not found',
+      }, { status: 404 });
+    }
+
+    const postsArray = content.posts || [];
+    if (index < 0 || index >= postsArray.length) {
+      return NextResponse.json({
+        success: false,
+        message: 'Invalid post index',
+      }, { status: 400 });
+    }
+
+    // Remove the post at the specific index using $pull
+    const postToDelete = postsArray[index];
+    const result = await collection.findOneAndUpdate(
+      { language },
+      {
+        $pull: {
+          posts: postToDelete,
+        },
+        $set: {
+          updatedAt: new Date(),
+        },
+      },
+      { returnDocument: 'after' }
+    );
+
+    revalidatePath('/news-updates');
+    revalidatePath('/');
+
+    return NextResponse.json({
+      success: true,
+      message: 'Post deleted successfully',
+      data: result,
+    });
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Failed to delete post',
+    }, { status: 500 });
+  }
+}

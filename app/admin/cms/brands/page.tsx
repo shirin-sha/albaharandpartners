@@ -273,7 +273,7 @@ export default function BrandsManager() {
                   <p className="mb-2">
                     <strong>Brand Management:</strong> Brands are managed separately.
                   </p>
-                  <a href="/admin/cms/brands/manage" className="btn btn-primary btn-sm">
+                  <a href="/admin/managebrands" className="btn btn-primary btn-sm">
                     Go to Brand Management →
                   </a>
                 </div>

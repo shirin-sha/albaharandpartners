@@ -130,9 +130,16 @@ export default function BrandsManagePage() {
     }
   };
 
-  const handleSave = async () => {
-    // This is now optional - individual operations save automatically
-    showMessage('success', 'All changes are saved automatically!');
+  const onAdd = async (brand: Brand) => {
+    return await addBrandToAPI(brand);
+  };
+
+  const onUpdate = async (index: number, brand: Brand) => {
+    return await updateBrandInAPI(index, brand);
+  };
+
+  const onDelete = async (index: number) => {
+    return await deleteBrandFromAPI(index);
   };
 
   if (loading) {
@@ -156,22 +163,8 @@ export default function BrandsManagePage() {
           <div className="card-body">
             <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
               <div>
-                <h1 className="h3 mb-2">🏢 Brand Management</h1>
-                <p className="text-muted mb-0">Add, edit, and manage partner brands</p>
-              </div>
-              <div className="d-flex gap-3 align-items-center">
-                <a href="/admin/cms/brands" className="btn btn-secondary btn-sm">
-                  ← Back to Brands CMS
-                </a>
-                <Button 
-                  onClick={handleSave} 
-                  disabled={saving}
-                  size="md"
-                  variant="success"
-                  className="px-4"
-                >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </Button>
+                <h1 className="h3 mb-2">🏢 Brands Management</h1>
+                <p className="text-muted mb-0">Add, edit, and delete partner brands</p>
               </div>
             </div>
           </div>
@@ -188,15 +181,15 @@ export default function BrandsManagePage() {
           </div>
         )}
 
-        {/* Brands List */}
+        {/* Main Content */}
         <Card className="shadow-sm">
           <div className="card-body p-4">
             <BrandsList 
               brands={brands} 
               setBrands={setBrands} 
-              onAdd={addBrandToAPI}
-              onUpdate={updateBrandInAPI}
-              onDelete={deleteBrandFromAPI}
+              onAdd={onAdd} 
+              onUpdate={onUpdate} 
+              onDelete={onDelete} 
             />
           </div>
         </Card>
@@ -406,6 +399,7 @@ function BrandsList({
                         </Button>
                       </div>
 
+                      {/* Brand form */}
                       <div className="mb-3">
                         <p className="text-muted small mb-2">Basic information</p>
                         <div className="d-flex align-items-center gap-3 mb-2">
@@ -420,16 +414,6 @@ function BrandsList({
                           />
                         </div>
                         <FormGrid columns={2}>
-                          <ImageUpload
-                            label="Brand Logo"
-                            value={brand.imagePath}
-                            onChange={(value) => {
-                              const updatedBrands = [...brands];
-                              updatedBrands[actualIndex] = { ...brand, imagePath: value };
-                              setBrands(updatedBrands);
-                            }}
-                            placeholder="/image/brand/logo.png"
-                          />
                           <Input
                             label="Brand Name"
                             value={brand.name}
@@ -438,22 +422,40 @@ function BrandsList({
                               updatedBrands[actualIndex] = { ...brand, name: value };
                               setBrands(updatedBrands);
                             }}
-                            placeholder="Fortinet"
+                            placeholder="Brand Name"
+                          />
+                          <Input
+                            label="Brand Link"
+                            value={brand.link}
+                            onChange={(value) => {
+                              const updatedBrands = [...brands];
+                              updatedBrands[actualIndex] = { ...brand, link: value };
+                              setBrands(updatedBrands);
+                            }}
+                            placeholder="#"
                           />
                         </FormGrid>
-                        <Input
-                          label="Brand Link"
-                          value={brand.link}
+                      </div>
+
+                      {/* Logo upload */}
+                      <div className="mb-3">
+                        <p className="text-muted small mb-2">Brand logo</p>
+                        <ImageUpload
+                          label="Brand Logo"
+                          value={brand.imagePath}
                           onChange={(value) => {
                             const updatedBrands = [...brands];
-                            updatedBrands[actualIndex] = { ...brand, link: value };
+                            updatedBrands[actualIndex] = { ...brand, imagePath: value };
                             setBrands(updatedBrands);
                           }}
-                          placeholder="https://www.brand.com"
-                          className="mt-2"
+                          placeholder="/image/brand/logo.png"
                         />
-                        <Input
-                          label="Description"
+                      </div>
+
+                      {/* Description */}
+                      <div className="mb-3">
+                        <p className="text-muted small mb-2">Brand description</p>
+                        <RichTextEditor
                           value={brand.description || ''}
                           onChange={(value) => {
                             const updatedBrands = [...brands];
@@ -461,19 +463,21 @@ function BrandsList({
                             setBrands(updatedBrands);
                           }}
                           placeholder="Enter brand description..."
-                          className="mt-2"
                         />
-                        <div className="mt-3">
-                          <p className="text-muted small mb-2">Products</p>
-                          <ProductsManager
-                            products={brand.products || []}
-                            onChange={(products) => {
-                              const updatedBrands = [...brands];
-                              updatedBrands[actualIndex] = { ...brand, products };
-                              setBrands(updatedBrands);
-                            }}
-                          />
-                        </div>
+                      </div>
+
+                      {/* Products */}
+                      <div className="mb-2">
+                        <p className="text-muted small mb-2">Products</p>
+                        <ProductsManager
+                          brandIndex={actualIndex}
+                          products={brand.products || []}
+                          onSave={(products) => {
+                            const updatedBrands = [...brands];
+                            updatedBrands[actualIndex] = { ...brand, products };
+                            setBrands(updatedBrands);
+                          }}
+                        />
                         <div className="d-flex justify-content-end mt-3">
                           <Button
                             variant="success"
@@ -485,13 +489,18 @@ function BrandsList({
                               const isNewBrand = !currentBrand?.name || String(currentBrand?.name || '').trim() === '';
                               
                               if (isNewBrand) {
-                                // Add new brand
-                                await onAdd(currentBrand);
+                                // If it's a new brand, add it
+                                const success = await onAdd(currentBrand);
+                                if (success) {
+                                  setEditingIndex(null);
+                                }
                               } else {
-                                // Update existing brand
-                                await onUpdate(actualIndex, currentBrand);
+                                // If it's an existing brand, update it
+                                const success = await onUpdate(actualIndex, currentBrand);
+                                if (success) {
+                                  setEditingIndex(null);
+                                }
                               }
-                              setEditingIndex(null);
                               setSaving(false);
                             }}
                           >
@@ -511,198 +520,115 @@ function BrandsList({
   );
 }
 
-// Products Manager Component - Simplified (only image and name)
-// Products are saved as part of the brand update, so no individual API calls needed
-function ProductsManager({ products, onChange }: { products: BrandProduct[]; onChange: (products: BrandProduct[]) => void }) {
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+// Products Manager Component
+function ProductsManager({
+  brandIndex,
+  products,
+  onSave,
+}: {
+  brandIndex: number;
+  products: BrandProduct[];
+  onSave: (products: BrandProduct[]) => void;
+}) {
+  const [localProducts, setLocalProducts] = useState<BrandProduct[]>(products);
+
+  useEffect(() => {
+    setLocalProducts(products);
+  }, [products]);
+
+  const addProduct = () => {
+    const newProduct: BrandProduct = {
+      name: '',
+      imagePath: '',
+      description: '',
+    };
+    setLocalProducts([...localProducts, newProduct]);
+  };
+
+  const updateProduct = (index: number, product: BrandProduct) => {
+    const updated = [...localProducts];
+    updated[index] = product;
+    setLocalProducts(updated);
+    onSave(updated);
+  };
+
+  const deleteProduct = (index: number) => {
+    const updated = localProducts.filter((_, i) => i !== index);
+    setLocalProducts(updated);
+    onSave(updated);
+  };
 
   return (
-    <>
+    <div className="border rounded p-3 bg-light">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <p className="text-muted mb-0 small">
-          {products?.length || 0} product{products?.length !== 1 ? 's' : ''} listed
+        <p className="text-muted small mb-0">
+          {localProducts.length} product{localProducts.length !== 1 ? 's' : ''}
         </p>
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => {
-            const newProduct: BrandProduct = {
-              name: '',
-              imagePath: '',
-              description: '',
-            };
-            onChange([newProduct, ...(products || [])]);
-            setEditingIndex(0);
-          }}
-        >
+        <Button variant="primary" size="sm" onClick={addProduct}>
           + Add Product
         </Button>
       </div>
 
-      {(!products || products.length === 0) ? (
-        <div className="text-center py-3 border border-dashed rounded bg-light">
-          <p className="text-muted mb-2 small">No products added yet.</p>
-        </div>
+      {localProducts.length === 0 ? (
+        <p className="text-muted text-center py-3">No products added yet.</p>
       ) : (
         <div className="d-flex flex-column gap-2">
-          {products.map((product, index) => {
-            const actualIndex = index;
-            const isEditing = editingIndex === index;
-
-            return (
-              <Card key={actualIndex} className="border">
-                <div className="card-body p-3">
-                  {!isEditing ? (
-                    <div className="d-flex justify-content-between align-items-center gap-2">
-                      <div className="flex-grow-1 d-flex align-items-center gap-2">
-                        {product.imagePath && (
-                          <div style={{ width: '80px', height: '60px', flexShrink: 0 }}>
-                            <img
-                              src={product.imagePath}
-                              alt={product.name || 'Product image'}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                borderRadius: '4px',
-                                border: '1px solid #e0e0e0',
-                              }}
-                            />
-                          </div>
-                        )}
-                        <div>
-                          <h6 className="mb-0 fw-semibold">{product.name || 'Untitled Product'}</h6>
-                          {product.description && (
-                            <div 
-                              className="text-muted small mt-1"
-                              style={{ 
-                                maxWidth: '300px',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                              }}
-                              dangerouslySetInnerHTML={{ 
-                                __html: product.description.replace(/<[^>]*>/g, '').substring(0, 100) + '...' 
-                              }}
-                            />
-                          )}
-                        </div>
-                      </div>
-                      <div className="d-flex gap-2">
-                        <button
-                          type="button"
-                          className="btn btn-link p-0 border-0"
-                          onClick={() => setEditingIndex(actualIndex)}
-                          title="Edit product"
-                          style={{ color: '#28a745' }}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-link p-0 border-0"
-                          onClick={() => {
-                            if (confirm('Are you sure you want to delete this product?')) {
-                              const updatedProducts = products.filter((_, i) => i !== actualIndex);
-                              onChange(updatedProducts);
-                              if (editingIndex === actualIndex) {
-                                setEditingIndex(null);
-                              }
-                            }
-                          }}
-                          title="Delete product"
-                          style={{ color: '#dc3545' }}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h6 className="mb-0">Editing Product</h6>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            const currentProduct = products[actualIndex];
-                            const isNewProduct = !currentProduct?.name || String(currentProduct?.name || '').trim() === '';
-                            if (isNewProduct) {
-                              const updatedProducts = products.filter((_, i) => i !== actualIndex);
-                              onChange(updatedProducts);
-                              setEditingIndex(null);
-                            } else {
-                              setEditingIndex(null);
-                            }
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                      <FormGrid columns={2}>
-                        <ImageUpload
-                          label="Product Image"
-                          value={product.imagePath}
-                          onChange={(value) => {
-                            const updatedProducts = [...products];
-                            updatedProducts[actualIndex] = { ...product, imagePath: value };
-                            onChange(updatedProducts);
-                          }}
-                          placeholder="/image/product/product.jpg"
-                        />
-                        <Input
-                          label="Product Name"
-                          value={product.name}
-                          onChange={(value) => {
-                            const updatedProducts = [...products];
-                            updatedProducts[actualIndex] = { ...product, name: value };
-                            onChange(updatedProducts);
-                          }}
-                          placeholder="Product Name"
-                        />
-                      </FormGrid>
-                      <div className="mt-3">
-                        <RichTextEditor
-                          label="Description"
-                          value={product.description || ''}
-                          onChange={(value) => {
-                            const updatedProducts = [...products];
-                            updatedProducts[actualIndex] = { ...product, description: value };
-                            onChange(updatedProducts);
-                          }}
-                          placeholder="Enter product description..."
-                        />
-                      </div>
-                      <div className="d-flex justify-content-end mt-3">
-                        <Button
-                          variant="success"
-                          size="sm"
-                          onClick={() => {
-                            setEditingIndex(null);
-                          }}
-                        >
-                          Done Editing
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+          {localProducts.map((product, index) => (
+            <Card key={index} className="border">
+              <div className="card-body p-3">
+                <div className="d-flex justify-content-between align-items-start mb-2">
+                  <h6 className="mb-0">Product {index + 1}</h6>
+                  <button
+                    type="button"
+                    className="btn btn-link p-0 text-danger"
+                    onClick={() => deleteProduct(index)}
+                    title="Delete product"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                      <path d="M10 11v6" />
+                      <path d="M14 11v6" />
+                      <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+                    </svg>
+                  </button>
                 </div>
-              </Card>
-            );
-          })}
+                <FormGrid columns={2}>
+                  <Input
+                    label="Product Name"
+                    value={product.name}
+                    onChange={(value) => updateProduct(index, { ...product, name: value })}
+                    placeholder="Product Name"
+                  />
+                  <ImageUpload
+                    label="Product Image"
+                    value={product.imagePath}
+                    onChange={(value) => updateProduct(index, { ...product, imagePath: value })}
+                    placeholder="/image/product/product.jpg"
+                  />
+                </FormGrid>
+                <div className="mt-2">
+                  <RichTextEditor
+                    value={product.description || ''}
+                    onChange={(value) => updateProduct(index, { ...product, description: value })}
+                    placeholder="Enter product description..."
+                  />
+                </div>
+              </div>
+            </Card>
+          ))}
         </div>
       )}
-    </>
+    </div>
   );
 }
