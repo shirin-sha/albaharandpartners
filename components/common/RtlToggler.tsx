@@ -6,6 +6,12 @@ export default function RtlToggler() {
   const pathname = usePathname();
   const router = useRouter();
   const isRtl = pathname?.startsWith('/ar') || false;
+  
+  // Hide RTL toggle button on admin pages
+  const isAdminPage = pathname?.startsWith('/admin') || false;
+  if (isAdminPage) {
+    return null;
+  }
 
   useEffect(() => {
     // Apply RTL/LTR direction based on route

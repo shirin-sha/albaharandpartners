@@ -1,264 +1,572 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { HomepageContent, HeroSlide, ServiceItem, ProcessStep, BlogPost, Counter } from '@/types/homepage';
-import {
-  Button,
-  Input,
-  Textarea,
-  Card,
-  Tabs,
-  Tab,
-  Toggle,
-  Alert,
-  Section,
-  LanguageSwitch,
-  ArrayManager,
-  FormGrid,
-  ImageUpload,
-} from '@/components/admin/ui';
+import ImageUpload from '@/components/admin/ui/ImageUpload';
 
-export default function HomepageManager() {
-  const [language, setLanguage] = useState<'ltr' | 'rtl'>('ltr');
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [activeTab, setActiveTab] = useState('hero');
-  const [content, setContent] = useState<HomepageContent | null>(null);
+const HOMEPAGE_SECTIONS = [
+  'hero',
+  'about',
+  'process',
+  'services',
+  'testimonial',
+  'brands',
+  'caseStudies',
+  'features',
+  'blogs',
+  'cta',
+] as const;
 
-  // Tab configuration with icons
-  const tabs: Tab[] = [
-    { id: 'hero', label: 'Hero Slider', icon: '🎬' },
-    { id: 'about', label: 'About', icon: '👥' },
-    { id: 'process', label: 'Our Advantage', icon: '⚙️' },
-    { id: 'services', label: 'Our Solutions', icon: '🛠️' },
-    { id: 'testimonial', label: 'Who we are', icon: '💬' },
-    { id: 'brands', label: 'Brands', icon: '🏢' },
-    { id: 'caseStudies', label: 'Customer Stories', icon: '📊' },
-    { id: 'features', label: 'Why al-bahar', icon: '⭐' },
-    { id: 'blogs', label: 'Blogs', icon: '📝' },
-    { id: 'cta', label: 'Contact us', icon: '📞' },
-  ];
+interface SectionData {
+  sectionId: string;
+  enabled: boolean;
+  order: number;
+  ltr: any;
+  rtl: any;
+}
+
+const HomePageCMS = () => {
+  const [sections, setSections] = useState<SectionData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [rtlLoaded, setRtlLoaded] = useState(false);
+  const [cachedLtrContent, setCachedLtrContent] = useState<HomepageContent | null>(null);
+  const [cachedRtlContent, setCachedRtlContent] = useState<HomepageContent | null>(null);
 
   useEffect(() => {
-    loadContent();
-  }, [language]);
+    fetchSections();
+  }, []);
 
-  const loadContent = async () => {
-    setLoading(true);
+  const fetchSections = async () => {
     try {
-      const response = await fetch(`/api/homepage?language=${language}`);
-      const result = await response.json();
+      // Only load LTR initially for faster page load
+      const ltrRes = await fetch('/api/homepage?language=ltr');
+      const ltrResult = await ltrRes.json();
       
-      if (result.success && result.data) {
-        // Merge loaded data with empty structure to ensure all fields exist
-        const mergedContent = {
-          ...getEmptyContent(),
-          ...result.data,
-          featuresSection: {
-            ...getEmptyContent().featuresSection,
-            ...result.data.featuresSection,
-            benefits: result.data.featuresSection?.benefits || [],
-            counters: result.data.featuresSection?.counters || [],
-          },
-        };
-        setContent(mergedContent);
-      } else {
-        // Initialize with empty structure
-        setContent(getEmptyContent());
+      const ltrContent = ltrResult.success && ltrResult.data ? (ltrResult.data as HomepageContent) : null;
+      setCachedLtrContent(ltrContent);
+      
+      if (ltrContent) {
+        // Convert HomepageContent to SectionData format (RTL will be loaded lazily)
+        const sectionData: SectionData[] = [
+          { sectionId: 'hero', enabled: true, order: 0, ltr: { slides: ltrContent.heroSlides || [] }, rtl: {} },
+          { sectionId: 'about', enabled: true, order: 1, ltr: ltrContent.aboutSection || {}, rtl: {} },
+          { sectionId: 'process', enabled: true, order: 2, ltr: ltrContent.processSection || {}, rtl: {} },
+          { sectionId: 'services', enabled: true, order: 3, ltr: ltrContent.servicesSection || {}, rtl: {} },
+          { sectionId: 'testimonial', enabled: true, order: 4, ltr: ltrContent.testimonialSection || {}, rtl: {} },
+          { sectionId: 'brands', enabled: true, order: 5, ltr: ltrContent.brandsSection || {}, rtl: {} },
+          { sectionId: 'caseStudies', enabled: true, order: 6, ltr: ltrContent.caseStudiesSection || {}, rtl: {} },
+          { sectionId: 'features', enabled: true, order: 7, ltr: ltrContent.featuresSection || {}, rtl: {} },
+          { sectionId: 'blogs', enabled: true, order: 8, ltr: ltrContent.blogsSection || {}, rtl: {} },
+          { sectionId: 'cta', enabled: true, order: 9, ltr: ltrContent.ctaSection || {}, rtl: {} },
+        ];
+        
+        setSections(sectionData);
       }
     } catch (error) {
-      console.error('Error loading content:', error);
-      showMessage('error', 'Failed to load content');
+      console.error('Error fetching sections:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const getEmptyContent = (): HomepageContent => ({
+  const loadRtlData = async () => {
+    if (rtlLoaded) return;
+    try {
+      const rtlRes = await fetch('/api/homepage?language=rtl');
+      const rtlResult = await rtlRes.json();
+      const rtlContent = rtlResult.success && rtlResult.data ? (rtlResult.data as HomepageContent) : null;
+      setCachedRtlContent(rtlContent);
+      
+      if (rtlContent && sections.length > 0) {
+        // Update sections with RTL data
+        const updatedSections = sections.map(section => {
+          const sectionId = section.sectionId;
+          let rtlData: any = {};
+          
+          switch (sectionId) {
+            case 'hero':
+              rtlData = { slides: rtlContent.heroSlides || [] };
+              break;
+            case 'about':
+              rtlData = rtlContent.aboutSection || {};
+              break;
+            case 'process':
+              rtlData = rtlContent.processSection || {};
+              break;
+            case 'services':
+              rtlData = rtlContent.servicesSection || {};
+              break;
+            case 'testimonial':
+              rtlData = rtlContent.testimonialSection || {};
+              break;
+            case 'brands':
+              rtlData = rtlContent.brandsSection || {};
+              break;
+            case 'caseStudies':
+              rtlData = rtlContent.caseStudiesSection || {};
+              break;
+            case 'features':
+              rtlData = rtlContent.featuresSection || {};
+              break;
+            case 'blogs':
+              rtlData = rtlContent.blogsSection || {};
+              break;
+            case 'cta':
+              rtlData = rtlContent.ctaSection || {};
+              break;
+          }
+          
+          return { ...section, rtl: rtlData };
+        });
+        
+        setSections(updatedSections);
+        setRtlLoaded(true);
+      }
+    } catch (error) {
+      console.error('Error loading RTL data:', error);
+    }
+  };
+
+  const saveSection = async (sectionId: string, data: Partial<SectionData>) => {
+    try {
+      const ltrData = data.ltr || {};
+      const rtlData = data.rtl || {};
+      
+      // Use cached content if available, otherwise fetch
+      let ltrContent: HomepageContent = cachedLtrContent || getEmptyContent('ltr');
+      let rtlContent: HomepageContent = cachedRtlContent || getEmptyContent('rtl');
+      
+      // If cache is missing, fetch it
+      if (!cachedLtrContent || !cachedRtlContent) {
+        const [ltrRes, rtlRes] = await Promise.all([
+          fetch('/api/homepage?language=ltr'),
+          fetch('/api/homepage?language=rtl'),
+        ]);
+        
+        const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
+        ltrContent = ltrResult.success && ltrResult.data 
+          ? ltrResult.data 
+          : getEmptyContent('ltr');
+        rtlContent = rtlResult.success && rtlResult.data 
+          ? rtlResult.data 
+          : getEmptyContent('rtl');
+        
+        // Update cache
+        setCachedLtrContent(ltrContent);
+        setCachedRtlContent(rtlContent);
+      }
+
+      // Update the specific section for both languages
+      const updateSection = (content: HomepageContent, sectionData: any, lang: 'ltr' | 'rtl') => {
+        switch (sectionId) {
+          case 'hero':
+            content.heroSlides = sectionData?.slides || [];
+            break;
+          case 'about':
+            content.aboutSection = { ...content.aboutSection, ...sectionData, language: lang };
+            break;
+          case 'process':
+            content.processSection = { ...content.processSection, ...sectionData, language: lang };
+            break;
+          case 'services':
+            content.servicesSection = { ...content.servicesSection, ...sectionData, language: lang };
+            break;
+          case 'testimonial':
+            content.testimonialSection = { ...content.testimonialSection, ...sectionData, language: lang };
+            break;
+          case 'brands':
+            content.brandsSection = { ...content.brandsSection, ...sectionData, language: lang };
+            break;
+          case 'caseStudies':
+            content.caseStudiesSection = { ...content.caseStudiesSection, ...sectionData, language: lang };
+            break;
+          case 'features':
+            content.featuresSection = { ...content.featuresSection, ...sectionData, language: lang };
+            break;
+          case 'blogs':
+            content.blogsSection = { ...content.blogsSection, ...sectionData, language: lang };
+            break;
+          case 'cta':
+            content.ctaSection = { ...content.ctaSection, ...sectionData, language: lang };
+            break;
+        }
+      };
+
+      updateSection(ltrContent, ltrData, 'ltr');
+      updateSection(rtlContent, rtlData, 'rtl');
+
+      const [ltrSaveRes, rtlSaveRes] = await Promise.all([
+        fetch('/api/homepage', {
+          method: ltrContent._id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...ltrContent, language: 'ltr' }),
+        }),
+        fetch('/api/homepage', {
+          method: rtlContent._id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...rtlContent, language: 'rtl' }),
+        }),
+      ]);
+
+      const [ltrSaveResult, rtlSaveResult] = await Promise.all([ltrSaveRes.json(), rtlSaveRes.json()]);
+      if (ltrSaveResult.success && rtlSaveResult.success) {
+        // Update cache with saved content
+        setCachedLtrContent(ltrContent);
+        setCachedRtlContent(rtlContent);
+        
+        // Update sections state without full refetch
+        const updatedSections = sections.map(s => {
+          if (s.sectionId === sectionId) {
+            return { ...s, ltr: ltrData, rtl: rtlData };
+          }
+          return s;
+        });
+        setSections(updatedSections);
+        
+        setSelectedSection(null);
+        alert(`${sectionId} saved successfully (English & Arabic)!`);
+      } else {
+        alert(`Failed to save: ${ltrSaveResult.message || rtlSaveResult.message}`);
+      }
+    } catch (error) {
+      console.error('Error saving section:', error);
+      alert('Failed to save section');
+    }
+  };
+
+  const getEmptyContent = (lang: 'ltr' | 'rtl'): HomepageContent => ({
     _id: '',
-    language,
+    language: lang,
     isActive: true,
-    // createdAt and updatedAt are optional Date fields, omit them for new content
     heroSlides: [],
     aboutSection: {
       tag: '', heading: '', description: '', buttonText: '', buttonLink: '',
-      phoneLabel: '', phoneNumber: '', language, isActive: true,
+      phoneLabel: '', phoneNumber: '', language: lang, isActive: true,
     },
     processSection: {
       tag: '', heading: '', subheading: '', buttonText: '', buttonLink: '',
-      steps: [], language, isActive: true,
+      steps: [], language: lang, isActive: true,
     },
     servicesSection: {
-      tag: '', heading: '', subheading: '', services: [], language, isActive: true,
+      tag: '', heading: '', subheading: '', services: [], language: lang, isActive: true,
     },
     testimonialSection: {
       tag: '', heading: '', description: '',
       imagePath: '', personName: '', personTitle: '',
-      secondaryHeading: '', secondaryDescription: '', language, isActive: true,
+      secondaryHeading: '', secondaryDescription: '', language: lang, isActive: true,
     },
     brandsSection: {
-      heading: '', brands: [], language, isActive: true,
+      heading: '', brands: [], language: lang, isActive: true,
     },
     caseStudiesSection: {
-      tag: '', heading: '', subheading: '', caseStudies: [], language, isActive: true,
+      tag: '', heading: '', subheading: '', caseStudies: [], language: lang, isActive: true,
     },
     featuresSection: {
       tag: '', heading: '', description: '', imagePath: '',
       benefits: [], counters: [], buttonText: '', buttonLink: '',
-      language, isActive: true,
+      language: lang, isActive: true,
     },
     blogsSection: {
       tag: '', heading: '', subheading: '', buttonText: '', buttonLink: '',
-      posts: [], language, isActive: true,
+      posts: [], language: lang, isActive: true,
     },
     ctaSection: {
       tag: '', heading: '', description: '', buttonText: '', buttonLink: '',
-      phoneLabel: '', phoneNumber: '', language, isActive: true,
+      phoneLabel: '', phoneNumber: '', language: lang, isActive: true,
     },
   });
 
-  const showMessage = (type: 'success' | 'error', text: string) => {
-    setMessage({ type, text });
-    setTimeout(() => setMessage(null), 5000);
-  };
-
-  const handleSave = async () => {
-    if (!content) return;
-    
-    setSaving(true);
-    try {
-      const method = content._id ? 'PUT' : 'POST';
-      const response = await fetch('/api/homepage', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...content, language }),
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        showMessage('success', 'Content saved successfully!');
-        await loadContent();
-      } else {
-        showMessage('error', result.message || 'Failed to save content');
-      }
-    } catch (error) {
-      console.error('Error saving content:', error);
-      showMessage('error', 'Failed to save content');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (loading || !content) {
-    return (
-      <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
-        <div className="text-center">
-          <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }} role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="text-muted" style={{ fontSize: '1.3rem' }}>Loading homepage content...</p>
-        </div>
-      </div>
-    );
+  if (loading) {
+    return <div className="admin-loading">Loading...</div>;
   }
 
   return (
-    <div className="admin-bg-gradient">
-      {/* Header */}
-      <div className="admin-header-sticky border-bottom">
-        <div className="container-fluid py-3">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h1 className="h2 mb-1" style={{ fontSize: '2rem', fontWeight: '700' }}>📄 Homepage Content Manager</h1>
-              <p className="text-muted mb-0" style={{ fontSize: '1.2rem' }}>Manage all homepage sections in one place</p>
-            </div>
-            <div className="d-flex align-items-center gap-3">
-              <LanguageSwitch language={language} onChange={setLanguage} />
-              <Button
-                onClick={handleSave}
-                disabled={saving}
-                variant="success"
-                size="md"
-                className="px-4"
-              >
-                {saving ? 'Saving...' : 'Save Changes'}
-              </Button>
-            </div>
-          </div>
-        </div>
+    <div className="admin-cms-container">
+      <div className="admin-cms-header">
+        <h1>Home Page CMS</h1>
       </div>
 
-      {/* Alert Messages */}
-      {message && (
-        <div className="container-fluid py-3">
-          <Alert
-            type={message.type}
-            message={message.text}
-            onClose={() => setMessage(null)}
-          />
-        </div>
-      )}
-
-      {/* Tabs */}
-      <div className="container-fluid">
-        <div className="card shadow-sm mt-3 mb-0 rounded-bottom-0">
-          <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-        </div>
-      </div>
-
-      {/* Content Area */}
-      <div className="container-fluid pb-4">
-        <Card noPadding className="rounded-top-0 shadow-sm">
-          <div className="p-4" style={{ minHeight: '500px' }}>
-            {activeTab === 'hero' && <HeroTab content={content} setContent={setContent} />}
-            {activeTab === 'about' && <AboutTab content={content} setContent={setContent} />}
-            {activeTab === 'process' && <ProcessTab content={content} setContent={setContent} />}
-            {activeTab === 'services' && <ServicesTab content={content} setContent={setContent} />}
-            {activeTab === 'testimonial' && <TestimonialTab content={content} setContent={setContent} />}
-            {activeTab === 'brands' && <BrandsTab content={content} setContent={setContent} />}
-            {activeTab === 'caseStudies' && <CaseStudiesTab content={content} setContent={setContent} />}
-            {activeTab === 'features' && <FeaturesTab content={content} setContent={setContent} />}
-            {activeTab === 'blogs' && <BlogsTab content={content} setContent={setContent} />}
-            {activeTab === 'cta' && <CtaTab content={content} setContent={setContent} />}
-          </div>
-        </Card>
+      <div className="admin-cms-sections">
+        {HOMEPAGE_SECTIONS.map((sectionId) => {
+          const section = sections.find((s) => s.sectionId === sectionId);
+          return (
+            <SectionEditor
+              key={sectionId}
+              sectionId={sectionId}
+              section={section}
+              onSave={saveSection}
+              isOpen={selectedSection === sectionId}
+              onToggle={async () => {
+                // Load RTL data when opening a section (lazy load)
+                if (!rtlLoaded && selectedSection !== sectionId) {
+                  await loadRtlData();
+                }
+                setSelectedSection(selectedSection === sectionId ? null : sectionId);
+              }}
+            />
+          );
+        })}
       </div>
     </div>
   );
+};
+
+interface SectionEditorProps {
+  sectionId: string;
+  section?: SectionData;
+  onSave: (sectionId: string, data: Partial<SectionData>) => void;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
-// ============ TAB COMPONENTS ============
+const SectionEditor = ({
+  sectionId,
+  section,
+  onSave,
+  isOpen,
+  onToggle,
+}: SectionEditorProps) => {
+  const [formData, setFormData] = useState<any>({
+    ltr: section?.ltr || {},
+    rtl: section?.rtl || {},
+  });
 
-interface TabProps {
-  content: HomepageContent;
-  setContent: React.Dispatch<React.SetStateAction<HomepageContent | null>>;
-}
-
-// Hero Tab
-function HeroTab({ content, setContent }: TabProps) {
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-
-  return (
-    <Section 
-      title="Hero Slider" 
-      description="Create engaging hero slides for your homepage"
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.heroSlides.length > 0}
-          onChange={() => {}}
-        />
+  useEffect(() => {
+    if (section) {
+      const ltrData = section.ltr || {};
+      const rtlData = section.rtl || {};
+      
+      // Initialize arrays for sections that need them
+      if (sectionId === 'hero') {
+        setFormData({
+          ltr: {
+            slides: Array.isArray(ltrData.slides) ? ltrData.slides : (ltrData.title ? [ltrData] : [])
+          },
+          rtl: {
+            slides: Array.isArray(rtlData.slides) ? rtlData.slides : (rtlData.title ? [rtlData] : [])
+          }
+        });
+      } else if (sectionId === 'process') {
+        setFormData({
+          ltr: { ...ltrData, steps: Array.isArray(ltrData.steps) ? ltrData.steps : [] },
+          rtl: { ...rtlData, steps: Array.isArray(rtlData.steps) ? rtlData.steps : [] }
+        });
+      } else if (sectionId === 'caseStudies') {
+        setFormData({
+          ltr: { ...ltrData, caseStudies: Array.isArray(ltrData.caseStudies) ? ltrData.caseStudies : [] },
+          rtl: { ...rtlData, caseStudies: Array.isArray(rtlData.caseStudies) ? rtlData.caseStudies : [] }
+        });
+      } else if (sectionId === 'features') {
+        setFormData({
+          ltr: { ...ltrData, benefits: Array.isArray(ltrData.benefits) ? ltrData.benefits : [], counters: Array.isArray(ltrData.counters) ? ltrData.counters : [] },
+          rtl: { ...rtlData, benefits: Array.isArray(rtlData.benefits) ? rtlData.benefits : [], counters: Array.isArray(rtlData.counters) ? rtlData.counters : [] }
+        });
+      } else if (sectionId === 'blogs') {
+        setFormData({
+          ltr: { ...ltrData, posts: Array.isArray(ltrData.posts) ? ltrData.posts : [] },
+          rtl: { ...rtlData, posts: Array.isArray(rtlData.posts) ? rtlData.posts : [] }
+        });
+      } else if (sectionId === 'brands') {
+        setFormData({
+          ltr: { ...ltrData, brands: Array.isArray(ltrData.brands) ? ltrData.brands : [] },
+          rtl: { ...rtlData, brands: Array.isArray(rtlData.brands) ? rtlData.brands : [] }
+        });
+      } else {
+        setFormData({ ltr: ltrData, rtl: rtlData });
       }
-    >
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <p className="text-muted mb-0">
-          {content.heroSlides?.length || 0} slide{content.heroSlides?.length !== 1 ? 's' : ''} listed
-        </p>
-        <Button
-          variant="primary"
-          size="sm"
+    } else {
+      // Initialize empty data
+      const emptyLtr = sectionId === 'hero' ? { slides: [] } : 
+                      sectionId === 'services' ? { tag: '', heading: '', subheading: '', language: 'ltr', isActive: true } :
+                      sectionId === 'process' ? { steps: [], tag: '', heading: '', subheading: '', buttonText: '', buttonLink: '', language: 'ltr', isActive: true } :
+                      sectionId === 'caseStudies' ? { caseStudies: [], tag: '', heading: '', subheading: '', language: 'ltr', isActive: true } :
+                      sectionId === 'features' ? { benefits: [], counters: [], tag: '', heading: '', description: '', imagePath: '', buttonText: '', buttonLink: '', language: 'ltr', isActive: true } :
+                      sectionId === 'blogs' ? { posts: [], tag: '', heading: '', subheading: '', buttonText: '', buttonLink: '', language: 'ltr', isActive: true } :
+                      sectionId === 'brands' ? { brands: [], heading: '', language: 'ltr', isActive: true } : {};
+      const emptyRtl = { ...emptyLtr, language: 'rtl' };
+      setFormData({ ltr: emptyLtr, rtl: emptyRtl });
+    }
+  }, [section, sectionId]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const updateData: Partial<SectionData> = {
+      enabled: section?.enabled ?? true,
+      order: section?.order ?? 0,
+      ltr: formData.ltr,
+      rtl: formData.rtl,
+    };
+    onSave(sectionId, updateData);
+  };
+
+  const updateField = (lang: 'ltr' | 'rtl', path: string, value: any) => {
+    const keys = path.split('.');
+    const newData = { ...formData };
+    const langData = { ...newData[lang] };
+    let current: any = langData;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (!current[keys[i]]) current[keys[i]] = {};
+      current = current[keys[i]];
+    }
+    current[keys[keys.length - 1]] = value;
+    setFormData({ ...newData, [lang]: langData });
+  };
+
+  const renderFields = () => {
+    switch (sectionId) {
+      case 'hero':
+        const slidesLtr = formData.ltr?.slides || [];
+        const slidesRtl = formData.rtl?.slides || [];
+        const maxSlides = Math.max(slidesLtr.length, slidesRtl.length);
+  return (
+          <>
+            <div className="hero-slides-container">
+              {Array.from({ length: maxSlides }).map((_, index: number) => {
+                const slideLtr = slidesLtr[index] || { title: '', subtitle: '', buttonText: '', buttonLink: '', image: '', order: index, language: 'ltr', isActive: true };
+                const slideRtl = slidesRtl[index] || { title: '', subtitle: '', buttonText: '', buttonLink: '', image: '', order: index, language: 'rtl', isActive: true };
+                return (
+                  <div key={index} className="hero-slide-card">
+                    <div className="hero-slide-header">
+                      <h4>Slide {index + 1}</h4>
+                      {maxSlides > 1 && (
+                        <button
+                          type="button"
+                          className="hero-slide-remove"
+                          onClick={() => {
+                            const newSlidesLtr = slidesLtr.filter((_: any, i: number) => i !== index);
+                            const newSlidesRtl = slidesRtl.filter((_: any, i: number) => i !== index);
+                            setFormData({ 
+                              ...formData, 
+                              ltr: { ...formData.ltr, slides: newSlidesLtr },
+                              rtl: { ...formData.rtl, slides: newSlidesRtl }
+                            });
+                          }}
+                        >
+                          Remove
+                        </button>
+                      )}
+            </div>
+                    <div className="hero-slide-fields">
+                      <div className="form-group">
+                        <label>Title (English)</label>
+                        <input
+                          type="text"
+                          value={slideLtr.title || ''}
+                          onChange={(e) => {
+                            const newSlides = [...slidesLtr];
+                            newSlides[index] = { ...slideLtr, title: e.target.value };
+                            setFormData({ ...formData, ltr: { ...formData.ltr, slides: newSlides } });
+                          }}
+                        />
+          </div>
+                      <div className="form-group">
+                        <label>Title (Arabic)</label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={slideRtl.title || ''}
+                          onChange={(e) => {
+                            const newSlides = [...slidesRtl];
+                            newSlides[index] = { ...slideRtl, title: e.target.value };
+                            setFormData({ ...formData, rtl: { ...formData.rtl, slides: newSlides } });
+                          }}
+                        />
+        </div>
+                      <div className="form-group">
+                        <label>Subtitle (English)</label>
+                        <input
+                          type="text"
+                          value={slideLtr.subtitle || ''}
+                          onChange={(e) => {
+                            const newSlides = [...slidesLtr];
+                            newSlides[index] = { ...slideLtr, subtitle: e.target.value };
+                            setFormData({ ...formData, ltr: { ...formData.ltr, slides: newSlides } });
+                          }}
+                        />
+      </div>
+                      <div className="form-group">
+                        <label>Subtitle (Arabic)</label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={slideRtl.subtitle || ''}
+                          onChange={(e) => {
+                            const newSlides = [...slidesRtl];
+                            newSlides[index] = { ...slideRtl, subtitle: e.target.value };
+                            setFormData({ ...formData, rtl: { ...formData.rtl, slides: newSlides } });
+                          }}
+          />
+        </div>
+                      <div className="form-group">
+                        <label>Button Text (English)</label>
+                        <input
+                          type="text"
+                          value={slideLtr.buttonText || ''}
+                          onChange={(e) => {
+                            const newSlides = [...slidesLtr];
+                            newSlides[index] = { ...slideLtr, buttonText: e.target.value };
+                            setFormData({ ...formData, ltr: { ...formData.ltr, slides: newSlides } });
+                          }}
+                        />
+        </div>
+                      <div className="form-group">
+                        <label>Button Text (Arabic)</label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={slideRtl.buttonText || ''}
+                          onChange={(e) => {
+                            const newSlides = [...slidesRtl];
+                            newSlides[index] = { ...slideRtl, buttonText: e.target.value };
+                            setFormData({ ...formData, rtl: { ...formData.rtl, slides: newSlides } });
+                          }}
+                        />
+      </div>
+                      <div className="form-group">
+                        <label>Button Link</label>
+                        <input
+                          type="text"
+                          value={slideLtr.buttonLink || ''}
+                          onChange={(e) => {
+                            const newSlidesLtr = [...slidesLtr];
+                            const newSlidesRtl = [...slidesRtl];
+                            newSlidesLtr[index] = { ...slideLtr, buttonLink: e.target.value };
+                            newSlidesRtl[index] = { ...slideRtl, buttonLink: e.target.value };
+                            setFormData({ 
+                              ...formData, 
+                              ltr: { ...formData.ltr, slides: newSlidesLtr },
+                              rtl: { ...formData.rtl, slides: newSlidesRtl }
+                            });
+                          }}
+                          placeholder="/solutions"
+                        />
+          </div>
+                      <div className="form-group">
+                        <ImageUpload
+                          label="Image"
+                          value={slideLtr.image || ''}
+                          onChange={(value) => {
+                            const newSlidesLtr = [...slidesLtr];
+                            const newSlidesRtl = [...slidesRtl];
+                            newSlidesLtr[index] = { ...slideLtr, image: value };
+                            newSlidesRtl[index] = { ...slideRtl, image: value };
+                            setFormData({ 
+                              ...formData, 
+                              ltr: { ...formData.ltr, slides: newSlidesLtr },
+                              rtl: { ...formData.rtl, slides: newSlidesRtl }
+                            });
+                          }}
+                          folder="hero"
+                        />
+                      </div>
+      </div>
+    </div>
+  );
+              })}
+              <button
+                type="button"
+                className="hero-add-slide-button"
           onClick={() => {
             const newSlide: HeroSlide = {
               title: '',
@@ -266,1420 +574,1397 @@ function HeroTab({ content, setContent }: TabProps) {
               buttonText: '',
               buttonLink: '',
               image: '',
-              order: content.heroSlides.length,
-              language: content.language,
+              order: Math.max(slidesLtr.length, slidesRtl.length),
+              language: 'ltr',
               isActive: true,
             };
-            // Add new slide at the beginning (latest first)
-            setContent({
-              ...content,
-              heroSlides: [newSlide, ...content.heroSlides],
+            setFormData({
+              ...formData,
+              ltr: { ...formData.ltr, slides: [...slidesLtr, { ...newSlide, language: 'ltr' }] },
+              rtl: { ...formData.rtl, slides: [...slidesRtl, { ...newSlide, language: 'rtl' }] }
             });
-            setEditingIndex(0);
-          }}
-        >
-          + Add New Slide
-        </Button>
+                }}
+              >
+                + Add More Slide
+              </button>
       </div>
-
-      {(!content.heroSlides || content.heroSlides.length === 0) ? (
-        <div className="text-center py-5 border border-dashed rounded bg-light">
-          <p className="text-muted mb-3">No hero slides added yet.</p>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => {
-              const newSlide: HeroSlide = {
-                title: '',
-                subtitle: '',
-                buttonText: '',
-                buttonLink: '',
-                image: '',
-                order: 0,
-                language: content.language,
-                isActive: true,
-              };
-              setContent({
-                ...content,
-                heroSlides: [newSlide],
-              });
-              setEditingIndex(0);
-            }}
-          >
-            Add Your First Slide
-          </Button>
-        </div>
-      ) : (
-        <div className="d-flex flex-column gap-3">
-          {content.heroSlides.map((slide, index) => {
-            const actualIndex = index;
-            const isEditing = editingIndex === index;
-
+          </>
+        );
+      case 'about':
             return (
-              <Card key={actualIndex} className="border-0 border-bottom rounded-0">
-                <div className="card-body py-2 px-0">
-                  {!isEditing ? (
-                    // Collapsed view - single line
-                    <div className="d-flex justify-content-between align-items-center gap-2">
-                      <div className="flex-grow-1 d-flex align-items-center gap-2">
-                        <h6 className="mb-0 fw-semibold" style={{ minWidth: '200px' }}>
-                          {slide.title || 'Untitled Slide'}
-                        </h6>
-                        <span
-                          className={`badge rounded-pill px-2 py-1 ${slide.isActive ? 'bg-success' : 'bg-secondary'}`}
-                        >
-                          {slide.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                        {slide.subtitle && (
-                          <span className="text-muted small text-truncate" style={{ maxWidth: '260px' }}>
-                            {slide.subtitle.substring(0, 60)}
-                            {slide.subtitle.length > 60 ? '...' : ''}
-                          </span>
-                        )}
-                        {slide.buttonText && (
-                          <span className="text-muted small">
-                            Button: {slide.buttonText}
-                          </span>
-                        )}
+          <>
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>Tag (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.tag || ''}
+                      onChange={(e) => updateField('ltr', 'tag', e.target.value)}
+                    />
                       </div>
-                      <div className="d-flex gap-2 ms-2">
-                        <button
-                          type="button"
-                          className="btn btn-link p-0 border-0"
-                          onClick={() => setEditingIndex(actualIndex)}
-                          title="Edit slide"
-                          style={{ color: '#28a745' }}
-                        >
-                          {/* Pencil icon - green */}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-link p-0 border-0"
-                          onClick={() => {
-                            if (confirm('Are you sure you want to delete this slide?')) {
-                              const updatedSlides = content.heroSlides.filter((_, i) => i !== actualIndex);
-                              setContent({ ...content, heroSlides: updatedSlides });
-                              if (editingIndex === actualIndex) {
-                                setEditingIndex(null);
-                              }
-                            }
-                          }}
-                          title="Delete slide"
-                          style={{ color: '#dc3545' }}
-                        >
-                          {/* Trash / bin icon - red */}
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                          </svg>
-                        </button>
+                  <div className="form-group">
+                    <label>Tag (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.tag || ''}
+                      onChange={(e) => updateField('rtl', 'tag', e.target.value)}
+                    />
                       </div>
+                  <div className="form-group">
+                    <label>Heading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.heading || ''}
+                      onChange={(e) => updateField('ltr', 'heading', e.target.value)}
+                    />
                     </div>
-                  ) : (
-                    // Expanded edit view
-                    <div>
-                      {/* Header row for the editor */}
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                          <h5 className="mb-0">Editing: {slide.title || 'New Slide'}</h5>
-                          <p className="text-muted small mb-0">
-                            Update the slide details below, then click "Done Editing".
-                          </p>
+                  <div className="form-group">
+                    <label>Heading (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.heading || ''}
+                      onChange={(e) => updateField('rtl', 'heading', e.target.value)}
+                    />
                         </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            // Get the current slide from state to ensure we have the latest data
-                            const currentSlide = content.heroSlides[actualIndex];
-                            // If it's a new slide (no title or empty title), remove it from the list
-                            const isNewSlide = !currentSlide?.title || String(currentSlide?.title || '').trim() === '';
-                            
-                            if (isNewSlide) {
-                              const updatedSlides = content.heroSlides.filter((_, i) => i !== actualIndex);
-                              setContent({ ...content, heroSlides: updatedSlides });
-                              setEditingIndex(null);
-                            } else {
-                              setEditingIndex(null);
-                            }
-                          }}
-                        >
-                          Cancel
-                        </Button>
+                  <div className="form-group">
+                    <label>Description (English)</label>
+                    <textarea
+                      value={formData.ltr?.description || ''}
+                      onChange={(e) => updateField('ltr', 'description', e.target.value)}
+                      rows={6}
+                    />
                       </div>
-
-                      {/* Slide form */}
-                      <div className="mb-3">
-                        <p className="text-muted small mb-2">Basic information</p>
-                        <div className="d-flex align-items-center gap-3 mb-2">
-                          <Toggle
-                            label="Slide Active"
-                            checked={slide.isActive}
-                            onChange={(value) => {
-                              const updatedSlides = [...content.heroSlides];
-                              updatedSlides[actualIndex] = { ...slide, isActive: value };
-                              setContent({ ...content, heroSlides: updatedSlides });
-                            }}
+                  <div className="form-group">
+                    <label>Description (Arabic)</label>
+                    <textarea
+                      dir="rtl"
+                      value={formData.rtl?.description || ''}
+                      onChange={(e) => updateField('rtl', 'description', e.target.value)}
+                      rows={6}
                           />
                         </div>
-                        <FormGrid columns={2}>
-                          <Input
-                            label="Slide Title"
-                            value={slide.title}
-                            onChange={(value) => {
-                              const updatedSlides = [...content.heroSlides];
-                              updatedSlides[actualIndex] = { ...slide, title: value };
-                              setContent({ ...content, heroSlides: updatedSlides });
-                            }}
-                            placeholder="Enter slide title"
-                          />
-                          <Input
-                            label="Subtitle"
-                            value={slide.subtitle}
-                            onChange={(value) => {
-                              const updatedSlides = [...content.heroSlides];
-                              updatedSlides[actualIndex] = { ...slide, subtitle: value };
-                              setContent({ ...content, heroSlides: updatedSlides });
-                            }}
-                            placeholder="Enter subtitle"
-                          />
-                        </FormGrid>
+                  <div className="form-group">
+                    <label>Button Text (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonText || ''}
+                      onChange={(e) => updateField('ltr', 'buttonText', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Button Text (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.buttonText || ''}
+                      onChange={(e) => updateField('rtl', 'buttonText', e.target.value)}
+                    />
                       </div>
-
-                      {/* Image upload */}
-                      <div className="mb-3">
-                        <p className="text-muted small mb-2">Slide image</p>
-                        <ImageUpload
-                          label="Slide Image"
-                          value={slide.image}
-                          onChange={(value) => {
-                            const updatedSlides = [...content.heroSlides];
-                            updatedSlides[actualIndex] = { ...slide, image: value };
-                            setContent({ ...content, heroSlides: updatedSlides });
-                          }}
-                          placeholder="/image/hero/slide-1.jpg"
+                  <div className="form-group">
+                    <label>Button Link</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonLink || ''}
+                      onChange={(e) => {
+                        updateField('ltr', 'buttonLink', e.target.value);
+                        updateField('rtl', 'buttonLink', e.target.value);
+                      }}
                         />
                       </div>
-
-                      {/* Button settings */}
-                      <div className="mb-2">
-                        <p className="text-muted small mb-2">Call-to-action button</p>
-                        <FormGrid columns={2}>
-                          <Input
-                            label="Button Text"
-                            value={slide.buttonText}
-                            onChange={(value) => {
-                              const updatedSlides = [...content.heroSlides];
-                              updatedSlides[actualIndex] = { ...slide, buttonText: value };
-                              setContent({ ...content, heroSlides: updatedSlides });
-                            }}
-                            placeholder="Learn More"
-                          />
-                          <Input
-                            label="Button Link"
-                            value={slide.buttonLink}
-                            onChange={(value) => {
-                              const updatedSlides = [...content.heroSlides];
-                              updatedSlides[actualIndex] = { ...slide, buttonLink: value };
-                              setContent({ ...content, heroSlides: updatedSlides });
-                            }}
-                            placeholder="/about-us"
-                          />
-                        </FormGrid>
-                        <div className="d-flex justify-content-end mt-3">
-                          <Button
-                            variant="success"
-                            size="sm"
-                            onClick={() => setEditingIndex(null)}
-                          >
-                            Done Editing
-                          </Button>
+                  <div className="form-group">
+                    <label>Phone Label (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.phoneLabel || ''}
+                      onChange={(e) => updateField('ltr', 'phoneLabel', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone Label (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.phoneLabel || ''}
+                      onChange={(e) => updateField('rtl', 'phoneLabel', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone Number</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.phoneNumber || ''}
+                      onChange={(e) => {
+                        updateField('ltr', 'phoneNumber', e.target.value);
+                        updateField('rtl', 'phoneNumber', e.target.value);
+                      }}
+                    />
                         </div>
                       </div>
                     </div>
-                  )}
                 </div>
-              </Card>
-            );
-          })}
-        </div>
-      )}
-    </Section>
-  );
-}
-
-// About Tab
-function AboutTab({ content, setContent }: TabProps) {
+          </>
+        );
+      case 'process':
+        const stepsLtr = formData.ltr?.steps || [];
+        const stepsRtl = formData.rtl?.steps || [];
   return (
-    <Section 
-      title="About Section" 
-      description="Tell visitors about your company"
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.aboutSection.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutSection: { ...content.aboutSection, isActive: value },
-            })
-          }
-        />
-      }
-    >
-      <FormGrid columns={2}>
-        <Input
-          label="Section Tag"
-          value={content.aboutSection.tag}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutSection: { ...content.aboutSection, tag: value },
-            })
-          }
-          placeholder="ABOUT US"
-        />
-        <Input
-          label="Heading"
-          value={content.aboutSection.heading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutSection: { ...content.aboutSection, heading: value },
-            })
-          }
-          placeholder="Empowering Business Through..."
-          required
-        />
-      </FormGrid>
-      <Textarea
-        label="Description"
-        value={content.aboutSection.description}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            aboutSection: { ...content.aboutSection, description: value },
-          })
-        }
-        rows={4}
-        placeholder="Tell your company story..."
-        required
-      />
-      <FormGrid columns={2}>
-        <Input
-          label="Button Text"
-          value={content.aboutSection.buttonText}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutSection: { ...content.aboutSection, buttonText: value },
-            })
-          }
-          placeholder="Learn More"
-        />
-        <Input
-          label="Button Link"
-          value={content.aboutSection.buttonLink}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutSection: { ...content.aboutSection, buttonLink: value },
-            })
-          }
-          placeholder="/about-us"
-        />
-        <Input
-          label="Phone Label"
-          value={content.aboutSection.phoneLabel}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutSection: { ...content.aboutSection, phoneLabel: value },
-            })
-          }
-          placeholder="Call Us"
-        />
-        <Input
-          label="Phone Number"
-          value={content.aboutSection.phoneNumber}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              aboutSection: { ...content.aboutSection, phoneNumber: value },
-            })
-          }
-          placeholder="+971 4 123 4567"
-        />
-      </FormGrid>
-    </Section>
-  );
-}
-
-// Process Tab
-function ProcessTab({ content, setContent }: TabProps) {
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-
-  return (
-    <Section 
-      title="Our Advantage" 
-      description="Showcase your process or advantages"
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.processSection.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              processSection: { ...content.processSection, isActive: value },
-            })
-          }
-        />
-      }
-    >
-      <FormGrid columns={3}>
-        <Input
-          label="Section Tag"
-          value={content.processSection.tag}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              processSection: { ...content.processSection, tag: value },
-            })
-          }
-          placeholder="OUR ADVANTAGE"
-        />
-        <Input
-          label="Heading"
-          value={content.processSection.heading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              processSection: { ...content.processSection, heading: value },
-            })
-          }
-          placeholder="Why Choose Us"
-          required
-        />
-        <Input
-          label="Subheading"
-          value={content.processSection.subheading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              processSection: { ...content.processSection, subheading: value },
-            })
-          }
-          placeholder="Our unique advantages"
-        />
-      </FormGrid>
-
-      <div className="mt-5">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <p className="text-muted mb-0">
-            {content.processSection.steps?.length || 0} step{content.processSection.steps?.length !== 1 ? 's' : ''} listed
-          </p>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => {
-              const newStep: ProcessStep = {
-                title: '',
-                description: '',
-                icon: '',
-                order: content.processSection.steps.length,
-                language: content.language,
-                isActive: true,
-              };
-              // Add new step at the beginning (latest first)
-              setContent({
-                ...content,
-                processSection: {
-                  ...content.processSection,
-                  steps: [newStep, ...content.processSection.steps],
-                },
-              });
-              setEditingIndex(0);
-            }}
-          >
-            + Add New Step
-          </Button>
+          <>
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>Tag (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.tag || ''}
+                      onChange={(e) => updateField('ltr', 'tag', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Tag (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.tag || ''}
+                      onChange={(e) => updateField('rtl', 'tag', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Heading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.heading || ''}
+                      onChange={(e) => updateField('ltr', 'heading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Heading (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.heading || ''}
+                      onChange={(e) => updateField('rtl', 'heading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Subheading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.subheading || ''}
+                      onChange={(e) => updateField('ltr', 'subheading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Subheading (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.subheading || ''}
+                      onChange={(e) => updateField('rtl', 'subheading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Button Text (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonText || ''}
+                      onChange={(e) => updateField('ltr', 'buttonText', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Button Text (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.buttonText || ''}
+                      onChange={(e) => updateField('rtl', 'buttonText', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Button Link</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonLink || ''}
+                      onChange={(e) => {
+                        updateField('ltr', 'buttonLink', e.target.value);
+                        updateField('rtl', 'buttonLink', e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Steps</label>
+              <div className="hero-slides-container">
+                {Array.from({ length: Math.max(stepsLtr.length, stepsRtl.length) }).map((_, index: number) => {
+                  const stepLtr = stepsLtr[index] || { title: '', description: '', order: index, language: 'ltr', isActive: true };
+                  const stepRtl = stepsRtl[index] || { title: '', description: '', order: index, language: 'rtl', isActive: true };
+                  return (
+                    <div key={index} className="hero-slide-card">
+                      <div className="hero-slide-header">
+                        <h4>Step {index + 1}</h4>
+                        {Math.max(stepsLtr.length, stepsRtl.length) > 1 && (
+                          <button
+                            type="button"
+                            className="hero-slide-remove"
+                            onClick={() => {
+                              const newStepsLtr = stepsLtr.filter((_: any, i: number) => i !== index);
+                              const newStepsRtl = stepsRtl.filter((_: any, i: number) => i !== index);
+                              setFormData({ 
+                                ...formData, 
+                                ltr: { ...formData.ltr, steps: newStepsLtr },
+                                rtl: { ...formData.rtl, steps: newStepsRtl }
+                              });
+                            }}
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                      <div className="hero-slide-fields">
+                        <div className="form-group">
+                          <label>Title (English)</label>
+                          <input
+                            type="text"
+                            value={stepLtr.title || ''}
+                            onChange={(e) => {
+                              const newSteps = [...stepsLtr];
+                              newSteps[index] = { ...stepLtr, title: e.target.value };
+                              setFormData({ ...formData, ltr: { ...formData.ltr, steps: newSteps } });
+                            }}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>Title (Arabic)</label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={stepRtl.title || ''}
+                            onChange={(e) => {
+                              const newSteps = [...stepsRtl];
+                              newSteps[index] = { ...stepRtl, title: e.target.value };
+                              setFormData({ ...formData, rtl: { ...formData.rtl, steps: newSteps } });
+                            }}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>Description (English)</label>
+                          <textarea
+                            value={stepLtr.description || ''}
+                            onChange={(e) => {
+                              const newSteps = [...stepsLtr];
+                              newSteps[index] = { ...stepLtr, description: e.target.value };
+                              setFormData({ ...formData, ltr: { ...formData.ltr, steps: newSteps } });
+                            }}
+                            rows={4}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>Description (Arabic)</label>
+                          <textarea
+                            dir="rtl"
+                            value={stepRtl.description || ''}
+                            onChange={(e) => {
+                              const newSteps = [...stepsRtl];
+                              newSteps[index] = { ...stepRtl, description: e.target.value };
+                              setFormData({ ...formData, rtl: { ...formData.rtl, steps: newSteps } });
+                            }}
+                            rows={4}
+                          />
         </div>
-
-        {(!content.processSection.steps || content.processSection.steps.length === 0) ? (
-          <div className="text-center py-5 border border-dashed rounded bg-light">
-            <p className="text-muted mb-3">No advantage steps added yet.</p>
-            <Button
-              variant="primary"
-              size="sm"
+                      </div>
+                    </div>
+                  );
+                })}
+                <button
+                  type="button"
+                  className="hero-add-slide-button"
               onClick={() => {
                 const newStep: ProcessStep = {
                   title: '',
                   description: '',
-                  icon: '',
-                  order: 0,
-                  language: content.language,
+                      order: Math.max(stepsLtr.length, stepsRtl.length),
+                      language: 'ltr',
                   isActive: true,
                 };
-                setContent({
-                  ...content,
-                  processSection: {
-                    ...content.processSection,
-                    steps: [newStep],
-                  },
-                });
-                setEditingIndex(0);
-              }}
-            >
-              Add Your First Step
-            </Button>
+                    setFormData({
+                      ...formData,
+                      ltr: { ...formData.ltr, steps: [...stepsLtr, { ...newStep, language: 'ltr' }] },
+                      rtl: { ...formData.rtl, steps: [...stepsRtl, { ...newStep, language: 'rtl' }] }
+                    });
+                  }}
+                >
+                  + Add More Step
+                </button>
           </div>
-        ) : (
-          <div className="d-flex flex-column gap-3">
-            {content.processSection.steps.map((step, index) => {
-              const actualIndex = index;
-              const isEditing = editingIndex === index;
-
+            </div>
+          </>
+        );
+      case 'services':
               return (
-                <Card key={actualIndex} className="border-0 border-bottom rounded-0">
-                  <div className="card-body py-2 px-0">
-                    {!isEditing ? (
-                      // Collapsed view - single line
-                      <div className="d-flex justify-content-between align-items-center gap-2">
-                        <div className="flex-grow-1 d-flex align-items-center gap-2">
-                          <h6 className="mb-0 fw-semibold" style={{ minWidth: '200px' }}>
-                            {step.title || 'Untitled Step'}
-                          </h6>
-                          <span
-                            className={`badge rounded-pill px-2 py-1 ${step.isActive ? 'bg-success' : 'bg-secondary'}`}
-                          >
-                            {step.isActive ? 'Active' : 'Inactive'}
-                          </span>
-                          {step.description && (
-                            <span className="text-muted small text-truncate" style={{ maxWidth: '260px' }}>
-                              {step.description.substring(0, 60)}
-                              {step.description.length > 60 ? '...' : ''}
-                            </span>
-                          )}
-                          {step.icon && (
-                            <span className="text-muted small">
-                              Icon: {step.icon.substring(0, 20)}
-                              {step.icon.length > 20 ? '...' : ''}
-                            </span>
-                          )}
-                        </div>
-                        <div className="d-flex gap-2 ms-2">
-                          <button
-                            type="button"
-                            className="btn btn-link p-0 border-0"
-                            onClick={() => setEditingIndex(actualIndex)}
-                            title="Edit step"
-                            style={{ color: '#28a745' }}
-                          >
-                            {/* Pencil icon - green */}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M12 20h9" />
-                              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
-                            </svg>
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-link p-0 border-0"
-                            onClick={() => {
-                              if (confirm('Are you sure you want to delete this step?')) {
-                                const updatedSteps = content.processSection.steps.filter((_, i) => i !== actualIndex);
-                                setContent({
-                                  ...content,
-                                  processSection: {
-                                    ...content.processSection,
-                                    steps: updatedSteps,
-                                  },
-                                });
-                                if (editingIndex === actualIndex) {
-                                  setEditingIndex(null);
-                                }
-                              }
-                            }}
-                            title="Delete step"
-                            style={{ color: '#dc3545' }}
-                          >
-                            {/* Trash / bin icon - red */}
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <polyline points="3 6 5 6 21 6" />
-                              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                              <path d="M10 11v6" />
-                              <path d="M14 11v6" />
-                              <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      // Expanded edit view
-                      <div>
-                        {/* Header row for the editor */}
-                        <div className="d-flex justify-content-between align-items-center mb-3">
-                          <div>
-                            <h5 className="mb-0">Editing: {step.title || 'New Step'}</h5>
-                            <p className="text-muted small mb-0">
-                              Update the step details below, then click "Done Editing".
-                            </p>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              // Get the current step from state to ensure we have the latest data
-                              const currentStep = content.processSection.steps[actualIndex];
-                              // If it's a new step (no title or empty title), remove it from the list
-                              const isNewStep = !currentStep?.title || String(currentStep?.title || '').trim() === '';
-                              
-                              if (isNewStep) {
-                                const updatedSteps = content.processSection.steps.filter((_, i) => i !== actualIndex);
-                                setContent({
-                                  ...content,
-                                  processSection: {
-                                    ...content.processSection,
-                                    steps: updatedSteps,
-                                  },
-                                });
-                                setEditingIndex(null);
-                              } else {
-                                setEditingIndex(null);
-                              }
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                        </div>
-
-                        {/* Step form */}
-                        <div className="mb-3">
-                          <p className="text-muted small mb-2">Basic information</p>
-                          <div className="d-flex align-items-center gap-3 mb-2">
-                            <Toggle
-                              label="Step Active"
-                              checked={step.isActive}
-                              onChange={(value) => {
-                                const updatedSteps = [...content.processSection.steps];
-                                updatedSteps[actualIndex] = { ...step, isActive: value };
-                                setContent({
-                                  ...content,
-                                  processSection: {
-                                    ...content.processSection,
-                                    steps: updatedSteps,
-                                  },
-                                });
-                              }}
-                            />
-                          </div>
-                          <FormGrid columns={2}>
-                            <Input
-                              label="Step Title"
-                              value={step.title}
-                              onChange={(value) => {
-                                const updatedSteps = [...content.processSection.steps];
-                                updatedSteps[actualIndex] = { ...step, title: value };
-                                setContent({
-                                  ...content,
-                                  processSection: {
-                                    ...content.processSection,
-                                    steps: updatedSteps,
-                                  },
-                                });
-                              }}
-                              placeholder="Enter step title"
-                            />
-                            <Input
-                              label="Icon (SVG or class)"
-                              value={step.icon}
-                              onChange={(value) => {
-                                const updatedSteps = [...content.processSection.steps];
-                                updatedSteps[actualIndex] = { ...step, icon: value };
-                                setContent({
-                                  ...content,
-                                  processSection: {
-                                    ...content.processSection,
-                                    steps: updatedSteps,
-                                  },
-                                });
-                              }}
-                              placeholder="icon-name or SVG"
-                            />
-                          </FormGrid>
-                        </div>
-
-                        {/* Description */}
-                        <div className="mb-3">
-                          <p className="text-muted small mb-2">Step description</p>
-                          <Textarea
-                            label="Description"
-                            value={step.description}
-                            onChange={(value) => {
-                              const updatedSteps = [...content.processSection.steps];
-                              updatedSteps[actualIndex] = { ...step, description: value };
-                              setContent({
-                                ...content,
-                                processSection: {
-                                  ...content.processSection,
-                                  steps: updatedSteps,
-                                },
-                              });
-                            }}
-                            placeholder="Enter step description"
-                            rows={3}
+          <>
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>Tag (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.tag || ''}
+                      onChange={(e) => updateField('ltr', 'tag', e.target.value)}
                           />
                         </div>
-
-                        {/* Order */}
-                        <div className="mb-2">
-                          <FormGrid columns={2}>
-                            <Input
-                              label="Order"
-                              type="number"
-                              value={String(step.order)}
-                              onChange={(value) => {
-                                const updatedSteps = [...content.processSection.steps];
-                                updatedSteps[actualIndex] = { ...step, order: Number(value) };
-                                setContent({
-                                  ...content,
-                                  processSection: {
-                                    ...content.processSection,
-                                    steps: updatedSteps,
-                                  },
+                  <div className="form-group">
+                    <label>Tag (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.tag || ''}
+                      onChange={(e) => updateField('rtl', 'tag', e.target.value)}
+                    />
+                        </div>
+                  <div className="form-group">
+                    <label>Heading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.heading || ''}
+                      onChange={(e) => updateField('ltr', 'heading', e.target.value)}
+                    />
+                      </div>
+                  <div className="form-group">
+                    <label>Heading (Arabic)</label>
+                    <input
+                      type="text"
+                      value={formData.rtl?.heading || ''}
+                      onChange={(e) => updateField('rtl', 'heading', e.target.value)}
+                        />
+                      </div>
+                  <div className="form-group">
+                    <label>Subheading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.subheading || ''}
+                      onChange={(e) => updateField('ltr', 'subheading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Subheading (Arabic)</label>
+                    <input
+                      type="text"
+                      value={formData.rtl?.subheading || ''}
+                      onChange={(e) => updateField('rtl', 'subheading', e.target.value)}
+                    />
+                        </div>
+                  <div className="form-group">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={formData.ltr?.isActive !== undefined ? formData.ltr.isActive : true}
+                        onChange={(e) => updateField('ltr', 'isActive', e.target.checked)}
+                        style={{ marginRight: '8px' }}
+                      />
+                      Active
+                    </label>
+                      </div>
+                  <div className="form-group" style={{ marginTop: '16px', padding: '12px', background: '#f3f4f6', borderRadius: '6px' }}>
+                    <p style={{ margin: 0, fontSize: '14px', color: '#6b7280' }}>
+                      <strong>Note:</strong> Individual solutions are managed in <strong>Solutions Management</strong> page. 
+                      This section only controls the section header (tag, heading, subheading).
+                            </p>
+                          </div>
+                </div>
+        </div>
+            </div>
+          </>
+  );
+      case 'testimonial':
+        return (
+          <>
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>Tag (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.tag || ''}
+                      onChange={(e) => updateField('ltr', 'tag', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Tag (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.tag || ''}
+                      onChange={(e) => updateField('rtl', 'tag', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Heading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.heading || ''}
+                      onChange={(e) => updateField('ltr', 'heading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Heading (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.heading || ''}
+                      onChange={(e) => updateField('rtl', 'heading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Description (English)</label>
+                    <textarea
+                      value={formData.ltr?.description || ''}
+                      onChange={(e) => updateField('ltr', 'description', e.target.value)}
+                      rows={6}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Description (Arabic)</label>
+                    <textarea
+                      dir="rtl"
+                      value={formData.rtl?.description || ''}
+                      onChange={(e) => updateField('rtl', 'description', e.target.value)}
+                      rows={6}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <ImageUpload
+                      label="Image"
+                      value={formData.ltr?.imagePath || ''}
+                      onChange={(value) => {
+                        updateField('ltr', 'imagePath', value);
+                        updateField('rtl', 'imagePath', value);
+                      }}
+                      folder="about"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Person Name (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.personName || ''}
+                      onChange={(e) => updateField('ltr', 'personName', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Person Name (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.personName || ''}
+                      onChange={(e) => updateField('rtl', 'personName', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Person Title (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.personTitle || ''}
+                      onChange={(e) => updateField('ltr', 'personTitle', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Person Title (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.personTitle || ''}
+                      onChange={(e) => updateField('rtl', 'personTitle', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Secondary Heading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.secondaryHeading || ''}
+                      onChange={(e) => updateField('ltr', 'secondaryHeading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Secondary Heading (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.secondaryHeading || ''}
+                      onChange={(e) => updateField('rtl', 'secondaryHeading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Secondary Description (English)</label>
+                    <textarea
+                      value={formData.ltr?.secondaryDescription || ''}
+                      onChange={(e) => updateField('ltr', 'secondaryDescription', e.target.value)}
+                      rows={6}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Secondary Description (Arabic)</label>
+                    <textarea
+                      dir="rtl"
+                      value={formData.rtl?.secondaryDescription || ''}
+                      onChange={(e) => updateField('rtl', 'secondaryDescription', e.target.value)}
+                      rows={6}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        );
+      case 'brands':
+        const brandsLtr = formData.ltr?.brands || [];
+        const brandsRtl = formData.rtl?.brands || [];
+        return (
+          <>
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>Heading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.heading || ''}
+                      onChange={(e) => updateField('ltr', 'heading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Heading (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.heading || ''}
+                      onChange={(e) => updateField('rtl', 'heading', e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Brands</label>
+              <div className="hero-slides-container">
+                {Array.from({ length: Math.max(brandsLtr.length, brandsRtl.length) }).map((_, index: number) => {
+                  const brandLtr = brandsLtr[index] || { name: '', imagePath: '', link: '#', isActive: true };
+                  const brandRtl = brandsRtl[index] || { name: '', imagePath: '', link: '#', isActive: true };
+                  return (
+                    <div key={index} className="hero-slide-card">
+                      <div className="hero-slide-header">
+                        <h4>Brand {index + 1}</h4>
+                        {Math.max(brandsLtr.length, brandsRtl.length) > 1 && (
+                          <button
+                            type="button"
+                            className="hero-slide-remove"
+                            onClick={() => {
+                              const newBrandsLtr = brandsLtr.filter((_: any, i: number) => i !== index);
+                              const newBrandsRtl = brandsRtl.filter((_: any, i: number) => i !== index);
+                              setFormData({ 
+                                ...formData, 
+                                ltr: { ...formData.ltr, brands: newBrandsLtr },
+                                rtl: { ...formData.rtl, brands: newBrandsRtl }
+                              });
+                            }}
+                          >
+                            Remove
+                          </button>
+                        )}
+                        </div>
+                      <div className="hero-slide-fields">
+                        <div className="form-group">
+                          <label>Name (English)</label>
+                          <input
+                            type="text"
+                            value={brandLtr.name || ''}
+                            onChange={(e) => {
+                              const newBrands = [...brandsLtr];
+                              newBrands[index] = { ...brandLtr, name: e.target.value };
+                              setFormData({ ...formData, ltr: { ...formData.ltr, brands: newBrands } });
+                              }}
+                            />
+                          </div>
+                        <div className="form-group">
+                          <label>Name (Arabic)</label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={brandRtl.name || ''}
+                            onChange={(e) => {
+                              const newBrands = [...brandsRtl];
+                              newBrands[index] = { ...brandRtl, name: e.target.value };
+                              setFormData({ ...formData, rtl: { ...formData.rtl, brands: newBrands } });
+                            }}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <ImageUpload
+                            label="Image"
+                            value={brandLtr.imagePath || ''}
+                            onChange={(value) => {
+                              const newBrandsLtr = [...brandsLtr];
+                              const newBrandsRtl = [...brandsRtl];
+                              newBrandsLtr[index] = { ...brandLtr, imagePath: value };
+                              newBrandsRtl[index] = { ...brandRtl, imagePath: value };
+                              setFormData({ 
+                                ...formData, 
+                                ltr: { ...formData.ltr, brands: newBrandsLtr },
+                                rtl: { ...formData.rtl, brands: newBrandsRtl }
+                              });
+                            }}
+                            folder="brand"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>Link</label>
+                          <input
+                            type="text"
+                            value={brandLtr.link || ''}
+                            onChange={(e) => {
+                              const newBrandsLtr = [...brandsLtr];
+                              const newBrandsRtl = [...brandsRtl];
+                              newBrandsLtr[index] = { ...brandLtr, link: e.target.value };
+                              newBrandsRtl[index] = { ...brandRtl, link: e.target.value };
+                              setFormData({ 
+                                ...formData, 
+                                ltr: { ...formData.ltr, brands: newBrandsLtr },
+                                rtl: { ...formData.rtl, brands: newBrandsRtl }
                                 });
                               }}
-                              placeholder="0"
-                            />
-                            <div className="d-flex align-items-end">
-                              <Button
-                                variant="success"
-                                size="sm"
-                                className="ms-auto"
-                                onClick={() => setEditingIndex(null)}
-                              >
-                                Done Editing
-                              </Button>
+                            placeholder="#"
+                          />
                             </div>
-                          </FormGrid>
                         </div>
                       </div>
-                    )}
-                  </div>
-                </Card>
               );
             })}
+                <button
+                  type="button"
+                  className="hero-add-slide-button"
+                  onClick={() => {
+                    const newBrand = {
+                      name: '',
+                      imagePath: '',
+                      link: '#',
+                      isActive: true,
+                    };
+                    setFormData({
+                      ...formData,
+                      ltr: { ...formData.ltr, brands: [...brandsLtr, newBrand] },
+                      rtl: { ...formData.rtl, brands: [...brandsRtl, newBrand] }
+                    });
+                  }}
+                >
+                  + Add More Brand
+                </button>
           </div>
-        )}
       </div>
-    </Section>
-  );
-}
-
-// Services Tab
-function ServicesTab({ content, setContent }: TabProps) {
+          </>
+        );
+      case 'caseStudies':
+        const caseStudiesLtr = formData.ltr?.caseStudies || [];
+        const caseStudiesRtl = formData.rtl?.caseStudies || [];
   return (
-    <Section 
-      title="Services Section" 
-      description="Configure the section wrapper. Services are pulled from Solutions CMS."
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.servicesSection.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              servicesSection: { ...content.servicesSection, isActive: value },
-            })
-          }
-        />
-      }
-    >
-      <FormGrid columns={3}>
-        <Input
-          label="Section Tag"
-          value={content.servicesSection.tag}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              servicesSection: { ...content.servicesSection, tag: value },
-            })
-          }
-          placeholder="OUR SERVICES"
-        />
-        <Input
-          label="Heading"
-          value={content.servicesSection.heading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              servicesSection: { ...content.servicesSection, heading: value },
-            })
-          }
-          placeholder="What We Offer"
-          required
-        />
-        <Input
-          label="Subheading"
-          value={content.servicesSection.subheading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              servicesSection: { ...content.servicesSection, subheading: value },
-            })
-          }
-          placeholder="Comprehensive solutions"
-        />
-      </FormGrid>
-    </Section>
-  );
-}
-
-// Testimonial Tab
-function TestimonialTab({ content, setContent }: TabProps) {
-  return (
-    <Section 
-      title="Who we are section" 
-      description="Feature a customer testimonial or founder message"
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.testimonialSection.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              testimonialSection: { ...content.testimonialSection, isActive: value },
-            })
-          }
-        />
-      }
-    >
-      <FormGrid columns={2}>
-        <Input
-          label="Section Tag"
-          value={content.testimonialSection.tag}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              testimonialSection: { ...content.testimonialSection, tag: value },
-            })
-          }
-          placeholder="TESTIMONIAL"
-        />
-        <Input
-          label="Heading"
-          value={content.testimonialSection.heading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              testimonialSection: { ...content.testimonialSection, heading: value },
-            })
-          }
-          placeholder="What Our Clients Say"
-        />
-        <ImageUpload
-          label="Person Image"
-          value={content.testimonialSection.imagePath}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              testimonialSection: { ...content.testimonialSection, imagePath: value },
-            })
-          }
-        />
-      </FormGrid>
-      <Textarea
-        label="Description / Quote"
-        value={content.testimonialSection.description}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            testimonialSection: { ...content.testimonialSection, description: value },
-          })
-        }
+          <>
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>Tag (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.tag || ''}
+                      onChange={(e) => updateField('ltr', 'tag', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Tag (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.tag || ''}
+                      onChange={(e) => updateField('rtl', 'tag', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Heading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.heading || ''}
+                      onChange={(e) => updateField('ltr', 'heading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Heading (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.heading || ''}
+                      onChange={(e) => updateField('rtl', 'heading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Subheading (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.subheading || ''}
+                      onChange={(e) => updateField('ltr', 'subheading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Subheading (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.subheading || ''}
+                      onChange={(e) => updateField('rtl', 'subheading', e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Case Studies</label>
+              <div className="hero-slides-container">
+                {Array.from({ length: Math.max(caseStudiesLtr.length, caseStudiesRtl.length) }).map((_, index: number) => {
+                  const studyLtr = caseStudiesLtr[index] || { title: '', description: '', imagePath: '', link: '#', language: 'ltr', isActive: true };
+                  const studyRtl = caseStudiesRtl[index] || { title: '', description: '', imagePath: '', link: '#', language: 'rtl', isActive: true };
+                  return (
+                  <div key={index} className="hero-slide-card">
+                    <div className="hero-slide-header">
+                      <h4>Case Study {index + 1}</h4>
+                      {Math.max(caseStudiesLtr.length, caseStudiesRtl.length) > 1 && (
+                        <button
+                          type="button"
+                          className="hero-slide-remove"
+                          onClick={() => {
+                            const newStudiesLtr = caseStudiesLtr.filter((_: any, i: number) => i !== index);
+                            const newStudiesRtl = caseStudiesRtl.filter((_: any, i: number) => i !== index);
+                            setFormData({ 
+                              ...formData, 
+                              ltr: { ...formData.ltr, caseStudies: newStudiesLtr },
+                              rtl: { ...formData.rtl, caseStudies: newStudiesRtl }
+                            });
+                          }}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <div className="hero-slide-fields">
+                      <div className="form-group">
+                        <label>Title (English)</label>
+                        <input
+                          type="text"
+                          value={studyLtr.title || ''}
+                          onChange={(e) => {
+                            const newStudies = [...caseStudiesLtr];
+                            newStudies[index] = { ...studyLtr, title: e.target.value };
+                            setFormData({ ...formData, ltr: { ...formData.ltr, caseStudies: newStudies } });
+                          }}
+                        />
+                      </div>
+                        <div className="form-group">
+                          <label>Title (Arabic)</label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={studyRtl.title || ''}
+                          onChange={(e) => {
+                            const newStudies = [...caseStudiesRtl];
+                            newStudies[index] = { ...studyRtl, title: e.target.value };
+                            setFormData({ ...formData, rtl: { ...formData.rtl, caseStudies: newStudies } });
+                          }}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Description (English)</label>
+                        <textarea
+                          value={studyLtr.description || ''}
+                          onChange={(e) => {
+                            const newStudies = [...caseStudiesLtr];
+                            newStudies[index] = { ...studyLtr, description: e.target.value };
+                            setFormData({ ...formData, ltr: { ...formData.ltr, caseStudies: newStudies } });
+                          }}
+                          rows={4}
+                        />
+                      </div>
+                        <div className="form-group">
+                          <label>Description (Arabic)</label>
+                          <textarea
+                            dir="rtl"
+                            value={studyRtl.description || ''}
+                          onChange={(e) => {
+                            const newStudies = [...caseStudiesRtl];
+                            newStudies[index] = { ...studyRtl, description: e.target.value };
+                            setFormData({ ...formData, rtl: { ...formData.rtl, caseStudies: newStudies } });
+                          }}
         rows={4}
-        placeholder="The testimonial text..."
-      />
-      <FormGrid columns={2}>
-        <Input
-          label="Person Name"
-          value={content.testimonialSection.personName}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              testimonialSection: { ...content.testimonialSection, personName: value },
-            })
-          }
-          placeholder="John Doe"
-        />
-        <Input
-          label="Person Title"
-          value={content.testimonialSection.personTitle}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              testimonialSection: { ...content.testimonialSection, personTitle: value },
-            })
-          }
-          placeholder="CEO, Company Name"
-        />
-        <Input
-          label="Secondary Heading"
-          value={content.testimonialSection.secondaryHeading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              testimonialSection: { ...content.testimonialSection, secondaryHeading: value },
-            })
-          }
-          placeholder="About the company"
-        />
-        <Input
-          label="Secondary Description"
-          value={content.testimonialSection.secondaryDescription}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              testimonialSection: { ...content.testimonialSection, secondaryDescription: value },
-            })
-          }
-          placeholder="Additional info"
-        />
-      </FormGrid>
-    </Section>
-  );
-}
-
-// Brands Tab
-function BrandsTab({ content, setContent }: TabProps) {
-  return (
-    <Section 
-      title="Brands Section" 
-      description="Configure the section wrapper. Brands are pulled from Brands CMS."
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.brandsSection.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              brandsSection: { ...content.brandsSection, isActive: value },
-            })
-          }
-        />
-      }
-    >
-      <FormGrid columns={1}>
-        <Input
-          label="Heading"
-          value={content.brandsSection.heading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              brandsSection: { ...content.brandsSection, heading: value },
-            })
-          }
-          placeholder="Trusted By Industry Leaders"
-        />
-      </FormGrid>
-
-      <div className="mt-4">
-        <div className="alert alert-info mb-0">
-          <strong>Note:</strong> Brands are managed in the <a href="/admin/cms/brands" target="_blank" className="alert-link">Brands CMS page</a>. 
-          All active brands from that page will automatically appear here.
+                        />
+                      </div>
+                      <div className="form-group">
+                        <ImageUpload
+                          label="Image"
+                          value={studyLtr.imagePath || ''}
+                          onChange={(value) => {
+                            const newStudiesLtr = [...caseStudiesLtr];
+                            const newStudiesRtl = [...caseStudiesRtl];
+                            newStudiesLtr[index] = { ...studyLtr, imagePath: value };
+                            newStudiesRtl[index] = { ...studyRtl, imagePath: value };
+                            setFormData({ 
+                              ...formData, 
+                              ltr: { ...formData.ltr, caseStudies: newStudiesLtr },
+                              rtl: { ...formData.rtl, caseStudies: newStudiesRtl }
+                            });
+                          }}
+                          folder="case-studies-item"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Link</label>
+                        <input
+                          type="text"
+                          value={studyLtr.link || ''}
+                          onChange={(e) => {
+                            const newStudiesLtr = [...caseStudiesLtr];
+                            const newStudiesRtl = [...caseStudiesRtl];
+                            newStudiesLtr[index] = { ...studyLtr, link: e.target.value };
+                            newStudiesRtl[index] = { ...studyRtl, link: e.target.value };
+                            setFormData({ 
+                              ...formData, 
+                              ltr: { ...formData.ltr, caseStudies: newStudiesLtr },
+                              rtl: { ...formData.rtl, caseStudies: newStudiesRtl }
+                            });
+                          }}
+                          placeholder="#"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  );
+                })}
+                <button
+                  type="button"
+                  className="hero-add-slide-button"
+                  onClick={() => {
+                    const newStudy = {
+                      title: '',
+                      description: '',
+                      imagePath: '',
+                      link: '#',
+                      language: 'ltr',
+                      isActive: true,
+                    };
+                    setFormData({
+                      ...formData,
+                      ltr: { ...formData.ltr, caseStudies: [...caseStudiesLtr, { ...newStudy, language: 'ltr' }] },
+                      rtl: { ...formData.rtl, caseStudies: [...caseStudiesRtl, { ...newStudy, language: 'rtl' }] }
+                    });
+                  }}
+                >
+                  + Add More Case Study
+                </button>
         </div>
       </div>
-    </Section>
-  );
-}
-
-// Case Studies Tab
-function CaseStudiesTab({ content, setContent }: TabProps) {
+          </>
+        );
+      case 'features':
+        const benefitsLtr = formData.ltr?.benefits || [];
+        const benefitsRtl = formData.rtl?.benefits || [];
+        const countersLtr = formData.ltr?.counters || [];
+        const countersRtl = formData.rtl?.counters || [];
   return (
-    <Section 
-      title="Case Studies Section" 
-      description="Configure the section wrapper. Case studies are pulled from Customer Stories CMS."
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.caseStudiesSection.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              caseStudiesSection: { ...content.caseStudiesSection, isActive: value },
-            })
-          }
-        />
-      }
-    >
-      <FormGrid columns={3}>
-        <Input
-          label="Section Tag"
-          value={content.caseStudiesSection.tag}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              caseStudiesSection: { ...content.caseStudiesSection, tag: value },
-            })
-          }
-          placeholder="SUCCESS STORIES"
-        />
-        <Input
-          label="Heading"
-          value={content.caseStudiesSection.heading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              caseStudiesSection: { ...content.caseStudiesSection, heading: value },
-            })
-          }
-          placeholder="Customer Success Stories"
-        />
-        <Input
-          label="Subheading"
-          value={content.caseStudiesSection.subheading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              caseStudiesSection: { ...content.caseStudiesSection, subheading: value },
-            })
-          }
-          placeholder="See how we help businesses grow"
-        />
-      </FormGrid>
-    </Section>
-  );
-}
-
-// Features Tab
-function FeaturesTab({ content, setContent }: TabProps) {
-  return (
-    <Section 
-      title="Features Section" 
-      description="Showcase your key features and statistics"
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.featuresSection.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              featuresSection: { ...content.featuresSection, isActive: value },
-            })
-          }
-        />
-      }
-    >
-      <FormGrid columns={2}>
-        <Input
-          label="Section Tag"
-          value={content.featuresSection.tag}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              featuresSection: { ...content.featuresSection, tag: value },
-            })
-          }
-          placeholder="WHY AL BAHAR & PARTNERS"
-        />
-        <Input
-          label="Heading"
-          value={content.featuresSection.heading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              featuresSection: { ...content.featuresSection, heading: value },
-            })
-          }
-          placeholder="Why Choose Us for Digital Transformation?"
-        />
-      </FormGrid>
-      
-      <Textarea
-        label="Description"
-        value={content.featuresSection.description}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            featuresSection: { ...content.featuresSection, description: value },
-          })
-        }
-        placeholder="We combine trusted technology partnerships..."
-        rows={3}
-      />
-      
-      <FormGrid columns={2}>
-        <ImageUpload
-          label="Feature Image"
-          value={content.featuresSection.imagePath}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              featuresSection: { ...content.featuresSection, imagePath: value },
-            })
-          }
-          placeholder="/image/section/img-section-why-choose-h7.jpg"
-        />
-        <div></div>
-        <Input
-          label="Button Text"
-          value={content.featuresSection.buttonText}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              featuresSection: { ...content.featuresSection, buttonText: value },
-            })
-          }
-          placeholder="Request a Consultation"
-        />
-        <Input
-          label="Button Link"
-          value={content.featuresSection.buttonLink}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              featuresSection: { ...content.featuresSection, buttonLink: value },
-            })
-          }
-          placeholder="/contact-us"
-        />
-      </FormGrid>
-
-      <div className="mt-4">
-        <h4>Benefits List</h4>
-        <ArrayManager
-          items={content.featuresSection.benefits || []}
-          onAdd={() => {
-            setContent({
-              ...content,
-              featuresSection: {
-                ...content.featuresSection,
-                benefits: [...(content.featuresSection.benefits || []), ''],
-              },
-            });
-          }}
-          onRemove={(index) => {
-            setContent({
-              ...content,
-              featuresSection: {
-                ...content.featuresSection,
-                benefits: (content.featuresSection.benefits || []).filter((_, i) => i !== index),
-              },
-            });
-          }}
-          onChange={(benefits) =>
-            setContent({
-              ...content,
-              featuresSection: { ...content.featuresSection, benefits },
-            })
-          }
-          renderItem={(benefit, index, onChange) => (
-            <Input
-              label={`Benefit ${index + 1}`}
-              value={benefit}
-              onChange={onChange}
-              placeholder="Partner-backed enterprise solutions"
-            />
-          )}
-          addButtonText="Add Benefit"
-          emptyMessage="No benefits added yet. Click below to add your first benefit."
-        />
+          <>
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>Tag</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.tag || ''}
+                      onChange={(e) => updateField('ltr', 'tag', e.target.value)}
+                    />
+          </div>
+                  <div className="form-group">
+                    <label>Heading</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.heading || ''}
+                      onChange={(e) => updateField('ltr', 'heading', e.target.value)}
+                    />
       </div>
-
-      <div className="mt-4">
-        <h4>Statistics Counters</h4>
-        <ArrayManager
-          items={content.featuresSection.counters || []}
-          onAdd={() => {
-            const newCounter = {
+                  <div className="form-group">
+                    <label>Description</label>
+                    <textarea
+                      value={formData.ltr?.description || ''}
+                      onChange={(e) => updateField('ltr', 'description', e.target.value)}
+                      rows={6}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <ImageUpload
+                      label="Image"
+                      value={formData.ltr?.imagePath || ''}
+                      onChange={(value) => {
+                        updateField('ltr', 'imagePath', value);
+                        updateField('rtl', 'imagePath', value);
+                      }}
+                      folder="section"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Benefits (English, one per line)</label>
+                    <textarea
+                      value={Array.isArray(benefitsLtr) ? benefitsLtr.join('\n') : ''}
+                      onChange={(e) => {
+                        const newBenefits = e.target.value.split('\n').filter(f => f.trim());
+                        setFormData({ ...formData, ltr: { ...formData.ltr, benefits: newBenefits } });
+                      }}
+                      rows={6}
+                      placeholder="Benefit 1&#10;Benefit 2&#10;Benefit 3"
+                    />
+                    <small>Enter each benefit on a new line</small>
+                  </div>
+                  <div className="form-group">
+                    <label>Benefits (Arabic, one per line)</label>
+                    <textarea
+                      dir="rtl"
+                      value={Array.isArray(benefitsRtl) ? benefitsRtl.join('\n') : ''}
+                      onChange={(e) => {
+                        const newBenefits = e.target.value.split('\n').filter(f => f.trim());
+                        setFormData({ ...formData, rtl: { ...formData.rtl, benefits: newBenefits } });
+                      }}
+                      rows={6}
+                      placeholder="Benefit 1&#10;Benefit 2&#10;Benefit 3"
+                    />
+                    <small>Enter each benefit on a new line</small>
+                  </div>
+                  <div className="form-group">
+                    <label>Button Text (English)</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonText || ''}
+                      onChange={(e) => updateField('ltr', 'buttonText', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Button Text (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.rtl?.buttonText || ''}
+                      onChange={(e) => updateField('rtl', 'buttonText', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Button Link</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonLink || ''}
+                      onChange={(e) => {
+                        updateField('ltr', 'buttonLink', e.target.value);
+                        updateField('rtl', 'buttonLink', e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Counters</label>
+              <div className="hero-slides-container">
+                {Array.from({ length: Math.max(countersLtr.length, countersRtl.length) }).map((_, index: number) => {
+                  const counterLtr = countersLtr[index] || { value: 0, label: '', order: index, isActive: true };
+                  const counterRtl = countersRtl[index] || { value: 0, label: '', order: index, isActive: true };
+                  return (
+                    <div key={index} className="hero-slide-card">
+                      <div className="hero-slide-header">
+                        <h4>Counter {index + 1}</h4>
+                        {Math.max(countersLtr.length, countersRtl.length) > 1 && (
+                          <button
+                            type="button"
+                            className="hero-slide-remove"
+                            onClick={() => {
+                              const newCountersLtr = countersLtr.filter((_: any, i: number) => i !== index);
+                              const newCountersRtl = countersRtl.filter((_: any, i: number) => i !== index);
+                              setFormData({ 
+                                ...formData, 
+                                ltr: { ...formData.ltr, counters: newCountersLtr },
+                                rtl: { ...formData.rtl, counters: newCountersRtl }
+            });
+          }}
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                      <div className="hero-slide-fields">
+                        <div className="form-group">
+                          <label>Value</label>
+                          <input
+                            type="number"
+                            value={counterLtr.value || 0}
+                            onChange={(e) => {
+                              const newCountersLtr = [...countersLtr];
+                              const newCountersRtl = [...countersRtl];
+                              const val = parseInt(e.target.value) || 0;
+                              newCountersLtr[index] = { ...counterLtr, value: val };
+                              newCountersRtl[index] = { ...counterRtl, value: val };
+                              setFormData({ 
+                                ...formData, 
+                                ltr: { ...formData.ltr, counters: newCountersLtr },
+                                rtl: { ...formData.rtl, counters: newCountersRtl }
+            });
+          }}
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>Label (English)</label>
+                          <input
+                            type="text"
+                            value={counterLtr.label || ''}
+                            onChange={(e) => {
+                              const newCounters = [...countersLtr];
+                              newCounters[index] = { ...counterLtr, label: e.target.value };
+                              setFormData({ ...formData, ltr: { ...formData.ltr, counters: newCounters } });
+                            }}
+                            placeholder="Years<br />Experiences"
+                          />
+                          <small>Use &lt;br /&gt; for line breaks</small>
+      </div>
+                        <div className="form-group">
+                          <label>Label (Arabic)</label>
+                          <input
+                            type="text"
+                            dir="rtl"
+                            value={counterRtl.label || ''}
+                            onChange={(e) => {
+                              const newCounters = [...countersRtl];
+                              newCounters[index] = { ...counterRtl, label: e.target.value };
+                              setFormData({ ...formData, rtl: { ...formData.rtl, counters: newCounters } });
+                            }}
+                            placeholder="Years<br />Experiences"
+                          />
+                          <small>Use &lt;br /&gt; for line breaks</small>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                <button
+                  type="button"
+                  className="hero-add-slide-button"
+                  onClick={() => {
+                    const newCounter: Counter = {
               value: 0,
               label: '',
-              order: (content.featuresSection.counters || []).length,
+                      order: Math.max(countersLtr.length, countersRtl.length),
               isActive: true,
             };
-            setContent({
-              ...content,
-              featuresSection: {
-                ...content.featuresSection,
-                counters: [...(content.featuresSection.counters || []), newCounter],
-              },
+                    setFormData({
+                      ...formData,
+                      ltr: { ...formData.ltr, counters: [...countersLtr, newCounter] },
+                      rtl: { ...formData.rtl, counters: [...countersRtl, newCounter] }
             });
           }}
-          onRemove={(index) => {
-            setContent({
-              ...content,
-              featuresSection: {
-                ...content.featuresSection,
-                counters: (content.featuresSection.counters || []).filter((_, i) => i !== index),
-              },
-            });
-          }}
-          onChange={(counters) =>
-            setContent({
-              ...content,
-              featuresSection: { ...content.featuresSection, counters },
-            })
-          }
-          renderItem={(counter, index, onChange) => (
-            <FormGrid columns={3}>
-              <Input
-                label="Value"
-                type="number"
-                value={String(counter.value)}
-                onChange={(value) => onChange({ ...counter, value: Number(value) })}
-                placeholder="15"
-              />
-              <Input
-                label="Label (HTML allowed)"
-                value={counter.label}
-                onChange={(value) => onChange({ ...counter, label: value })}
-                placeholder="Years<br />Experiences"
-                helperText="Use <br /> for line breaks"
-              />
-              <Toggle
-                label="Active"
-                checked={counter.isActive}
-                onChange={(value) => onChange({ ...counter, isActive: value })}
-              />
-            </FormGrid>
-          )}
-          addButtonText="Add Counter"
-          emptyMessage="No counters added yet. Click below to add statistics."
-          maxItems={6}
+                >
+                  + Add More Counter
+                </button>
+              </div>
+            </div>
+          </>
+        );
+      case 'blogs':
+        const posts = formData.posts || [];
+  return (
+          <>
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>Tag</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.tag || ''}
+                      onChange={(e) => updateField('ltr', 'tag', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Heading</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.heading || ''}
+                      onChange={(e) => updateField('ltr', 'heading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Subheading</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.subheading || ''}
+                      onChange={(e) => updateField('ltr', 'subheading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Button Text</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonText || ''}
+                      onChange={(e) => updateField('ltr', 'buttonText', e.target.value)}
         />
       </div>
-    </Section>
+                  <div className="form-group">
+                    <label>Button Link</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonLink || ''}
+                      onChange={(e) => {
+                        updateField('ltr', 'buttonLink', e.target.value);
+                        updateField('rtl', 'buttonLink', e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Posts</label>
+              <div className="hero-slides-container">
+                {posts.map((post: BlogPost, index: number) => (
+                  <div key={index} className="hero-slide-card">
+                    <div className="hero-slide-header">
+                      <h4>Post {index + 1}</h4>
+                      {posts.length > 1 && (
+                        <button
+                          type="button"
+                          className="hero-slide-remove"
+                          onClick={() => {
+                            const newPosts = posts.filter((_: any, i: number) => i !== index);
+                            setFormData({ ...formData, posts: newPosts });
+                          }}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <div className="hero-slide-fields">
+                      <div className="form-group">
+                        <label>Title</label>
+                        <input
+                          type="text"
+                          value={post.title || ''}
+                          onChange={(e) => {
+                            const newPosts = [...posts];
+                            newPosts[index] = { ...post, title: e.target.value };
+                            setFormData({ ...formData, posts: newPosts });
+                          }}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Category</label>
+                        <input
+                          type="text"
+                          value={post.category || ''}
+                          onChange={(e) => {
+                            const newPosts = [...posts];
+                            newPosts[index] = { ...post, category: e.target.value };
+                            setFormData({ ...formData, posts: newPosts });
+                          }}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <ImageUpload
+                          label="Image"
+                          value={post.imagePath || ''}
+                          onChange={(value) => {
+                            const newPosts = [...posts];
+                            newPosts[index] = { ...post, imagePath: value };
+                            setFormData({ ...formData, posts: newPosts });
+                          }}
+                          folder="blog"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Date Day</label>
+                        <input
+                          type="text"
+                          value={post.date?.day || ''}
+                          onChange={(e) => {
+                            const newPosts = [...posts];
+                            newPosts[index] = { 
+                              ...post, 
+                              date: { ...post.date, day: e.target.value } 
+                            };
+                            setFormData({ ...formData, posts: newPosts });
+                          }}
+                          placeholder="18"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Date Month</label>
+                        <input
+                          type="text"
+                          value={post.date?.month || ''}
+                          onChange={(e) => {
+                            const newPosts = [...posts];
+                            newPosts[index] = { 
+                              ...post, 
+                              date: { ...post.date, month: e.target.value } 
+                            };
+                            setFormData({ ...formData, posts: newPosts });
+                          }}
+                          placeholder="DEC"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Link</label>
+                        <input
+                          type="text"
+                          value={post.link || ''}
+                          onChange={(e) => {
+                            const newPosts = [...posts];
+                            newPosts[index] = { ...post, link: e.target.value };
+                            setFormData({ ...formData, posts: newPosts });
+                          }}
+                          placeholder="#"
+        />
+      </div>
+                    </div>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="hero-add-slide-button"
+                  onClick={() => {
+                    const newPost: BlogPost = {
+                      title: '',
+                      category: '',
+                      imagePath: '',
+                      date: { day: '', month: '' },
+                      link: '#',
+                      language: 'ltr',
+                      isActive: true,
+                    };
+                    const postsLtr = formData.ltr?.posts || [];
+                    const postsRtl = formData.rtl?.posts || [];
+                    setFormData({
+                      ...formData,
+                      ltr: { ...formData.ltr, posts: [...postsLtr, { ...newPost, language: 'ltr' }] },
+                      rtl: { ...formData.rtl, posts: [...postsRtl, { ...newPost, language: 'rtl' }] }
+                    });
+          }}
+                >
+                  + Add More Post
+                </button>
+      </div>
+            </div>
+          </>
   );
-}
-
-// Blogs Tab
-function BlogsTab({ content, setContent }: TabProps) {
+      case 'cta':
   return (
-    <Section
-      title="Blogs Section"
-      description="Control the homepage News & Updates heading and button. The posts themselves come from the News & Updates CMS."
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.blogsSection.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              blogsSection: { ...content.blogsSection, isActive: value },
-            })
-          }
-        />
-      }
-    >
-      <FormGrid columns={3}>
-        <Input
-          label="Section Tag"
-          value={content.blogsSection.tag}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              blogsSection: { ...content.blogsSection, tag: value },
-            })
-          }
-          placeholder="LATEST NEWS"
-        />
-        <Input
-          label="Heading"
-          value={content.blogsSection.heading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              blogsSection: { ...content.blogsSection, heading: value },
-            })
-          }
-          placeholder="From Our Blog"
-        />
-        <Input
-          label="Subheading"
-          value={content.blogsSection.subheading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              blogsSection: { ...content.blogsSection, subheading: value },
-            })
-          }
-          placeholder="Latest insights and updates"
-        />
-        <Input
-          label="Button Text"
-          value={content.blogsSection.buttonText}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              blogsSection: { ...content.blogsSection, buttonText: value },
-            })
-          }
-          placeholder="View All News"
-        />
-        <Input
-          label="Button Link"
-          value={content.blogsSection.buttonLink}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              blogsSection: { ...content.blogsSection, buttonLink: value },
-            })
-          }
-          placeholder="/news-updates"
-        />
-      </FormGrid>
-    </Section>
-  );
-}
+          <>
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>Tag</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.tag || ''}
+                      onChange={(e) => updateField('ltr', 'tag', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Heading</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.heading || ''}
+                      onChange={(e) => updateField('ltr', 'heading', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Description</label>
+                    <textarea
+                      value={formData.ltr?.description || ''}
+                      onChange={(e) => updateField('ltr', 'description', e.target.value)}
+                      rows={6}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Button Text</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonText || ''}
+                      onChange={(e) => updateField('ltr', 'buttonText', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Button Link</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.buttonLink || ''}
+                      onChange={(e) => {
+                        updateField('ltr', 'buttonLink', e.target.value);
+                        updateField('rtl', 'buttonLink', e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone Label</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.phoneLabel || ''}
+                      onChange={(e) => updateField('ltr', 'phoneLabel', e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Phone Number</label>
+                    <input
+                      type="text"
+                      value={formData.ltr?.phoneNumber || ''}
+                      onChange={(e) => {
+                        updateField('ltr', 'phoneNumber', e.target.value);
+                        updateField('rtl', 'phoneNumber', e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
 
-// CTA Tab
-function CtaTab({ content, setContent }: TabProps) {
   return (
-    <Section 
-      title="Call to Action Section" 
-      description="Encourage visitors to get in touch"
-      actions={
-        <Toggle
-          label="Section Active"
-          checked={content.ctaSection.isActive}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              ctaSection: { ...content.ctaSection, isActive: value },
-            })
-          }
-        />
-      }
-    >
-      <FormGrid columns={2}>
-        <Input
-          label="Section Tag"
-          value={content.ctaSection.tag}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              ctaSection: { ...content.ctaSection, tag: value },
-            })
-          }
-          placeholder="GET IN TOUCH"
-        />
-        <Input
-          label="Heading"
-          value={content.ctaSection.heading}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              ctaSection: { ...content.ctaSection, heading: value },
-            })
-          }
-          placeholder="Ready to Get Started?"
-          required
-        />
-      </FormGrid>
-      <Textarea
-        label="Description"
-        value={content.ctaSection.description}
-        onChange={(value) =>
-          setContent({
-            ...content,
-            ctaSection: { ...content.ctaSection, description: value },
-          })
-        }
-        rows={3}
-        placeholder="Contact us today..."
-      />
-      <FormGrid columns={2}>
-        <Input
-          label="Button Text"
-          value={content.ctaSection.buttonText}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              ctaSection: { ...content.ctaSection, buttonText: value },
-            })
-          }
-          placeholder="Contact Us"
-        />
-        <Input
-          label="Button Link"
-          value={content.ctaSection.buttonLink}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              ctaSection: { ...content.ctaSection, buttonLink: value },
-            })
-          }
-          placeholder="/contact-us"
-        />
-        <Input
-          label="Phone Label"
-          value={content.ctaSection.phoneLabel}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              ctaSection: { ...content.ctaSection, phoneLabel: value },
-            })
-          }
-          placeholder="Call Now"
-        />
-        <Input
-          label="Phone Number"
-          value={content.ctaSection.phoneNumber}
-          onChange={(value) =>
-            setContent({
-              ...content,
-              ctaSection: { ...content.ctaSection, phoneNumber: value },
-            })
-          }
-          placeholder="+971 4 123 4567"
-        />
-      </FormGrid>
-    </Section>
+    <div className="admin-cms-section-card">
+      <div className="admin-cms-section-header" onClick={onToggle}>
+        <h3>{sectionId}</h3>
+        <span className="admin-cms-toggle">{isOpen ? '−' : '+'}</span>
+      </div>
+      {isOpen && (
+        <form onSubmit={handleSubmit} className="admin-cms-form">
+          {renderFields()}
+          <div className="form-actions">
+            <button type="submit" className="button button-primary">
+              Save (English & Arabic)
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
   );
-}
+};
+
+export default HomePageCMS;

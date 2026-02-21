@@ -1,105 +1,74 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import AdminSidebar from "./AdminSidebar";
-import AdminHeader from "./AdminHeader";
+'use client';
 
-interface AdminLayoutWrapperProps {
+import { useRouter, usePathname } from 'next/navigation';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import AdminSidebar from './AdminSidebar';
+import AdminHeader from './AdminHeader';
+
+export default function AdminLayoutWrapper({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-export default function AdminLayoutWrapper({ children }: AdminLayoutWrapperProps) {
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const authCheckedRef = useRef(false);
 
+  // Memoize login page check
+  const isLoginPage = useMemo(() => pathname === "/admin", [pathname]);
+
+  // Optimize auth check - only run once on mount, not on every navigation
   useEffect(() => {
-    // Skip auth check for login page
-    if (pathname === "/admin") {
-      setIsAuthenticated(true);
+    // Skip if already checked
+    if (authCheckedRef.current) {
       return;
     }
 
-    // Check authentication for other admin pages
+    // Skip auth check for login page
+    if (isLoginPage) {
+      setIsAuthenticated(true);
+      authCheckedRef.current = true;
+      return;
+    }
+
+    // Check authentication synchronously (localStorage is fast)
     const token = localStorage.getItem("adminToken");
     const userData = localStorage.getItem("adminUser");
 
     if (!token || !userData) {
-      router.push("/admin");
       setIsAuthenticated(false);
+      router.push("/admin");
     } else {
       setIsAuthenticated(true);
     }
-  }, [pathname, router]);
+    
+    authCheckedRef.current = true;
+  }, [isLoginPage, router]);
 
-  // Show loading while checking authentication
-  if (isAuthenticated === null) {
-    return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "100vh",
-          background: "var(--bg-1)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "16px",
-          }}
-        >
-          <div
-            style={{
-              width: "40px",
-              height: "40px",
-              border: "3px solid var(--outline)",
-              borderTopColor: "var(--primary)",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
-            }}
-          ></div>
-          <span style={{ color: "var(--on-suface-variant-1)" }}>Loading...</span>
-          <style>{`
-            @keyframes spin {
-              to { transform: rotate(360deg); }
-            }
-          `}</style>
-        </div>
-      </div>
-    );
+  // Show loading only briefly while checking authentication (first time only)
+  if (isAuthenticated === null && !isLoginPage) {
+    return <div className="admin-loading">Loading...</div>;
   }
 
   // Login page - render without sidebar/header
-  if (pathname === "/admin") {
+  if (isLoginPage) {
     return <>{children}</>;
+  }
+
+  // If not authenticated and not login page, don't render (redirect will happen)
+  if (isAuthenticated === false) {
+    return null;
   }
 
   // Dashboard and other admin pages - render with sidebar/header
   return (
-    <div className="admin-layout" style={{ minHeight: "100vh", background: "var(--bg-1)" }}>
+    <div className="admin-shell">
       <AdminSidebar />
-      <AdminHeader />
-      <main
-        className="admin-main"
-        style={{
-          marginLeft: "260px",
-          paddingTop: "70px",
-          minHeight: "100vh",
-        }}
-      >
-        <div
-          className="admin-content"
-          style={{
-            padding: "30px",
-          }}
-        >
-          {children}
-        </div>
-      </main>
+      <div className="admin-main">
+        <AdminHeader />
+        <main className="admin-main-content">{children}</main>
+      </div>
     </div>
   );
 }

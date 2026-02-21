@@ -1,54 +1,60 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from 'react';
-import { FooterContent, SocialLink, FooterLink, FooterLinkColumn, FooterContactInfo, FooterContactSection, FooterBottomLink } from '@/types/footer';
-import {
-  Button,
-  Input,
-  Textarea,
-  Card,
-  Toggle,
-  Alert,
-  Section,
-  LanguageSwitch,
-  ArrayManager,
-  FormGrid,
-  ImageUpload,
-} from '@/components/admin/ui';
+import { useState, useEffect } from 'react';
+import { FooterContent } from '@/types/footer';
+import ImageUpload from '@/components/admin/ui/ImageUpload';
 
 export default function FooterManager() {
-  const [language, setLanguage] = useState<'ltr' | 'rtl'>('ltr');
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [content, setContent] = useState<FooterContent | null>(null);
+  const [contentLtr, setContentLtr] = useState<FooterContent | null>(null);
+  const [contentRtl, setContentRtl] = useState<FooterContent | null>(null);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    logo: true,
+    description: true,
+    newsletter: true,
+    bottom: true,
+  });
 
   useEffect(() => {
     loadContent();
-  }, [language]);
+  }, []);
 
   const loadContent = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/footer?language=${language}`);
-      const result = await response.json();
+      // Fetch both LTR and RTL content in parallel
+      const [ltrRes, rtlRes] = await Promise.all([
+        fetch('/api/footer?language=ltr'),
+        fetch('/api/footer?language=rtl'),
+      ]);
       
-      if (result.success && result.data) {
-        setContent(result.data);
+      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
+      
+      if (ltrResult.success && ltrResult.data) {
+        setContentLtr(ltrResult.data);
       } else {
-        setContent(getEmptyContent());
+        setContentLtr(getEmptyContent('ltr'));
+      }
+      
+      if (rtlResult.success && rtlResult.data) {
+        setContentRtl(rtlResult.data);
+      } else {
+        setContentRtl(getEmptyContent('rtl'));
       }
     } catch (error) {
       console.error('Error loading content:', error);
       showMessage('error', 'Failed to load content');
-      setContent(getEmptyContent());
+      setContentLtr(getEmptyContent('ltr'));
+      setContentRtl(getEmptyContent('rtl'));
     } finally {
       setLoading(false);
     }
   };
 
-  const getEmptyContent = (): FooterContent => ({
-    language,
+  const getEmptyContent = (lang: 'ltr' | 'rtl'): FooterContent => ({
+    language: lang,
     isActive: true,
     logo: {
       imagePath: '/image/logo/logo-footer.png',
@@ -86,699 +92,316 @@ export default function FooterManager() {
 
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
-    if (type === 'success') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    const timeout = type === 'success' ? 8000 : 5000;
-    setTimeout(() => setMessage(null), timeout);
+    setTimeout(() => setMessage(null), 5000);
   };
 
-  const handleSave = async () => {
-    if (!content) return;
-    
-    setSaving(true);
-    try {
-      const method = content._id ? 'PUT' : 'POST';
-      const response = await fetch('/api/footer', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...content, language }),
-      });
+  const toggleSection = (section: string) => {
+    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
 
-      const result = await response.json();
+  const handleSaveSection = async (section: string) => {
+    if (!contentLtr || !contentRtl) return;
+    setSaving(section);
+    try {
+      // Save both LTR and RTL in parallel
+      const [ltrRes, rtlRes] = await Promise.all([
+        fetch('/api/footer', {
+          method: contentLtr._id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...contentLtr, language: 'ltr' }),
+        }),
+        fetch('/api/footer', {
+          method: contentRtl._id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...contentRtl, language: 'rtl' }),
+        }),
+      ]);
       
-      if (result.success) {
-        showMessage('success', result.message || 'Content saved successfully!');
+      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
+      
+      if (ltrResult.success && rtlResult.success) {
+        showMessage('success', `${section} saved successfully!`);
         await loadContent();
       } else {
-        showMessage('error', result.message || 'Failed to save content');
+        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to save');
       }
     } catch (error) {
-      console.error('Error saving content:', error);
-      showMessage('error', 'Failed to save content');
+      console.error('Error saving:', error);
+      showMessage('error', 'Failed to save');
     } finally {
-      setSaving(false);
+      setSaving(null);
     }
   };
 
-  if (loading || !content) {
-    return (
-      <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
-        <div className="text-center">
-          <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }} role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="text-muted">Loading Footer content...</p>
-        </div>
-      </div>
-    );
+  if (loading || !contentLtr || !contentRtl) {
+    return <div className="admin-loading">Loading...</div>;
   }
 
   return (
-    <div className="admin-bg-gradient min-vh-100">
-      <div className="container-fluid py-4">
-        {/* Header */}
-        <Card className="mb-4 shadow-sm">
-          <div className="card-body">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-              <div>
-                <h1 className="h3 mb-2">📋 Footer Manager</h1>
-                <p className="text-muted mb-0">Manage footer content, links, and social media</p>
-              </div>
-              <div className="d-flex gap-3 align-items-center">
-                <LanguageSwitch language={language} onChange={setLanguage} />
-                <Button 
-                  onClick={handleSave} 
-                  disabled={saving}
-                  size="md"
-                  variant="success"
-                  className="px-4"
-                >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
-            </div>
+    <div className="admin-cms-container">
+      <div className="admin-cms-header">
+        <h1>Footer</h1>
+      </div>
+
+      {message && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: '16px',
+            borderRadius: '6px',
+            background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
+            color: message.type === 'success' ? '#065f46' : '#991b1b',
+          }}
+        >
+          {message.text}
+        </div>
+      )}
+
+      <div className="admin-cms-sections">
+        <div className="admin-cms-section-card">
+          <div
+            className="admin-cms-section-header"
+            onClick={() => toggleSection('logo')}
+          >
+            <h3>Logo & Description</h3>
+            <span className="admin-cms-toggle">
+              {openSections.logo ? '−' : '+'}
+            </span>
           </div>
-        </Card>
-
-        {/* Alert Messages */}
-        {message && (
-          <div className="mb-4">
-            <Alert 
-              type={message.type} 
-              message={message.text}
-              onClose={() => setMessage(null)} 
-            />
-          </div>
-        )}
-
-        {/* Main Content */}
-        <Card className="shadow-sm">
-          <div className="card-body p-4">
-            {/* Footer Active Toggle */}
-            <Section title="General Settings" description="Basic footer configuration">
-              <Toggle
-                label="Footer Active"
-                checked={content.isActive}
-                onChange={(value) =>
-                  setContent({
-                    ...content,
-                    isActive: value,
-                  })
-                }
-              />
-            </Section>
-
-            {/* Logo & Description */}
-            <div className="mt-5">
-              <Section title="Logo & Description" description="Footer logo and company description">
-                <FormGrid columns={2}>
-                  <ImageUpload
-                    label="Logo Image"
-                    value={content.logo.imagePath}
-                    onChange={(value) =>
-                      setContent({
-                        ...content,
-                        logo: { ...content.logo, imagePath: value },
-                      })
-                    }
-                    placeholder="/image/logo/logo-footer.png"
-                  />
-                  <Input
-                    label="Logo Link"
-                    value={content.logo.link}
-                    onChange={(value) =>
-                      setContent({
-                        ...content,
-                        logo: { ...content.logo, link: value },
-                      })
-                    }
-                    placeholder="#"
-                  />
-                  <Input
-                    label="Logo Alt Text"
-                    value={content.logo.alt}
-                    onChange={(value) =>
-                      setContent({
-                        ...content,
-                        logo: { ...content.logo, alt: value },
-                      })
-                    }
-                    placeholder="Al Bahar & Partners"
-                  />
-                  <FormGrid columns={2}>
-                    <Input
-                      label="Logo Width"
-                      type="number"
-                      value={String(content.logo.width)}
-                      onChange={(value) =>
-                        setContent({
-                          ...content,
-                          logo: { ...content.logo, width: Number(value) },
-                        })
-                      }
-                      placeholder="169"
-                    />
-                    <Input
-                      label="Logo Height"
-                      type="number"
-                      value={String(content.logo.height)}
-                      onChange={(value) =>
-                        setContent({
-                          ...content,
-                          logo: { ...content.logo, height: Number(value) },
-                        })
-                      }
-                      placeholder="41"
-                    />
-                  </FormGrid>
-                </FormGrid>
-                <Textarea
-                  label="Company Description"
-                  value={content.description}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      description: value,
+          {openSections.logo && (
+            <div className="admin-cms-form">
+              <div className="form-group">
+                <label>Logo Image</label>
+                <ImageUpload
+                  value={contentLtr.logo.imagePath}
+                  onChange={(value) => {
+                    setContentLtr({
+                      ...contentLtr,
+                      logo: { ...contentLtr.logo, imagePath: value },
+                    });
+                    setContentRtl({
+                      ...contentRtl,
+                      logo: { ...contentRtl.logo, imagePath: value },
+                    });
+                  }}
+                  folder="logo"
+                />
+              </div>
+              <div className="form-group">
+                <label>Logo Link</label>
+                <input
+                  type="text"
+                  value={contentLtr.logo.link}
+                  onChange={(e) => {
+                    const link = e.target.value;
+                    setContentLtr({
+                      ...contentLtr,
+                      logo: { ...contentLtr.logo, link },
+                    });
+                    setContentRtl({
+                      ...contentRtl,
+                      logo: { ...contentRtl.logo, link },
+                    });
+                  }}
+                />
+              </div>
+              <div className="form-group">
+                <label>Description (English)</label>
+                <textarea
+                  value={contentLtr.description || ''}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      description: e.target.value,
                     })
                   }
-                  placeholder="Welcome to Al Bahar & Partners..."
                   rows={4}
                 />
-              </Section>
+              </div>
+              <div className="form-group">
+                <label>Description (Arabic)</label>
+                <textarea
+                  dir="rtl"
+                  value={contentRtl.description || ''}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={4}
+                />
+              </div>
+              <div className="form-actions">
+                <button
+                  className="button button-primary"
+                  onClick={() => handleSaveSection('logo')}
+                  disabled={saving === 'logo'}
+                >
+                  {saving === 'logo' ? 'Saving...' : 'Save Logo & Description'}
+                </button>
+              </div>
             </div>
+          )}
+        </div>
 
-            {/* Social Media Links */}
-            <div className="mt-5">
-              <Section title="Social Media Links" description="Manage social media links">
-                <ArrayManager
-                  items={content.socialLinks || []}
-                  onAdd={() => {
-                    setContent({
-                      ...content,
-                      socialLinks: [
-                        ...(content.socialLinks || []),
-                        {
-                          name: '',
-                          url: '#',
-                          icon: 'icon-ig1',
-                          order: (content.socialLinks || []).length,
-                          isActive: true,
-                        },
-                      ],
-                    });
-                  }}
-                  onRemove={(index) => {
-                    setContent({
-                      ...content,
-                      socialLinks: (content.socialLinks || []).filter((_, i) => i !== index),
-                    });
-                  }}
-                  onChange={(socialLinks) =>
-                    setContent({
-                      ...content,
-                      socialLinks,
-                    })
-                  }
-                  renderItem={(item, index, onChange) => (
-                    <FormGrid columns={4}>
-                      <Input
-                        label="Social Media Name"
-                        value={item.name}
-                        onChange={(value) => onChange({ ...item, name: value })}
-                        placeholder="LinkedIn"
-                      />
-                      <Input
-                        label="URL"
-                        value={item.url}
-                        onChange={(value) => onChange({ ...item, url: value })}
-                        placeholder="https://linkedin.com/company/..."
-                      />
-                      <Input
-                        label="Icon Class"
-                        value={item.icon}
-                        onChange={(value) => onChange({ ...item, icon: value })}
-                        placeholder="icon-ig1"
-                        helperText="Icon class name or SVG identifier"
-                      />
-                      <Input
-                        label="Order"
-                        type="number"
-                        value={String(item.order)}
-                        onChange={(value) => onChange({ ...item, order: Number(value) })}
-                        placeholder="0"
-                      />
-                    </FormGrid>
-                  )}
-                  addButtonText="Add Social Link"
-                  emptyMessage="No social media links added yet."
-                />
-              </Section>
-            </div>
-
-            {/* Newsletter */}
-            <div className="mt-5">
-              <Section title="Newsletter Section" description="Newsletter subscription settings">
-                <Toggle
-                  label="Newsletter Active"
-                  checked={content.newsletter.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      newsletter: { ...content.newsletter, isActive: value },
-                    })
-                  }
-                />
-                <Input
-                  label="Newsletter Title"
-                  value={content.newsletter.title}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      newsletter: { ...content.newsletter, title: value },
-                    })
-                  }
-                  placeholder="Subscribe for Updates & Insights"
-                />
-                <Textarea
-                  label="Newsletter Description"
-                  value={content.newsletter.description}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      newsletter: { ...content.newsletter, description: value },
-                    })
-                  }
-                  placeholder="Get occasional updates..."
-                  rows={2}
-                />
-                <Input
-                  label="Email Placeholder"
-                  value={content.newsletter.placeholder}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      newsletter: { ...content.newsletter, placeholder: value },
-                    })
-                  }
-                  placeholder="Enter your email address"
-                />
-              </Section>
-            </div>
-
-            {/* Quick Links */}
-            <div className="mt-5">
-              <Section title="Quick Links" description="Footer navigation links (columns)">
-                <ArrayManager
-                  items={content.quickLinks || []}
-                  onAdd={() => {
-                    setContent({
-                      ...content,
-                      quickLinks: [
-                        ...(content.quickLinks || []),
-                        {
-                          title: '',
-                          links: [],
-                          order: (content.quickLinks || []).length,
-                          isActive: true,
-                        },
-                      ],
-                    });
-                  }}
-                  onRemove={(index) => {
-                    setContent({
-                      ...content,
-                      quickLinks: (content.quickLinks || []).filter((_, i) => i !== index),
-                    });
-                  }}
-                  onChange={(quickLinks) =>
-                    setContent({
-                      ...content,
-                      quickLinks,
-                    })
-                  }
-                  renderItem={(column, index, onChange) => (
-                    <div>
-                      <Toggle
-                        label="Column Active"
-                        checked={column.isActive}
-                        onChange={(value) => onChange({ ...column, isActive: value })}
-                      />
-                      <FormGrid columns={2}>
-                        <Input
-                          label="Column Title"
-                          value={column.title}
-                          onChange={(value) => onChange({ ...column, title: value })}
-                          placeholder="Quick Links"
-                        />
-                        <Input
-                          label="Display Order"
-                          type="number"
-                          value={String(column.order)}
-                          onChange={(value) => onChange({ ...column, order: Number(value) })}
-                          placeholder="0"
-                        />
-                      </FormGrid>
-                      <div className="mt-3">
-                        <h6>Links in this column:</h6>
-                        <ArrayManager
-                          items={column.links || []}
-                          onAdd={() => {
-                            onChange({
-                              ...column,
-                              links: [
-                                ...(column.links || []),
-                                { title: '', href: '#', order: (column.links || []).length, isActive: true },
-                              ],
-                            });
-                          }}
-                          onRemove={(linkIndex) => {
-                            onChange({
-                              ...column,
-                              links: (column.links || []).filter((_, i) => i !== linkIndex),
-                            });
-                          }}
-                          onChange={(links) => onChange({ ...column, links })}
-                          renderItem={(link, linkIndex, onLinkChange) => (
-                            <FormGrid columns={3}>
-                              <Input
-                                label="Link Title"
-                                value={link.title}
-                                onChange={(value) => onLinkChange({ ...link, title: value })}
-                                placeholder="About Us"
-                              />
-                              <Input
-                                label="Link URL"
-                                value={link.href}
-                                onChange={(value) => onLinkChange({ ...link, href: value })}
-                                placeholder="/about-us"
-                              />
-                              <Input
-                                label="Order"
-                                type="number"
-                                value={String(link.order)}
-                                onChange={(value) => onLinkChange({ ...link, order: Number(value) })}
-                                placeholder="0"
-                              />
-                            </FormGrid>
-                          )}
-                          addButtonText="Add Link"
-                          emptyMessage="No links in this column."
-                        />
-                      </div>
-                    </div>
-                  )}
-                  addButtonText="Add Link Column"
-                  emptyMessage="No quick link columns added yet."
-                />
-              </Section>
-            </div>
-
-            {/* Service & Assistance */}
-            <div className="mt-5">
-              <Section title="Service & Assistance" description="Service contact information">
-                <Toggle
-                  label="Service & Assistance Active"
-                  checked={content.serviceAssistance.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      serviceAssistance: { ...content.serviceAssistance, isActive: value },
-                    })
-                  }
-                />
-                <Input
-                  label="Section Title"
-                  value={content.serviceAssistance.title}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      serviceAssistance: { ...content.serviceAssistance, title: value },
-                    })
-                  }
-                  placeholder="Service & Assistance"
-                />
-                <ArrayManager
-                  items={content.serviceAssistance.items || []}
-                  onAdd={() => {
-                    setContent({
-                      ...content,
-                      serviceAssistance: {
-                        ...content.serviceAssistance,
-                        items: [
-                          ...(content.serviceAssistance.items || []),
-                          {
-                            label: '',
-                            value: '',
-                            type: 'text',
-                            order: (content.serviceAssistance.items || []).length,
-                            isActive: true,
-                          },
-                        ],
-                      },
-                    });
-                  }}
-                  onRemove={(index) => {
-                    setContent({
-                      ...content,
-                      serviceAssistance: {
-                        ...content.serviceAssistance,
-                        items: (content.serviceAssistance.items || []).filter((_, i) => i !== index),
-                      },
-                    });
-                  }}
-                  onChange={(items) =>
-                    setContent({
-                      ...content,
-                      serviceAssistance: { ...content.serviceAssistance, items },
-                    })
-                  }
-                  renderItem={(item, index, onChange) => (
-                    <FormGrid columns={4}>
-                      <Input
-                        label="Label"
-                        value={item.label}
-                        onChange={(value) => onChange({ ...item, label: value })}
-                        placeholder="Service"
-                      />
-                      <Input
-                        label="Value"
-                        value={item.value}
-                        onChange={(value) => onChange({ ...item, value })}
-                        placeholder="+965 XXXXXX"
-                      />
-                      <Input
-                        label="Type"
-                        value={item.type}
-                        onChange={(value) => onChange({ ...item, type: value as any })}
-                        placeholder="phone"
-                        helperText="text, phone, email, address"
-                      />
-                      <Input
-                        label="Order"
-                        type="number"
-                        value={String(item.order)}
-                        onChange={(value) => onChange({ ...item, order: Number(value) })}
-                        placeholder="0"
-                      />
-                    </FormGrid>
-                  )}
-                  addButtonText="Add Service Item"
-                  emptyMessage="No service items added yet."
-                />
-              </Section>
-            </div>
-
-            {/* Contact Section */}
-            <div className="mt-5">
-              <Section title="Contact Section" description="Contact information">
-                <Toggle
-                  label="Contact Section Active"
-                  checked={content.contactSection.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      contactSection: { ...content.contactSection, isActive: value },
-                    })
-                  }
-                />
-                <Input
-                  label="Section Title"
-                  value={content.contactSection.title}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      contactSection: { ...content.contactSection, title: value },
-                    })
-                  }
-                  placeholder="Contact Us"
-                />
-                <ArrayManager
-                  items={content.contactSection.items || []}
-                  onAdd={() => {
-                    setContent({
-                      ...content,
-                      contactSection: {
-                        ...content.contactSection,
-                        items: [
-                          ...(content.contactSection.items || []),
-                          {
-                            label: '',
-                            value: '',
-                            type: 'text',
-                            order: (content.contactSection.items || []).length,
-                            isActive: true,
-                          },
-                        ],
-                      },
-                    });
-                  }}
-                  onRemove={(index) => {
-                    setContent({
-                      ...content,
-                      contactSection: {
-                        ...content.contactSection,
-                        items: (content.contactSection.items || []).filter((_, i) => i !== index),
-                      },
-                    });
-                  }}
-                  onChange={(items) =>
-                    setContent({
-                      ...content,
-                      contactSection: { ...content.contactSection, items },
-                    })
-                  }
-                  renderItem={(item, index, onChange) => (
-                    <FormGrid columns={4}>
-                      <Input
-                        label="Label"
-                        value={item.label}
-                        onChange={(value) => onChange({ ...item, label: value })}
-                        placeholder="Address"
-                      />
-                      <Input
-                        label="Value"
-                        value={item.value}
-                        onChange={(value) => onChange({ ...item, value })}
-                        placeholder="Kuwait City, Kuwait"
-                      />
-                      <Input
-                        label="Type"
-                        value={item.type}
-                        onChange={(value) => onChange({ ...item, type: value as any })}
-                        placeholder="address"
-                        helperText="text, phone, email, address"
-                      />
-                      <Input
-                        label="Order"
-                        type="number"
-                        value={String(item.order)}
-                        onChange={(value) => onChange({ ...item, order: Number(value) })}
-                        placeholder="0"
-                      />
-                    </FormGrid>
-                  )}
-                  addButtonText="Add Contact Item"
-                  emptyMessage="No contact items added yet."
-                />
-              </Section>
-            </div>
-
-            {/* Footer Bottom */}
-            <div className="mt-5">
-              <Section title="Footer Bottom" description="Copyright and bottom links">
-                <Input
-                  label="Copyright Text"
-                  value={content.footerBottom.copyright}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      footerBottom: { ...content.footerBottom, copyright: value },
-                    })
-                  }
-                  placeholder="© 2025 Al Bahar & Partners. All Rights Reserved."
-                />
-                <ArrayManager
-                  items={content.footerBottom.links || []}
-                  onAdd={() => {
-                    setContent({
-                      ...content,
-                      footerBottom: {
-                        ...content.footerBottom,
-                        links: [
-                          ...(content.footerBottom.links || []),
-                          {
-                            title: '',
-                            href: '#',
-                            order: (content.footerBottom.links || []).length,
-                            isActive: true,
-                          },
-                        ],
-                      },
-                    });
-                  }}
-                  onRemove={(index) => {
-                    setContent({
-                      ...content,
-                      footerBottom: {
-                        ...content.footerBottom,
-                        links: (content.footerBottom.links || []).filter((_, i) => i !== index),
-                      },
-                    });
-                  }}
-                  onChange={(links) =>
-                    setContent({
-                      ...content,
-                      footerBottom: { ...content.footerBottom, links },
-                    })
-                  }
-                  renderItem={(link, index, onChange) => (
-                    <FormGrid columns={3}>
-                      <Input
-                        label="Link Title"
-                        value={link.title}
-                        onChange={(value) => onChange({ ...link, title: value })}
-                        placeholder="Contact Us"
-                      />
-                      <Input
-                        label="Link URL"
-                        value={link.href}
-                        onChange={(value) => onChange({ ...link, href: value })}
-                        placeholder="/contact-us"
-                      />
-                      <Input
-                        label="Order"
-                        type="number"
-                        value={String(link.order)}
-                        onChange={(value) => onChange({ ...link, order: Number(value) })}
-                        placeholder="0"
-                      />
-                    </FormGrid>
-                  )}
-                  addButtonText="Add Bottom Link"
-                  emptyMessage="No bottom links added yet."
-                />
-              </Section>
-            </div>
-
-            {/* Background Image */}
-            <div className="mt-5">
-              <Section title="Background Image" description="Footer background image">
-                <ImageUpload
-                  label="Background Image Path"
-                  value={content.backgroundImage}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      backgroundImage: value,
-                    })
-                  }
-                  placeholder="/image/section/bg-footer-style-2.png"
-                />
-              </Section>
-            </div>
+        <div className="admin-cms-section-card">
+          <div
+            className="admin-cms-section-header"
+            onClick={() => toggleSection('newsletter')}
+          >
+            <h3>Newsletter Section</h3>
+            <span className="admin-cms-toggle">
+              {openSections.newsletter ? '−' : '+'}
+            </span>
           </div>
-        </Card>
+          {openSections.newsletter && (
+            <div className="admin-cms-form">
+              <div className="form-group">
+                <label>Title (English)</label>
+                <input
+                  type="text"
+                  value={contentLtr.newsletter.title}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      newsletter: { ...contentLtr.newsletter, title: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Title (Arabic)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.newsletter.title}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      newsletter: { ...contentRtl.newsletter, title: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Description (English)</label>
+                <textarea
+                  value={contentLtr.newsletter.description || ''}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      newsletter: { ...contentLtr.newsletter, description: e.target.value },
+                    })
+                  }
+                  rows={3}
+                />
+              </div>
+              <div className="form-group">
+                <label>Description (Arabic)</label>
+                <textarea
+                  dir="rtl"
+                  value={contentRtl.newsletter.description || ''}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      newsletter: { ...contentRtl.newsletter, description: e.target.value },
+                    })
+                  }
+                  rows={3}
+                />
+              </div>
+              <div className="form-group">
+                <label>Placeholder (English)</label>
+                <input
+                  type="text"
+                  value={contentLtr.newsletter.placeholder}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      newsletter: { ...contentLtr.newsletter, placeholder: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Placeholder (Arabic)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.newsletter.placeholder}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      newsletter: { ...contentRtl.newsletter, placeholder: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-actions">
+                <button
+                  className="button button-primary"
+                  onClick={() => handleSaveSection('newsletter')}
+                  disabled={saving === 'newsletter'}
+                >
+                  {saving === 'newsletter' ? 'Saving...' : 'Save Newsletter'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="admin-cms-section-card">
+          <div
+            className="admin-cms-section-header"
+            onClick={() => toggleSection('bottom')}
+          >
+            <h3>Footer Bottom</h3>
+            <span className="admin-cms-toggle">
+              {openSections.bottom ? '−' : '+'}
+            </span>
+          </div>
+          {openSections.bottom && (
+            <div className="admin-cms-form">
+              <div className="form-group">
+                <label>Copyright Text (English)</label>
+                <input
+                  type="text"
+                  value={contentLtr.footerBottom.copyright}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      footerBottom: { ...contentLtr.footerBottom, copyright: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Copyright Text (Arabic)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.footerBottom.copyright}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      footerBottom: { ...contentRtl.footerBottom, copyright: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-actions">
+                <button
+                  className="button button-primary"
+                  onClick={() => handleSaveSection('bottom')}
+                  disabled={saving === 'bottom'}
+                >
+                  {saving === 'bottom' ? 'Saving...' : 'Save Footer Bottom'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

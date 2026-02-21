@@ -39,20 +39,11 @@ export default function ProductDetail({ product, brandName }: Props) {
             <div className="tf-product-info-wrap position-relative ml-50">
               <div className="tf-product-info-heading">
                 <h4 className="name-product">{product.name}</h4>
-                <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
-                  Brand: <strong>{brandName}</strong>
-                </p>
               </div>
               <div className="tf-product-info-desc">
                 {product.description && (
-                  <div 
-                    className="product-description"
+                  <p
                     dangerouslySetInnerHTML={{ __html: product.description }}
-                    style={{
-                      fontSize: '1rem',
-                      lineHeight: '1.8',
-                      color: '#666',
-                    }}
                   />
                 )}
               </div>

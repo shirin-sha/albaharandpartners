@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 
 interface LanguageSwitchProps {
   language: 'ltr' | 'rtl';

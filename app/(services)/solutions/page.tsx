@@ -14,6 +14,9 @@ export const metadata: Metadata = {
 };
 
 // Static generation with on-demand revalidation (triggered from admin panel)
+// Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath
+// Using ISR with long revalidate time - pages stay static until admin triggers regeneration
+export const revalidate = 3600; // ISR: Regenerates after 1 hour OR immediately when admin calls revalidatePath
 
 export default async function SolutionsPage() {
   const content = await getSolutionsContent();

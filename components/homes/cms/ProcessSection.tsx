@@ -62,7 +62,6 @@ export default function ProcessSection({ content, language = 'ltr' }: ProcessSec
                 <SwiperSlide className="swiper-slide" key={index}>
                   <div className="process-item bg-1 bg-1-style-2 step-hover">
                     <div className="process-top">
-                      <div className="icon" dangerouslySetInnerHTML={{ __html: step.icon }} />
                       <span className="label text-btn-uppercase">{step.title}</span>
                     </div>
                     <div className="process-content">

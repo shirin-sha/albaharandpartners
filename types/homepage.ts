@@ -63,7 +63,6 @@ export interface ProcessStep {
   _id?: string;
   title: string;
   description: string;
-  icon: string; // SVG string or icon class
   order: number;
   language: 'ltr' | 'rtl';
   isActive: boolean;

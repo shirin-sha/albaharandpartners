@@ -1,14 +1,14 @@
 'use client';
-import React, { useState, useRef, useId } from 'react';
+import { useState, useRef, useId } from 'react';
 
 interface ImageUploadProps {
   label?: string;
   value: string;
   onChange: (value: string) => void;
   helperText?: string;
-  placeholder?: string;
   className?: string;
   folder?: string; // Optional folder path (e.g., 'hero', 'blog', 'brand')
+  required?: boolean; // Make the field required
 }
 
 export default function ImageUpload({
@@ -16,9 +16,9 @@ export default function ImageUpload({
   value,
   onChange,
   helperText = 'Upload an image file',
-  placeholder = '/image/...',
   className = '',
   folder,
+  required = false,
 }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -113,6 +113,7 @@ export default function ImageUpload({
       {label && (
         <label className="form-label fw-semibold mb-2" style={{ fontSize: '0.95rem' }}>
           {label}
+          {required && <span className="text-danger ms-1">*</span>}
         </label>
       )}
       
@@ -144,7 +145,7 @@ export default function ImageUpload({
                 Uploading...
               </>
             ) : (
-              value ? 'Replace Image' : 'Upload Image'
+              value ? 'Replace Image' : 'Choose & Upload Image'
             )}
           </label>
         </div>
@@ -174,22 +175,23 @@ export default function ImageUpload({
                 }}
               />
               {/* Trash / bin icon */}
-              <div
-                onClick={handleRemove}
-                title="Remove image"
-                style={{
-                  position: 'absolute',
-                  top: '8px',
-                  right: '8px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                  borderRadius: '4px',
-                  padding: '4px',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
+              {!required && (
+                <div
+                  onClick={handleRemove}
+                  title="Remove image"
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderRadius: '4px',
+                    padding: '4px',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -207,7 +209,8 @@ export default function ImageUpload({
                   <path d="M14 11v6" />
                   <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
                 </svg>
-              </div>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -38,6 +38,9 @@ export const metadata: Metadata = {
 };
 
 // Static generation with on-demand revalidation (triggered from admin panel)
+// Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath
+// Using ISR with long revalidate time - pages stay static until admin triggers regeneration
+export const revalidate = 3600; // ISR: Regenerates after 1 hour OR immediately when admin calls revalidatePath
 
 export default async function Page() {
   // Language is always 'ltr' for the root page
@@ -61,22 +64,6 @@ export default async function Page() {
     getSolutionsContent(language),
     getBrandsContent(language),
   ]);
-
-  // Log what we got
-  console.log('Content received:', {
-    hasContent: !!content,
-    hasHeroSlides: !!content?.heroSlides,
-    heroSlidesCount: content?.heroSlides?.length || 0,
-    hasAbout: !!content?.aboutSection,
-    hasProcess: !!content?.processSection,
-    hasServices: !!content?.servicesSection,
-    hasTestimonial: !!content?.testimonialSection,
-    hasBrands: !!content?.brandsSection,
-    hasCaseStudies: !!content?.caseStudiesSection,
-    hasFeatures: !!content?.featuresSection,
-    hasBlogs: !!content?.blogsSection,
-    hasCta: !!content?.ctaSection,
-  });
 
   return (
     <>

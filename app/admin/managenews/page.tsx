@@ -1,24 +1,42 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NewsPost } from '@/types/news-updates';
-import {
-  Button,
-  Input,
-  Card,
-  Toggle,
-  Alert,
-  Section,
-  FormGrid,
-  ImageUpload,
-  Textarea,
-} from '@/components/admin/ui';
+import ImageUpload from '@/components/admin/ui/ImageUpload';
 
 export default function NewsManagePage() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [posts, setPosts] = useState<NewsPost[]>([]);
+  const [postsLtr, setPostsLtr] = useState<NewsPost[]>([]);
+  const [postsRtl, setPostsRtl] = useState<NewsPost[]>([]);
+  const [rtlLoaded, setRtlLoaded] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+  const [formData, setFormData] = useState<{
+    title: string;
+    titleAr: string;
+    category: string;
+    categoryAr: string;
+    imagePath: string;
+    imgWidth: number;
+    imgHeight: number;
+    date: { day: string; month: string };
+    link: string;
+    isActive: boolean;
+  }>({
+    title: '',
+    titleAr: '',
+    category: '',
+    categoryAr: '',
+    imagePath: '',
+    imgWidth: 410,
+    imgHeight: 546,
+    date: { day: '18', month: 'DEC' },
+    link: '#',
+    isActive: true,
+  });
 
   useEffect(() => {
     loadPosts();
@@ -27,540 +45,495 @@ export default function NewsManagePage() {
   const loadPosts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/news-updates?language=ltr');
-      const result = await response.json();
-      
-      if (result.success && result.data) {
-        setPosts(result.data.posts || []);
-      } else {
-        setPosts([]);
+      // Only load LTR initially for faster page load
+      const ltrRes = await fetch('/api/news-updates?language=ltr');
+      const ltrResult = await ltrRes.json();
+      if (ltrResult.success && ltrResult.data) {
+        setPostsLtr(ltrResult.data.posts || []);
       }
     } catch (error) {
       console.error('Error loading posts:', error);
       showMessage('error', 'Failed to load posts');
-      setPosts([]);
     } finally {
       setLoading(false);
     }
   };
 
+  const loadRtlData = async () => {
+    if (rtlLoaded) return;
+    try {
+      const rtlRes = await fetch('/api/news-updates?language=rtl');
+      const rtlResult = await rtlRes.json();
+      if (rtlResult.success && rtlResult.data) {
+        setPostsRtl(rtlResult.data.posts || []);
+        setRtlLoaded(true);
+      }
+    } catch (error) {
+      console.error('Error loading RTL posts:', error);
+    }
+  };
+
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
-    if (type === 'success') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    const timeout = type === 'success' ? 8000 : 5000;
-    setTimeout(() => setMessage(null), timeout);
+    setTimeout(() => setMessage(null), 5000);
   };
 
-  // Add a single post
-  const addPostToAPI = async (post: NewsPost) => {
-    try {
-      const response = await fetch('/api/news-updates/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ language: 'ltr', post }),
-      });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.title.trim()) {
+      showMessage('error', 'Title (English) is required');
+      return;
+    }
 
-      const result = await response.json();
-      
-      if (result.success) {
-        showMessage('success', result.message || 'Post added successfully!');
+    setSaving(true);
+    try {
+      const isNew = editingIndex === null;
+      const index = isNew ? postsLtr.length : editingIndex!;
+
+      const postLtr: NewsPost = {
+        title: formData.title,
+        category: formData.category,
+        imagePath: formData.imagePath,
+        imgWidth: formData.imgWidth,
+        imgHeight: formData.imgHeight,
+        date: formData.date,
+        link: formData.link,
+        isActive: formData.isActive,
+      };
+
+      const postRtl: NewsPost = {
+        title: formData.titleAr || formData.title,
+        category: formData.categoryAr || formData.category,
+        imagePath: formData.imagePath,
+        imgWidth: formData.imgWidth,
+        imgHeight: formData.imgHeight,
+        date: formData.date,
+        link: formData.link,
+        isActive: formData.isActive,
+      };
+
+      const [ltrRes, rtlRes] = await Promise.all([
+        fetch(isNew ? '/api/news-updates/add' : '/api/news-updates/update', {
+          method: isNew ? 'POST' : 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            language: 'ltr',
+            postIndex: index,
+            post: postLtr,
+          }),
+        }),
+        fetch(isNew ? '/api/news-updates/add' : '/api/news-updates/update', {
+          method: isNew ? 'POST' : 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            language: 'rtl',
+            postIndex: index,
+            post: postRtl,
+          }),
+        }),
+      ]);
+
+      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
+      if (ltrResult.success && rtlResult.success) {
+        showMessage('success', isNew ? 'Post added successfully!' : 'Post updated successfully!');
         await loadPosts();
-        return true;
+        resetForm();
       } else {
-        showMessage('error', result.message || 'Failed to add post');
-        return false;
+        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to save');
       }
     } catch (error) {
-      console.error('Error adding post:', error);
-      showMessage('error', 'Failed to add post');
-      return false;
+      console.error('Error saving:', error);
+      showMessage('error', 'Failed to save');
+    } finally {
+      setSaving(false);
     }
   };
 
-  // Update a single post
-  const updatePostInAPI = async (postIndex: number, post: NewsPost) => {
-    try {
-      const response = await fetch('/api/news-updates/update', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ language: 'ltr', postIndex, post }),
-      });
+  const handleEdit = async (index: number) => {
+    // Load RTL data when editing (lazy load)
+    await loadRtlData();
+    
+    const postLtr = postsLtr[index];
+    const postRtl = postsRtl[index] || postLtr;
+    setEditingIndex(index);
+    setFormData({
+      title: postLtr.title || '',
+      titleAr: postRtl.title || '',
+      category: postLtr.category || '',
+      categoryAr: postRtl.category || '',
+      imagePath: postLtr.imagePath || '',
+      imgWidth: postLtr.imgWidth || 410,
+      imgHeight: postLtr.imgHeight || 546,
+      date: postLtr.date || { day: '18', month: 'DEC' },
+      link: postLtr.link || '#',
+      isActive: postLtr.isActive !== undefined ? postLtr.isActive : true,
+    });
+    setShowForm(true);
+    
+    // Scroll to form after state update
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
 
-      const result = await response.json();
-      
-      if (result.success) {
-        showMessage('success', result.message || 'Post updated successfully!');
+  const handleDelete = async (index: number) => {
+    if (!confirm('Are you sure you want to delete this post?')) return;
+
+    try {
+      const [ltrRes, rtlRes] = await Promise.all([
+        fetch(`/api/news-updates/delete?language=ltr&index=${index}`, { method: 'DELETE' }),
+        fetch(`/api/news-updates/delete?language=rtl&index=${index}`, { method: 'DELETE' }),
+      ]);
+
+      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
+      if (ltrResult.success && rtlResult.success) {
+        showMessage('success', 'Post deleted successfully!');
         await loadPosts();
-        return true;
       } else {
-        showMessage('error', result.message || 'Failed to update post');
-        return false;
+        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to delete');
       }
     } catch (error) {
-      console.error('Error updating post:', error);
-      showMessage('error', 'Failed to update post');
-      return false;
+      console.error('Error deleting:', error);
+      showMessage('error', 'Failed to delete');
     }
   };
 
-  // Delete a single post
-  const deletePostFromAPI = async (postIndex: number) => {
-    try {
-      const response = await fetch(`/api/news-updates/delete?language=ltr&index=${postIndex}`, {
-        method: 'DELETE',
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        showMessage('success', result.message || 'Post deleted successfully!');
-        await loadPosts();
-        return true;
-      } else {
-        showMessage('error', result.message || 'Failed to delete post');
-        return false;
-      }
-    } catch (error) {
-      console.error('Error deleting post:', error);
-      showMessage('error', 'Failed to delete post');
-      return false;
-    }
-  };
-
-  const onAdd = async (post: NewsPost) => {
-    return await addPostToAPI(post);
-  };
-
-  const onUpdate = async (index: number, post: NewsPost) => {
-    return await updatePostInAPI(index, post);
-  };
-
-  const onDelete = async (index: number) => {
-    return await deletePostFromAPI(index);
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      titleAr: '',
+      category: '',
+      categoryAr: '',
+      imagePath: '',
+      imgWidth: 410,
+      imgHeight: 546,
+      date: { day: '18', month: 'DEC' },
+      link: '#',
+      isActive: true,
+    });
+    setEditingIndex(null);
+    setShowForm(false);
   };
 
   if (loading) {
-    return (
-      <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
-        <div className="text-center">
-          <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }} role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="text-muted">Loading news posts...</p>
-        </div>
-      </div>
-    );
+    return <div className="admin-loading">Loading...</div>;
   }
 
-  return (
-    <div className="admin-bg-gradient min-vh-100">
-      <div className="container-fluid py-4">
-        {/* Header */}
-        <Card className="mb-4 shadow-sm">
-          <div className="card-body">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-              <div>
-                <h1 className="h3 mb-2">📰 News & Updates Management</h1>
-                <p className="text-muted mb-0">Add, edit, and delete news posts and articles</p>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {/* Alert Messages */}
-        {message && (
-          <div className="mb-4">
-            <Alert 
-              type={message.type} 
-              message={message.text}
-              onClose={() => setMessage(null)} 
-            />
-          </div>
-        )}
-
-        {/* Main Content */}
-        <Card className="shadow-sm">
-          <div className="card-body p-4">
-            <PostsList 
-              posts={posts} 
-              setPosts={setPosts} 
-              onAdd={onAdd} 
-              onUpdate={onUpdate} 
-              onDelete={onDelete} 
-            />
-          </div>
-        </Card>
-      </div>
-    </div>
-  );
-}
-
-// Posts List Component
-function PostsList({ 
-  posts, 
-  setPosts, 
-  onAdd, 
-  onUpdate, 
-  onDelete 
-}: { 
-  posts: NewsPost[]; 
-  setPosts: React.Dispatch<React.SetStateAction<NewsPost[]>>; 
-  onAdd: (post: NewsPost) => Promise<boolean>;
-  onUpdate: (index: number, post: NewsPost) => Promise<boolean>;
-  onDelete: (index: number) => Promise<boolean>;
-}) {
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [saving, setSaving] = useState(false);
+  const posts = postsLtr; // Use LTR for display
 
   return (
-    <>
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <p className="text-muted mb-0">
-          {posts?.length || 0} post{posts?.length !== 1 ? 's' : ''} listed
-        </p>
-        <Button
-          variant="primary"
-          size="sm"
-          onClick={() => {
-            const newPost: NewsPost = {
-              title: '',
-              category: '',
-              imagePath: '',
-              imgWidth: 410,
-              imgHeight: 546,
-              date: { day: '18', month: 'DEC' },
-              link: '#',
-              isActive: true,
-            };
-            setPosts([newPost, ...posts]);
-            setEditingIndex(0);
-          }}
-        >
-          + Add New Post
-        </Button>
-      </div>
-
-      {(!posts || posts.length === 0) ? (
-        <div className="text-center py-5 border border-dashed rounded bg-light">
-          <p className="text-muted mb-3">No posts added yet.</p>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => {
-              const newPost: NewsPost = {
-                title: '',
-                category: '',
-                imagePath: '',
-                imgWidth: 410,
-                imgHeight: 546,
-                date: { day: '18', month: 'DEC' },
-                link: '#',
-                isActive: true,
-              };
-              setPosts([newPost]);
-              setEditingIndex(0);
+    <div className="admin-cms-container">
+      <div className="admin-cms-header">
+        <h1>News & Updates Management</h1>
+        {!showForm && (
+          <button
+            className="button button-primary"
+            onClick={async () => {
+              await loadRtlData(); // Load RTL data when adding new
+              resetForm();
+              setShowForm(true);
+              // Scroll to form after state update
+              setTimeout(() => {
+                formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }, 100);
             }}
           >
-            Add Your First Post
-          </Button>
-        </div>
-      ) : (
-        <div className="d-flex flex-column gap-3">
-          {posts.map((post, index) => {
-            const actualIndex = index;
-            const isEditing = editingIndex === index;
+            + Add New Post
+          </button>
+        )}
+      </div>
 
-            return (
-              <Card key={actualIndex} className="border-0 border-bottom rounded-0">
-                <div className="card-body py-2 px-0">
-                  {!isEditing ? (
-                    // Collapsed view - single line
-                    <div className="d-flex justify-content-between align-items-center gap-2">
-                      <div className="flex-grow-1 d-flex align-items-center gap-2">
-                        {post.imagePath && (
-                          <div style={{ width: '120px', height: '80px', flexShrink: 0 }}>
-                            <img
-                              src={post.imagePath}
-                              alt={post.title || 'Post image'}
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                borderRadius: '4px',
-                                border: '1px solid #e0e0e0',
-                                background: '#fff',
-                              }}
-                              onError={(e) => {
-                                e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="80"%3E%3Crect fill="%23f0f0f0" width="120" height="80"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em" font-size="12"%3ENo Image%3C/text%3E%3C/svg%3E';
-                              }}
-                            />
-                          </div>
-                        )}
-                        <h6 className="mb-0 fw-semibold" style={{ minWidth: '200px' }}>
-                          {post.title || 'Untitled Post'}
-                        </h6>
-                        <span
-                          className={`badge rounded-pill px-2 py-1 ${post.isActive ? 'bg-success' : 'bg-secondary'}`}
-                        >
-                          {post.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                        {post.category && (
-                          <span className="badge bg-info rounded-pill px-2 py-1">
-                            {post.category}
-                          </span>
-                        )}
-                        {post.date && (
-                          <span className="text-muted small">
-                            {post.date.day} {post.date.month}
-                          </span>
-                        )}
-                        {post.link && post.link !== '#' && (
-                          <span className="text-muted small text-truncate" style={{ maxWidth: '150px' }}>
-                            Link: {post.link}
-                          </span>
-                        )}
-                      </div>
-                      <div className="d-flex gap-2 ms-2">
-                        <button
-                          type="button"
-                          className="btn btn-link p-0 border-0"
-                          onClick={() => setEditingIndex(actualIndex)}
-                          title="Edit post"
-                          style={{ color: '#28a745' }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-link p-0 border-0"
-                          disabled={saving}
-                          onClick={async () => {
-                            if (confirm('Are you sure you want to delete this post?')) {
-                              setSaving(true);
-                              if (editingIndex === actualIndex) {
-                                setEditingIndex(null);
-                              }
-                              await onDelete(actualIndex);
-                              setSaving(false);
-                            }
-                          }}
-                          title="Delete post"
-                          style={{ color: '#dc3545', opacity: saving ? 0.5 : 1 }}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <polyline points="3 6 5 6 21 6" />
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                            <path d="M10 11v6" />
-                            <path d="M14 11v6" />
-                            <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    // Expanded edit view
-                    <div>
-                      <div className="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                          <h5 className="mb-0">Editing: {post.title || 'New Post'}</h5>
-                          <p className="text-muted small mb-0">
-                            Update the post details below, then click "Done Editing".
-                          </p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            const currentPost = posts[actualIndex];
-                            const isNewPost = !currentPost?.title || String(currentPost?.title || '').trim() === '';
-                            if (isNewPost) {
-                              const updatedPosts = posts.filter((_, i) => i !== actualIndex);
-                              setPosts(updatedPosts);
-                              setEditingIndex(null);
-                            } else {
-                              setEditingIndex(null);
-                            }
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-
-                      {/* Post form */}
-                      <div className="mb-3">
-                        <p className="text-muted small mb-2">Basic information</p>
-                        <div className="d-flex align-items-center gap-3 mb-2">
-                          <Toggle
-                            label="Post Active"
-                            checked={post.isActive}
-                            onChange={(value) => {
-                              const updatedPosts = [...posts];
-                              updatedPosts[actualIndex] = { ...post, isActive: value };
-                              setPosts(updatedPosts);
-                            }}
-                          />
-                        </div>
-                        <FormGrid columns={2}>
-                          <Input
-                            label="Post Title"
-                            value={post.title}
-                            onChange={(value) => {
-                              const updatedPosts = [...posts];
-                              updatedPosts[actualIndex] = { ...post, title: value };
-                              setPosts(updatedPosts);
-                            }}
-                            placeholder="Building Secure Identity and Access Systems"
-                          />
-                          <Input
-                            label="Category"
-                            value={post.category}
-                            onChange={(value) => {
-                              const updatedPosts = [...posts];
-                              updatedPosts[actualIndex] = { ...post, category: value };
-                              setPosts(updatedPosts);
-                            }}
-                            placeholder="Identity & Access"
-                          />
-                          <Input
-                            label="Post Link"
-                            value={post.link}
-                            onChange={(value) => {
-                              const updatedPosts = [...posts];
-                              updatedPosts[actualIndex] = { ...post, link: value };
-                              setPosts(updatedPosts);
-                            }}
-                            placeholder="#"
-                          />
-                        </FormGrid>
-                      </div>
-
-                      {/* Image upload */}
-                      <div className="mb-3">
-                        <p className="text-muted small mb-2">Post image</p>
-                        <ImageUpload
-                          label="Post Image"
-                          value={post.imagePath}
-                          onChange={(value) => {
-                            const updatedPosts = [...posts];
-                            updatedPosts[actualIndex] = { ...post, imagePath: value };
-                            setPosts(updatedPosts);
-                          }}
-                          placeholder="/image/blog/tf-post-grid-absolute-3.jpg"
-                        />
-                        <FormGrid columns={2} className="mt-2">
-                          <Input
-                            label="Image Width"
-                            type="number"
-                            value={String(post.imgWidth || 410)}
-                            onChange={(value) => {
-                              const updatedPosts = [...posts];
-                              updatedPosts[actualIndex] = { ...post, imgWidth: Number(value) };
-                              setPosts(updatedPosts);
-                            }}
-                            placeholder="410"
-                          />
-                          <Input
-                            label="Image Height"
-                            type="number"
-                            value={String(post.imgHeight || 546)}
-                            onChange={(value) => {
-                              const updatedPosts = [...posts];
-                              updatedPosts[actualIndex] = { ...post, imgHeight: Number(value) };
-                              setPosts(updatedPosts);
-                            }}
-                            placeholder="546"
-                          />
-                        </FormGrid>
-                      </div>
-
-                      {/* Date */}
-                      <div className="mb-2">
-                        <p className="text-muted small mb-2">Publication date</p>
-                        <FormGrid columns={2}>
-                          <Input
-                            label="Date Day"
-                            value={post.date.day}
-                            onChange={(value) => {
-                              const updatedPosts = [...posts];
-                              updatedPosts[actualIndex] = { ...post, date: { ...post.date, day: value } };
-                              setPosts(updatedPosts);
-                            }}
-                            placeholder="18"
-                          />
-                          <Input
-                            label="Date Month"
-                            value={post.date.month}
-                            onChange={(value) => {
-                              const updatedPosts = [...posts];
-                              updatedPosts[actualIndex] = { ...post, date: { ...post.date, month: value } };
-                              setPosts(updatedPosts);
-                            }}
-                            placeholder="DEC"
-                          />
-                        </FormGrid>
-                        <div className="d-flex justify-content-end mt-3">
-                          <Button
-                            variant="success"
-                            size="sm"
-                            disabled={saving}
-                            onClick={async () => {
-                              setSaving(true);
-                              const currentPost = posts[actualIndex];
-                              const isNewPost = !currentPost?.title || String(currentPost?.title || '').trim() === '';
-                              
-                              if (isNewPost) {
-                                // If it's a new post, add it
-                                const success = await onAdd(currentPost);
-                                if (success) {
-                                  setEditingIndex(null);
-                                }
-                              } else {
-                                // If it's an existing post, update it
-                                const success = await onUpdate(actualIndex, currentPost);
-                                if (success) {
-                                  setEditingIndex(null);
-                                }
-                              }
-                              setSaving(false);
-                            }}
-                          >
-                            {saving ? 'Saving...' : 'Done Editing'}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Card>
-            );
-          })}
+      {message && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: '16px',
+            borderRadius: '6px',
+            background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
+            color: message.type === 'success' ? '#065f46' : '#991b1b',
+          }}
+        >
+          {message.text}
         </div>
       )}
-    </>
+
+      {showForm && (
+        <div 
+          ref={formRef}
+          className="admin-cms-section-card" 
+          style={{ 
+            marginBottom: '24px',
+            border: '2px solid #000000',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            animation: 'fadeIn 0.3s ease-in',
+          }}
+        >
+          <div className="admin-cms-section-header" style={{ background: '#000000', color: '#ffffff' }}>
+            <h3 style={{ color: '#ffffff', fontWeight: '600' }}>{editingIndex !== null ? 'Edit Post' : 'Add New Post'}</h3>
+            <button
+              onClick={resetForm}
+              style={{
+                padding: '6px 12px',
+                background: '#ffffff',
+                color: '#000000',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '500',
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+          <form onSubmit={handleSubmit} className="admin-cms-form">
+            <div className="hero-slides-container">
+              <div className="hero-slide-card">
+                <div className="hero-slide-fields">
+                  <div className="form-group">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={formData.isActive}
+                        onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                        style={{ marginRight: '8px' }}
+                      />
+                      Active
+                    </label>
+                  </div>
+                  <div className="form-group">
+                    <label>Title (English) *</label>
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Title (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.titleAr}
+                      onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Category (English)</label>
+                    <input
+                      type="text"
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Category (Arabic)</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.categoryAr}
+                      onChange={(e) => setFormData({ ...formData, categoryAr: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Image</label>
+                    <ImageUpload
+                      value={formData.imagePath}
+                      onChange={(value) => setFormData({ ...formData, imagePath: value })}
+                      folder="news"
+                    />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
+                    <div className="form-group">
+                      <label>Day</label>
+                      <input
+                        type="text"
+                        value={formData.date.day}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            date: { ...formData.date, day: e.target.value },
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Month</label>
+                      <input
+                        type="text"
+                        value={formData.date.month}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            date: { ...formData.date, month: e.target.value },
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Width</label>
+                      <input
+                        type="number"
+                        value={formData.imgWidth}
+                        onChange={(e) => setFormData({ ...formData, imgWidth: Number(e.target.value) })}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Height</label>
+                      <input
+                        type="number"
+                        value={formData.imgHeight}
+                        onChange={(e) => setFormData({ ...formData, imgHeight: Number(e.target.value) })}
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>Link</label>
+                    <input
+                      type="text"
+                      value={formData.link}
+                      onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="form-actions">
+              <button type="submit" className="button button-primary" disabled={saving}>
+                {saving ? 'Saving...' : editingIndex !== null ? 'Update Post' : 'Add Post'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <p style={{ margin: 0, color: '#6b7280' }}>
+          {posts.length} post{posts.length !== 1 ? 's' : ''} listed
+        </p>
+      </div>
+
+      <div className="admin-cms-section-card">
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Image</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Title</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Category</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Date</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Status</th>
+                <th style={{ padding: '12px', textAlign: 'right', fontSize: '14px', fontWeight: '600' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {posts.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
+                    No posts added yet. Click "Add New Post" to get started.
+                  </td>
+                </tr>
+              ) : (
+                posts.map((post, index) => (
+                  <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                    <td style={{ padding: '12px' }}>
+                      {post.imagePath ? (
+                        <img
+                          src={post.imagePath}
+                          alt={post.title || 'Post'}
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            objectFit: 'cover',
+                            borderRadius: '4px',
+                          }}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            background: '#f3f4f6',
+                            borderRadius: '4px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '12px',
+                            color: '#9ca3af',
+                          }}
+                        >
+                          No Image
+                        </div>
+                      )}
+                    </td>
+                    <td style={{ padding: '12px', fontWeight: '500' }}>{post.title || 'Untitled Post'}</td>
+                    <td style={{ padding: '12px' }}>
+                      {post.category && (
+                        <span
+                          style={{
+                            padding: '2px 8px',
+                            background: '#e0f2fe',
+                            color: '#0369a1',
+                            borderRadius: '4px',
+                            fontSize: '12px',
+                          }}
+                        >
+                          {post.category}
+                        </span>
+                      )}
+                    </td>
+                    <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280' }}>
+                      {post.date?.day} {post.date?.month}
+                    </td>
+                    <td style={{ padding: '12px' }}>
+                      <span
+                        style={{
+                          padding: '2px 8px',
+                          background: post.isActive ? '#d1fae5' : '#f3f4f6',
+                          color: post.isActive ? '#065f46' : '#6b7280',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                        }}
+                      >
+                        {post.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '12px', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(index)}
+                          className="button"
+                          style={{ fontSize: '12px', padding: '6px 12px' }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(index)}
+                          className="button"
+                          style={{
+                            fontSize: '12px',
+                            padding: '6px 12px',
+                            background: '#ef4444',
+                            color: 'white',
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 }

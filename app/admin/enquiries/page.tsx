@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, Alert, Button } from "@/components/admin/ui";
 
 interface Enquiry {

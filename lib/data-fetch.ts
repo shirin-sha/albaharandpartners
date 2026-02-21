@@ -1,6 +1,7 @@
 /**
  * Direct database access functions for server components
  * These replace HTTP API calls for better performance
+ * Uses Next.js caching for faster navigation
  */
 
 import { getDatabase } from './mongodb';
@@ -15,280 +16,391 @@ import { ContactUsContent } from '@/types/contact-us';
 import { SupportContent } from '@/types/support';
 import { CareersContent } from '@/types/careers';
 import { BrandsContent } from '@/types/brands';
+import { unstable_cache } from 'next/cache';
 
 const DB_NAME = 'albaharpartners1';
 
+// Cache duration: 60 seconds (revalidated on-demand from admin)
+const CACHE_TAG_PREFIX = 'cms-content';
+const CACHE_REVALIDATE = 60;
+
 /**
- * Fetch homepage content directly from database
+ * Fetch homepage content directly from database (cached)
  */
 export async function getHomepageContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<HomepageContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<HomepageContent>('homepage');
-    
-    const content = await collection.findOne({
-      language,
-      isActive: true,
-    });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<HomepageContent>('homepage');
+        
+        const content = await collection.findOne({
+          language,
+          isActive: true,
+        });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+        } as HomepageContent;
+      } catch (error) {
+        console.error('Error fetching homepage content:', error);
+        return null;
+      }
+    },
+    [`homepage-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-homepage-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as HomepageContent;
-  } catch (error) {
-    console.error('Error fetching homepage content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch header content directly from database
+ * Fetch header content directly from database (cached)
+ * Logo is always taken from LTR content to ensure consistency
  */
 export async function getHeaderContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<HeaderContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<HeaderContent>('header');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<HeaderContent>('header');
+        
+        // Always get LTR content for logo (logo is language-agnostic)
+        const ltrContent = await collection.findOne({ language: 'ltr' });
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        // Use LTR logo for both languages to ensure consistency
+        const headerContent: HeaderContent = {
+          ...content,
+          _id: content._id?.toString(),
+          logo: ltrContent?.logo || content.logo, // Always use LTR logo
+        };
+        
+        return headerContent;
+      } catch (error) {
+        console.error('Error fetching header content:', error);
+        return null;
+      }
+    },
+    [`header-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-header-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as HeaderContent;
-  } catch (error) {
-    console.error('Error fetching header content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch footer content directly from database
+ * Fetch footer content directly from database (cached)
  */
 export async function getFooterContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<FooterContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<FooterContent>('footer');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<FooterContent>('footer');
+        
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+        } as FooterContent;
+      } catch (error) {
+        console.error('Error fetching footer content:', error);
+        return null;
+      }
+    },
+    [`footer-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-footer-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as FooterContent;
-  } catch (error) {
-    console.error('Error fetching footer content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch News & Updates content directly from database
+ * Fetch News & Updates content directly from database (cached)
  */
 export async function getNewsUpdatesContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<NewsUpdatesContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<NewsUpdatesContent>('newsupdates');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<NewsUpdatesContent>('newsupdates');
+        
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+        } as NewsUpdatesContent;
+      } catch (error) {
+        console.error('Error fetching news updates content:', error);
+        return null;
+      }
+    },
+    [`newsupdates-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-newsupdates-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as NewsUpdatesContent;
-  } catch (error) {
-    console.error('Error fetching news updates content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch Customer Stories content directly from database
+ * Fetch Customer Stories content directly from database (cached)
  */
 export async function getCustomerStoriesContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<CustomerStoriesContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<CustomerStoriesContent>('customerstories');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<CustomerStoriesContent>('customerstories');
+        
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+        } as CustomerStoriesContent;
+      } catch (error) {
+        console.error('Error fetching customer stories content:', error);
+        return null;
+      }
+    },
+    [`customerstories-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-customerstories-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as CustomerStoriesContent;
-  } catch (error) {
-    console.error('Error fetching customer stories content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch Solutions content directly from database
+ * Fetch Solutions content directly from database (cached)
  */
 export async function getSolutionsContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<SolutionsContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<SolutionsContent>('solutions');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<SolutionsContent>('solutions');
+        
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+        } as SolutionsContent;
+      } catch (error) {
+        console.error('Error fetching solutions content:', error);
+        return null;
+      }
+    },
+    [`solutions-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-solutions-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as SolutionsContent;
-  } catch (error) {
-    console.error('Error fetching solutions content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch About Us content directly from database
+ * Fetch About Us content directly from database (cached)
  */
 export async function getAboutUsContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<AboutUsContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<AboutUsContent>('aboutus');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<AboutUsContent>('aboutus');
+        
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+        } as AboutUsContent;
+      } catch (error) {
+        console.error('Error fetching about us content:', error);
+        return null;
+      }
+    },
+    [`aboutus-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-aboutus-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as AboutUsContent;
-  } catch (error) {
-    console.error('Error fetching about us content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch Contact Us content directly from database
+ * Fetch Contact Us content directly from database (cached)
  */
 export async function getContactUsContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<ContactUsContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<ContactUsContent>('contactus');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<ContactUsContent>('contactus');
+        
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+        } as ContactUsContent;
+      } catch (error) {
+        console.error('Error fetching contact us content:', error);
+        return null;
+      }
+    },
+    [`contactus-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-contactus-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as ContactUsContent;
-  } catch (error) {
-    console.error('Error fetching contact us content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch Support content directly from database
+ * Fetch Support content directly from database (cached)
  */
 export async function getSupportContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<SupportContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<SupportContent>('support');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<SupportContent>('support');
+        
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+        } as SupportContent;
+      } catch (error) {
+        console.error('Error fetching support content:', error);
+        return null;
+      }
+    },
+    [`support-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-support-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as SupportContent;
-  } catch (error) {
-    console.error('Error fetching support content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch Careers content directly from database
+ * Fetch Careers content directly from database (cached)
  */
 export async function getCareersContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<CareersContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<CareersContent>('careers');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<CareersContent>('careers');
+        
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+        } as CareersContent;
+      } catch (error) {
+        console.error('Error fetching careers content:', error);
+        return null;
+      }
+    },
+    [`careers-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-careers-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-    } as CareersContent;
-  } catch (error) {
-    console.error('Error fetching careers content:', error);
-    return null;
-  }
+  )();
 }
 
 /**
- * Fetch Brands content directly from database
+ * Fetch Brands content directly from database (cached)
  */
 export async function getBrandsContent(language: 'ltr' | 'rtl' = 'ltr'): Promise<BrandsContent | null> {
-  try {
-    const db = await getDatabase(DB_NAME);
-    const collection = db.collection<BrandsContent>('brands');
-    
-    const content = await collection.findOne({ language });
-    
-    if (!content) {
-      return null;
+  return unstable_cache(
+    async () => {
+      try {
+        const db = await getDatabase(DB_NAME);
+        const collection = db.collection<BrandsContent>('brands');
+        
+        const content = await collection.findOne({ language });
+        
+        if (!content) {
+          return null;
+        }
+        
+        return {
+          ...content,
+          _id: content._id?.toString(),
+          brands: content.brands?.map((brand) => ({
+            ...brand,
+            _id: brand._id?.toString(),
+            products: brand.products?.map((product) => ({
+              ...product,
+              _id: product._id?.toString(),
+            })) || [],
+          })) || [],
+        } as BrandsContent;
+      } catch (error) {
+        console.error('Error fetching brands content:', error);
+        return null;
+      }
+    },
+    [`brands-${language}`],
+    {
+      tags: [`${CACHE_TAG_PREFIX}-brands-${language}`],
+      revalidate: CACHE_REVALIDATE,
     }
-    
-    return {
-      ...content,
-      _id: content._id?.toString(),
-      brands: content.brands?.map((brand) => ({
-        ...brand,
-        _id: brand._id?.toString(),
-        products: brand.products?.map((product) => ({
-          ...product,
-          _id: product._id?.toString(),
-        })) || [],
-      })) || [],
-    } as BrandsContent;
-  } catch (error) {
-    console.error('Error fetching brands content:', error);
-    return null;
-  }
+  )();
 }

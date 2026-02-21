@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
-import { Brand } from '@/types/brands';
+import { CustomerStory } from '@/types/customer-stories';
 import { revalidatePath } from 'next/cache';
-import { ObjectId } from 'mongodb';
 
 const DB_NAME = 'albaharpartners1';
-const COLLECTION_NAME = 'brands';
+const COLLECTION_NAME = 'customerstories';
 
-// POST - Add a new brand to the brands array
+// POST - Add a new story to the stories array
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ operation: string }> }
@@ -15,7 +14,7 @@ export async function POST(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', brand } = body;
+    const { language = 'ltr', story } = body;
 
     if (operation !== 'add') {
       return NextResponse.json({
@@ -24,18 +23,10 @@ export async function POST(
       }, { status: 400 });
     }
 
-    if (!brand) {
+    if (!story) {
       return NextResponse.json({
         success: false,
-        message: 'Brand data is required',
-      }, { status: 400 });
-    }
-
-    // Validate required fields
-    if (!brand.imagePath || brand.imagePath.trim() === '') {
-      return NextResponse.json({
-        success: false,
-        message: 'Brand image is required',
+        message: 'Story data is required',
       }, { status: 400 });
     }
 
@@ -43,13 +34,13 @@ export async function POST(
     const db = client.db(DB_NAME);
     const collection = db.collection(COLLECTION_NAME);
 
-    // Add brand to the beginning of the array
+    // Add story to the beginning of the array
     const result = await collection.findOneAndUpdate(
       { language },
       {
         $push: {
-          brands: {
-            $each: [brand],
+          stories: {
+            $each: [story],
             $position: 0,
           } as any,
         },
@@ -63,28 +54,28 @@ export async function POST(
     if (!result) {
       return NextResponse.json({
         success: false,
-        message: 'Brands content not found. Please create it first.',
+        message: 'Customer Stories content not found. Please create it first.',
       }, { status: 404 });
     }
 
-    revalidatePath('/brands');
+    revalidatePath('/customer-stories');
     revalidatePath('/');
 
     return NextResponse.json({
       success: true,
-      message: 'Brand added successfully',
+      message: 'Story added successfully',
       data: result,
     });
   } catch (error) {
-    console.error('Error adding brand:', error);
+    console.error('Error adding story:', error);
     return NextResponse.json({
       success: false,
-      message: 'Failed to add brand',
+      message: 'Failed to add story',
     }, { status: 500 });
   }
 }
 
-// PUT - Update a specific brand in the brands array
+// PUT - Update a specific story in the stories array
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ operation: string }> }
@@ -92,7 +83,7 @@ export async function PUT(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', brandIndex, brand } = body;
+    const { language = 'ltr', storyIndex, story } = body;
 
     if (operation !== 'update') {
       return NextResponse.json({
@@ -101,18 +92,10 @@ export async function PUT(
       }, { status: 400 });
     }
 
-    if (brandIndex === undefined || !brand) {
+    if (storyIndex === undefined || !story) {
       return NextResponse.json({
         success: false,
-        message: 'Brand index and brand data are required',
-      }, { status: 400 });
-    }
-
-    // Validate required fields
-    if (!brand.imagePath || brand.imagePath.trim() === '') {
-      return NextResponse.json({
-        success: false,
-        message: 'Brand image is required',
+        message: 'Story index and story data are required',
       }, { status: 400 });
     }
 
@@ -120,12 +103,12 @@ export async function PUT(
     const db = client.db(DB_NAME);
     const collection = db.collection(COLLECTION_NAME);
 
-    // Update the specific brand at the given index
+    // Update the specific story at the given index
     const result = await collection.findOneAndUpdate(
       { language },
       {
         $set: {
-          [`brands.${brandIndex}`]: brand,
+          [`stories.${storyIndex}`]: story,
           updatedAt: new Date(),
         },
       },
@@ -135,28 +118,28 @@ export async function PUT(
     if (!result) {
       return NextResponse.json({
         success: false,
-        message: 'Brands content not found',
+        message: 'Customer Stories content not found',
       }, { status: 404 });
     }
 
-    revalidatePath('/brands');
+    revalidatePath('/customer-stories');
     revalidatePath('/');
 
     return NextResponse.json({
       success: true,
-      message: 'Brand updated successfully',
+      message: 'Story updated successfully',
       data: result,
     });
   } catch (error) {
-    console.error('Error updating brand:', error);
+    console.error('Error updating story:', error);
     return NextResponse.json({
       success: false,
-      message: 'Failed to update brand',
+      message: 'Failed to update story',
     }, { status: 500 });
   }
 }
 
-// DELETE - Remove a specific brand from the brands array
+// DELETE - Remove a specific story from the stories array
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ operation: string }> }
@@ -165,7 +148,7 @@ export async function DELETE(
     const { operation } = await params;
     const searchParams = request.nextUrl.searchParams;
     const language = searchParams.get('language') || 'ltr';
-    const brandIndex = searchParams.get('index');
+    const storyIndex = searchParams.get('index');
 
     if (operation !== 'delete') {
       return NextResponse.json({
@@ -174,10 +157,10 @@ export async function DELETE(
       }, { status: 400 });
     }
 
-    if (brandIndex === null) {
+    if (storyIndex === null) {
       return NextResponse.json({
         success: false,
-        message: 'Brand index is required',
+        message: 'Story index is required',
       }, { status: 400 });
     }
 
@@ -185,38 +168,38 @@ export async function DELETE(
     const db = client.db(DB_NAME);
     const collection = db.collection(COLLECTION_NAME);
 
-    const index = parseInt(brandIndex, 10);
+    const index = parseInt(storyIndex, 10);
     if (isNaN(index)) {
       return NextResponse.json({
         success: false,
-        message: 'Invalid brand index',
+        message: 'Invalid story index',
       }, { status: 400 });
     }
 
-    // Get the brand to delete (to verify it exists)
+    // Get the story to delete (to verify it exists)
     const content = await collection.findOne({ language });
     if (!content) {
       return NextResponse.json({
         success: false,
-        message: 'Brands content not found',
+        message: 'Customer Stories content not found',
       }, { status: 404 });
     }
 
-    const brandsArray = content.brands || [];
-    if (index < 0 || index >= brandsArray.length) {
+    const storiesArray = content.stories || [];
+    if (index < 0 || index >= storiesArray.length) {
       return NextResponse.json({
         success: false,
-        message: 'Invalid brand index',
+        message: 'Invalid story index',
       }, { status: 400 });
     }
 
-    // Remove the brand at the specific index using $pull with the brand object
-    const brandToDelete = brandsArray[index];
+    // Remove the story at the specific index using $pull
+    const storyToDelete = storiesArray[index];
     const result = await collection.findOneAndUpdate(
       { language },
       {
         $pull: {
-          brands: brandToDelete,
+          stories: storyToDelete,
         },
         $set: {
           updatedAt: new Date(),
@@ -225,19 +208,19 @@ export async function DELETE(
       { returnDocument: 'after' }
     );
 
-    revalidatePath('/brands');
+    revalidatePath('/customer-stories');
     revalidatePath('/');
 
     return NextResponse.json({
       success: true,
-      message: 'Brand deleted successfully',
+      message: 'Story deleted successfully',
       data: result,
     });
   } catch (error) {
-    console.error('Error deleting brand:', error);
+    console.error('Error deleting story:', error);
     return NextResponse.json({
       success: false,
-      message: 'Failed to delete brand',
+      message: 'Failed to delete story',
     }, { status: 500 });
   }
 }

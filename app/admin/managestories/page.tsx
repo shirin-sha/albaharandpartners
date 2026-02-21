@@ -1,55 +1,55 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Brand } from '@/types/brands';
+import { CustomerStory } from '@/types/customer-stories';
 import ImageUpload from '@/components/admin/ui/ImageUpload';
 
-export default function BrandsManagePage() {
+export default function StoriesManagePage() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [brandsLtr, setBrandsLtr] = useState<Brand[]>([]);
-  const [brandsRtl, setBrandsRtl] = useState<Brand[]>([]);
+  const [storiesLtr, setStoriesLtr] = useState<CustomerStory[]>([]);
+  const [storiesRtl, setStoriesRtl] = useState<CustomerStory[]>([]);
   const [rtlLoaded, setRtlLoaded] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState<{
-    name: string;
-    nameAr: string;
-    imagePath: string;
-    link: string;
+    title: string;
+    titleAr: string;
     description: string;
     descriptionAr: string;
-    products: any[];
+    imagePath: string;
+    link: string;
+    order: number;
     isActive: boolean;
   }>({
-    name: '',
-    nameAr: '',
-    imagePath: '',
-    link: '#',
+    title: '',
+    titleAr: '',
     description: '',
     descriptionAr: '',
-    products: [],
+    imagePath: '',
+    link: '#',
+    order: 0,
     isActive: true,
   });
 
   useEffect(() => {
-    loadBrands();
+    loadStories();
   }, []);
 
-  const loadBrands = async () => {
+  const loadStories = async () => {
     setLoading(true);
     try {
       // Only load LTR initially for faster page load
-      const ltrRes = await fetch('/api/brands?language=ltr');
+      const ltrRes = await fetch('/api/customer-stories?language=ltr');
       const ltrResult = await ltrRes.json();
       if (ltrResult.success && ltrResult.data) {
-        setBrandsLtr(ltrResult.data.brands || []);
+        setStoriesLtr(ltrResult.data.stories || []);
       }
     } catch (error) {
-      console.error('Error loading brands:', error);
-      showMessage('error', 'Failed to load brands');
+      console.error('Error loading stories:', error);
+      showMessage('error', 'Failed to load stories');
     } finally {
       setLoading(false);
     }
@@ -58,14 +58,14 @@ export default function BrandsManagePage() {
   const loadRtlData = async () => {
     if (rtlLoaded) return;
     try {
-      const rtlRes = await fetch('/api/brands?language=rtl');
+      const rtlRes = await fetch('/api/customer-stories?language=rtl');
       const rtlResult = await rtlRes.json();
       if (rtlResult.success && rtlResult.data) {
-        setBrandsRtl(rtlResult.data.brands || []);
+        setStoriesRtl(rtlResult.data.stories || []);
         setRtlLoaded(true);
       }
     } catch (error) {
-      console.error('Error loading RTL brands:', error);
+      console.error('Error loading RTL stories:', error);
     }
   };
 
@@ -76,63 +76,59 @@ export default function BrandsManagePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name.trim()) {
-      showMessage('error', 'Brand name (English) is required');
-      return;
-    }
-    if (!formData.imagePath.trim()) {
-      showMessage('error', 'Brand image is required');
+    if (!formData.title.trim()) {
+      showMessage('error', 'Title (English) is required');
       return;
     }
 
     setSaving(true);
     try {
       const isNew = editingIndex === null;
-      const index = isNew ? brandsLtr.length : editingIndex!;
+      const index = isNew ? storiesLtr.length : editingIndex!;
 
-      const brandLtr: Brand = {
-        name: formData.name,
+      const storyLtr: CustomerStory = {
+        title: formData.title,
+        description: formData.description,
         imagePath: formData.imagePath,
         link: formData.link,
-        description: formData.description,
-        products: formData.products,
+        order: formData.order,
         isActive: formData.isActive,
       };
 
-      const brandRtl: Brand = {
-        name: formData.nameAr || formData.name,
+      const storyRtl: CustomerStory = {
+        title: formData.titleAr || formData.title,
+        description: formData.descriptionAr || formData.description,
         imagePath: formData.imagePath,
         link: formData.link,
-        description: formData.descriptionAr || formData.description,
-        products: formData.products,
+        order: formData.order,
         isActive: formData.isActive,
       };
 
       const [ltrRes, rtlRes] = await Promise.all([
-        fetch(isNew ? '/api/brands/add' : '/api/brands/update', {
+        fetch(isNew ? '/api/customer-stories/add' : '/api/customer-stories/update', {
           method: isNew ? 'POST' : 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             language: 'ltr',
-            brandIndex: index,
-            brand: brandLtr,
+            storyIndex: index,
+            story: storyLtr,
           }),
         }),
-        fetch(isNew ? '/api/brands/add' : '/api/brands/update', {
+        fetch(isNew ? '/api/customer-stories/add' : '/api/customer-stories/update', {
           method: isNew ? 'POST' : 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             language: 'rtl',
-            brandIndex: index,
-            brand: brandRtl,
+            storyIndex: index,
+            story: storyRtl,
           }),
         }),
       ]);
 
       const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
       if (ltrResult.success && rtlResult.success) {
-        showMessage('success', isNew ? 'Brand added successfully!' : 'Brand updated successfully!');
-        await loadBrands();
+        showMessage('success', isNew ? 'Story added successfully!' : 'Story updated successfully!');
+        await loadStories();
         resetForm();
       } else {
         showMessage('error', ltrResult.message || rtlResult.message || 'Failed to save');
@@ -149,18 +145,18 @@ export default function BrandsManagePage() {
     // Load RTL data when editing (lazy load)
     await loadRtlData();
     
-    const brandLtr = brandsLtr[index];
-    const brandRtl = brandsRtl[index] || brandLtr;
+    const storyLtr = storiesLtr[index];
+    const storyRtl = storiesRtl[index] || storyLtr;
     setEditingIndex(index);
     setFormData({
-      name: brandLtr.name || '',
-      nameAr: brandRtl.name || '',
-      imagePath: brandLtr.imagePath || '',
-      link: brandLtr.link || '#',
-      description: brandLtr.description || '',
-      descriptionAr: brandRtl.description || '',
-      products: brandLtr.products || [],
-      isActive: brandLtr.isActive !== undefined ? brandLtr.isActive : true,
+      title: storyLtr.title || '',
+      titleAr: storyRtl.title || '',
+      description: storyLtr.description || '',
+      descriptionAr: storyRtl.description || '',
+      imagePath: storyLtr.imagePath || '',
+      link: storyLtr.link || '#',
+      order: storyLtr.order || 0,
+      isActive: storyLtr.isActive !== undefined ? storyLtr.isActive : true,
     });
     setShowForm(true);
     
@@ -171,18 +167,18 @@ export default function BrandsManagePage() {
   };
 
   const handleDelete = async (index: number) => {
-    if (!confirm('Are you sure you want to delete this brand?')) return;
+    if (!confirm('Are you sure you want to delete this story?')) return;
 
     try {
       const [ltrRes, rtlRes] = await Promise.all([
-        fetch(`/api/brands/delete?language=ltr&index=${index}`, { method: 'DELETE' }),
-        fetch(`/api/brands/delete?language=rtl&index=${index}`, { method: 'DELETE' }),
+        fetch(`/api/customer-stories/delete?language=ltr&index=${index}`, { method: 'DELETE' }),
+        fetch(`/api/customer-stories/delete?language=rtl&index=${index}`, { method: 'DELETE' }),
       ]);
 
       const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
       if (ltrResult.success && rtlResult.success) {
-        showMessage('success', 'Brand deleted successfully!');
-        await loadBrands();
+        showMessage('success', 'Story deleted successfully!');
+        await loadStories();
       } else {
         showMessage('error', ltrResult.message || rtlResult.message || 'Failed to delete');
       }
@@ -194,13 +190,13 @@ export default function BrandsManagePage() {
 
   const resetForm = () => {
     setFormData({
-      name: '',
-      nameAr: '',
-      imagePath: '',
-      link: '#',
+      title: '',
+      titleAr: '',
       description: '',
       descriptionAr: '',
-      products: [],
+      imagePath: '',
+      link: '#',
+      order: 0,
       isActive: true,
     });
     setEditingIndex(null);
@@ -211,12 +207,12 @@ export default function BrandsManagePage() {
     return <div className="admin-loading">Loading...</div>;
   }
 
-  const brands = brandsLtr; // Use LTR for display
+  const stories = storiesLtr; // Use LTR for display
 
   return (
     <div className="admin-cms-container">
       <div className="admin-cms-header">
-        <h1>Brands Management</h1>
+        <h1>Customer Stories Management</h1>
         {!showForm && (
           <button
             className="button button-primary"
@@ -230,7 +226,7 @@ export default function BrandsManagePage() {
               }, 100);
             }}
           >
-            + Add New Brand
+            + Add New Story
           </button>
         )}
       </div>
@@ -261,7 +257,7 @@ export default function BrandsManagePage() {
           }}
         >
           <div className="admin-cms-section-header" style={{ background: '#000000', color: '#ffffff' }}>
-            <h3 style={{ color: '#ffffff', fontWeight: '600' }}>{editingIndex !== null ? 'Edit Brand' : 'Add New Brand'}</h3>
+            <h3 style={{ color: '#ffffff', fontWeight: '600' }}>{editingIndex !== null ? 'Edit Story' : 'Add New Story'}</h3>
             <button
               onClick={resetForm}
               style={{
@@ -282,50 +278,33 @@ export default function BrandsManagePage() {
             <div className="hero-slides-container">
               <div className="hero-slide-card">
                 <div className="hero-slide-fields">
-                  <div style={{ marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid #e5e7eb' }}>
-                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', margin: 0, fontWeight: '500' }}>
+                  <div className="form-group">
+                    <label>
                       <input
                         type="checkbox"
                         checked={formData.isActive}
                         onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                        style={{ margin: 0, cursor: 'pointer', width: '16px', height: '16px' }}
+                        style={{ marginRight: '8px' }}
                       />
                       Active
                     </label>
                   </div>
                   <div className="form-group">
-                    <label>Brand Name (English) *</label>
+                    <label>Title (English) *</label>
                     <input
                       type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       required
                     />
                   </div>
                   <div className="form-group">
-                    <label>Brand Name (Arabic)</label>
+                    <label>Title (Arabic)</label>
                     <input
                       type="text"
                       dir="rtl"
-                      value={formData.nameAr}
-                      onChange={(e) => setFormData({ ...formData, nameAr: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Brand Image *</label>
-                    <ImageUpload
-                      value={formData.imagePath}
-                      onChange={(value) => setFormData({ ...formData, imagePath: value })}
-                      folder="brand"
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Link</label>
-                    <input
-                      type="text"
-                      value={formData.link}
-                      onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                      value={formData.titleAr}
+                      onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
                     />
                   </div>
                   <div className="form-group">
@@ -345,92 +324,28 @@ export default function BrandsManagePage() {
                       rows={4}
                     />
                   </div>
+                  <div className="form-group">
+                    <label>Image</label>
+                    <ImageUpload
+                      value={formData.imagePath}
+                      onChange={(value) => setFormData({ ...formData, imagePath: value })}
+                      folder="stories"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Link</label>
+                    <input
+                      type="text"
+                      value={formData.link}
+                      onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-            
-            {/* Products Section */}
-            <div className="form-group" style={{ marginTop: '24px' }}>
-              <label style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', display: 'block' }}>Products</label>
-              <div className="hero-slides-container">
-                {formData.products.map((product, index) => (
-                  <div key={index} className="hero-slide-card">
-                    <div className="hero-slide-header">
-                      <h4>Product {index + 1}</h4>
-                      {formData.products.length > 0 && (
-                        <button
-                          type="button"
-                          className="hero-slide-remove"
-                          onClick={() => {
-                            const newProducts = formData.products.filter((_: any, i: number) => i !== index);
-                            setFormData({ ...formData, products: newProducts });
-                          }}
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-                    <div className="hero-slide-fields">
-                      <div className="form-group">
-                        <label>Product Name *</label>
-                        <input
-                          type="text"
-                          value={product.name || ''}
-                          onChange={(e) => {
-                            const newProducts = [...formData.products];
-                            newProducts[index] = { ...product, name: e.target.value };
-                            setFormData({ ...formData, products: newProducts });
-                          }}
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Product Image *</label>
-                        <ImageUpload
-                          value={product.imagePath || ''}
-                          onChange={(value) => {
-                            const newProducts = [...formData.products];
-                            newProducts[index] = { ...product, imagePath: value };
-                            setFormData({ ...formData, products: newProducts });
-                          }}
-                          folder="products"
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Description (Optional)</label>
-                        <textarea
-                          value={product.description || ''}
-                          onChange={(e) => {
-                            const newProducts = [...formData.products];
-                            newProducts[index] = { ...product, description: e.target.value };
-                            setFormData({ ...formData, products: newProducts });
-                          }}
-                          rows={3}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="button"
-                onClick={() => {
-                  setFormData({
-                    ...formData,
-                    products: [...formData.products, { name: '', imagePath: '', description: '' }],
-                  });
-                }}
-                style={{ marginTop: '12px' }}
-              >
-                + Add Product
-              </button>
-            </div>
-
             <div className="form-actions">
               <button type="submit" className="button button-primary" disabled={saving}>
-                {saving ? 'Saving...' : editingIndex !== null ? 'Update Brand' : 'Add Brand'}
+                {saving ? 'Saving...' : editingIndex !== null ? 'Update Story' : 'Add Story'}
               </button>
             </div>
           </form>
@@ -439,7 +354,7 @@ export default function BrandsManagePage() {
 
       <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <p style={{ margin: 0, color: '#6b7280' }}>
-          {brands.length} brand{brands.length !== 1 ? 's' : ''} listed
+          {stories.length} stor{stories.length !== 1 ? 'ies' : 'y'} listed
         </p>
       </div>
 
@@ -449,34 +364,32 @@ export default function BrandsManagePage() {
             <thead>
               <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
                 <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Image</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Name</th>
+                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Title</th>
                 <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Description</th>
                 <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Status</th>
                 <th style={{ padding: '12px', textAlign: 'right', fontSize: '14px', fontWeight: '600' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {brands.length === 0 ? (
+              {stories.length === 0 ? (
                 <tr>
                   <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
-                    No brands added yet. Click "Add New Brand" to get started.
+                    No stories added yet. Click "Add New Story" to get started.
                   </td>
                 </tr>
               ) : (
-                brands.map((brand, index) => (
+                stories.map((story, index) => (
                   <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
                     <td style={{ padding: '12px' }}>
-                      {brand.imagePath ? (
+                      {story.imagePath ? (
                         <img
-                          src={brand.imagePath}
-                          alt={brand.name || 'Brand'}
+                          src={story.imagePath}
+                          alt={story.title || 'Story'}
                           style={{
-                            width: '80px',
-                            height: '40px',
-                            objectFit: 'contain',
+                            width: '60px',
+                            height: '60px',
+                            objectFit: 'cover',
                             borderRadius: '4px',
-                            background: '#fff',
-                            padding: '4px',
                           }}
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
@@ -485,8 +398,8 @@ export default function BrandsManagePage() {
                       ) : (
                         <div
                           style={{
-                            width: '80px',
-                            height: '40px',
+                            width: '60px',
+                            height: '60px',
                             background: '#f3f4f6',
                             borderRadius: '4px',
                             display: 'flex',
@@ -500,11 +413,11 @@ export default function BrandsManagePage() {
                         </div>
                       )}
                     </td>
-                    <td style={{ padding: '12px', fontWeight: '500' }}>{brand.name || 'Untitled Brand'}</td>
+                    <td style={{ padding: '12px', fontWeight: '500' }}>{story.title || 'Untitled Story'}</td>
                     <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280', maxWidth: '300px' }}>
-                      {brand.description ? (
+                      {story.description ? (
                         <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {brand.description}
+                          {story.description}
                         </div>
                       ) : (
                         '-'
@@ -514,13 +427,13 @@ export default function BrandsManagePage() {
                       <span
                         style={{
                           padding: '2px 8px',
-                          background: brand.isActive ? '#d1fae5' : '#f3f4f6',
-                          color: brand.isActive ? '#065f46' : '#6b7280',
+                          background: story.isActive ? '#d1fae5' : '#f3f4f6',
+                          color: story.isActive ? '#065f46' : '#6b7280',
                           borderRadius: '4px',
                           fontSize: '12px',
                         }}
                       >
-                        {brand.isActive ? 'Active' : 'Inactive'}
+                        {story.isActive ? 'Active' : 'Inactive'}
                       </span>
                     </td>
                     <td style={{ padding: '12px', textAlign: 'right' }}>

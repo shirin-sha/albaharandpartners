@@ -1,58 +1,62 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { NewsUpdatesContent } from '@/types/news-updates';
-import {
-  Button,
-  Input,
-  Textarea,
-  Card,
-  Toggle,
-  Alert,
-  Section,
-  LanguageSwitch,
-  FormGrid,
-} from '@/components/admin/ui';
 
 export default function NewsUpdatesManager() {
-  const [language, setLanguage] = useState<'ltr' | 'rtl'>('ltr');
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [saving, setSaving] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [content, setContent] = useState<NewsUpdatesContent | null>(null);
+  const [contentLtr, setContentLtr] = useState<NewsUpdatesContent | null>(null);
+  const [contentRtl, setContentRtl] = useState<NewsUpdatesContent | null>(null);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    header: true,
+  });
 
   useEffect(() => {
     loadContent();
-  }, [language]);
+  }, []);
 
   const loadContent = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/news-updates?language=${language}`);
-      const result = await response.json();
+      // Fetch both LTR and RTL content in parallel
+      const [ltrRes, rtlRes] = await Promise.all([
+        fetch('/api/news-updates?language=ltr'),
+        fetch('/api/news-updates?language=rtl'),
+      ]);
       
-      if (result.success && result.data) {
-        setContent(result.data);
+      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
+      
+      if (ltrResult.success && ltrResult.data) {
+        setContentLtr(ltrResult.data);
       } else {
-        setContent(getEmptyContent());
+        setContentLtr(getEmptyContent('ltr'));
+      }
+      
+      if (rtlResult.success && rtlResult.data) {
+        setContentRtl(rtlResult.data);
+      } else {
+        setContentRtl(getEmptyContent('rtl'));
       }
     } catch (error) {
       console.error('Error loading content:', error);
       showMessage('error', 'Failed to load content');
-      setContent(getEmptyContent());
+      setContentLtr(getEmptyContent('ltr'));
+      setContentRtl(getEmptyContent('rtl'));
     } finally {
       setLoading(false);
     }
   };
 
-  const getEmptyContent = (): NewsUpdatesContent => ({
-    language,
+  const getEmptyContent = (lang: 'ltr' | 'rtl'): NewsUpdatesContent => ({
+    language: lang,
     isActive: true,
     header: {
       breadcrumb: 'News & Updates',
       title: 'News & Updates',
       subtitle: 'Stay updated with insights, tips, and trends in finance and business strategy—curated by our experts to keep you informed and ahead.',
-      language,
+      language: lang,
       isActive: true,
     },
     posts: [],
@@ -60,172 +64,205 @@ export default function NewsUpdatesManager() {
 
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
-    if (type === 'success') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    const timeout = type === 'success' ? 8000 : 5000;
-    setTimeout(() => setMessage(null), timeout);
+    setTimeout(() => setMessage(null), 5000);
   };
 
-  const handleSave = async () => {
-    if (!content) return;
-    
-    setSaving(true);
-    try {
-      const method = content._id ? 'PUT' : 'POST';
-      const response = await fetch('/api/news-updates', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...content, language }),
-      });
+  const toggleSection = (section: string) => {
+    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
+  };
 
-      const result = await response.json();
+  const handleSaveSection = async (section: string) => {
+    if (!contentLtr || !contentRtl) return;
+    setSaving(section);
+    try {
+      // Save both LTR and RTL in parallel
+      const [ltrRes, rtlRes] = await Promise.all([
+        fetch('/api/news-updates', {
+          method: contentLtr._id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...contentLtr, language: 'ltr' }),
+        }),
+        fetch('/api/news-updates', {
+          method: contentRtl._id ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...contentRtl, language: 'rtl' }),
+        }),
+      ]);
       
-      console.log('Save response:', result);
+      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
       
-      if (result.success) {
-        showMessage('success', result.message || 'Content saved successfully!');
+      if (ltrResult.success && rtlResult.success) {
+        showMessage('success', `${section} saved successfully!`);
         await loadContent();
       } else {
-        showMessage('error', result.message || 'Failed to save content');
+        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to save');
       }
     } catch (error) {
-      console.error('Error saving content:', error);
-      showMessage('error', 'Failed to save content');
+      console.error('Error saving:', error);
+      showMessage('error', 'Failed to save');
     } finally {
-      setSaving(false);
+      setSaving(null);
     }
   };
 
-  if (loading || !content) {
-    return (
-      <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
-        <div className="text-center">
-          <div className="spinner-border text-primary mb-3" style={{ width: '3rem', height: '3rem' }} role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="text-muted">Loading News & Updates content...</p>
-        </div>
-      </div>
-    );
+  if (loading || !contentLtr || !contentRtl) {
+    return <div className="admin-loading">Loading...</div>;
   }
 
   return (
-    <div className="admin-bg-gradient min-vh-100">
-      <div className="container-fluid py-4">
-        {/* Header */}
-        <Card className="mb-4 shadow-sm">
-          <div className="card-body">
-            <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-              <div>
-                <h1 className="h3 mb-2">📰 News & Updates Page Manager</h1>
-                <p className="text-muted mb-0">Manage news articles and blog posts displayed on the News & Updates page</p>
+    <div className="admin-cms-container">
+      <div className="admin-cms-header">
+        <h1>News & Updates</h1>
+      </div>
+
+      {message && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: '16px',
+            borderRadius: '6px',
+            background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
+            color: message.type === 'success' ? '#065f46' : '#991b1b',
+          }}
+        >
+          {message.text}
+        </div>
+      )}
+
+      <div className="admin-cms-sections">
+        <div className="admin-cms-section-card">
+          <div
+            className="admin-cms-section-header"
+            onClick={() => toggleSection('header')}
+          >
+            <h3>Page Header</h3>
+            <span className="admin-cms-toggle">
+              {openSections.header ? '−' : '+'}
+            </span>
+          </div>
+          {openSections.header && (
+            <div className="admin-cms-form">
+              <div className="form-group">
+                <label>Breadcrumb (English)</label>
+                <input
+                  type="text"
+                  value={contentLtr.header.breadcrumb}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      header: { ...contentLtr.header, breadcrumb: e.target.value },
+                    })
+                  }
+                />
               </div>
-              <div className="d-flex gap-3 align-items-center">
-                <LanguageSwitch language={language} onChange={setLanguage} />
-                <Button 
-                  onClick={handleSave} 
-                  disabled={saving}
-                  size="md"
-                  variant="success"
-                  className="px-4"
+              <div className="form-group">
+                <label>Breadcrumb (Arabic)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.header.breadcrumb}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      header: { ...contentRtl.header, breadcrumb: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Title (English)</label>
+                <input
+                  type="text"
+                  value={contentLtr.header.title}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      header: { ...contentLtr.header, title: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Title (Arabic)</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.header.title}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      header: { ...contentRtl.header, title: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Subtitle (English)</label>
+                <textarea
+                  value={contentLtr.header.subtitle || ''}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      header: { ...contentLtr.header, subtitle: e.target.value },
+                    })
+                  }
+                  rows={3}
+                />
+              </div>
+              <div className="form-group">
+                <label>Subtitle (Arabic)</label>
+                <textarea
+                  dir="rtl"
+                  value={contentRtl.header.subtitle || ''}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      header: { ...contentRtl.header, subtitle: e.target.value },
+                    })
+                  }
+                  rows={3}
+                />
+              </div>
+              <div className="form-actions">
+                <button
+                  className="button button-primary"
+                  onClick={() => handleSaveSection('header')}
+                  disabled={saving === 'header'}
                 >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </Button>
+                  {saving === 'header' ? 'Saving...' : 'Save Header'}
+                </button>
               </div>
             </div>
+          )}
+        </div>
+
+        <div className="admin-cms-section-card">
+          <div className="admin-cms-section-header">
+            <h3>News Posts</h3>
           </div>
-        </Card>
-
-        {/* Alert Messages */}
-        {message && (
-          <div className="mb-4">
-            <Alert 
-              type={message.type} 
-              message={message.text}
-              onClose={() => setMessage(null)} 
-            />
-          </div>
-        )}
-
-        {/* Main Content */}
-        <Card className="shadow-sm">
-          <div className="card-body p-4">
-            <Section 
-              title="Page Header" 
-              description="Manage the page title and breadcrumb"
-              actions={
-                <Toggle
-                  label="Section Active"
-                  checked={content.header.isActive}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      header: { ...content.header, isActive: value },
-                    })
-                  }
-                />
-              }
-            >
-              <FormGrid columns={2}>
-                <Input
-                  label="Breadcrumb Text"
-                  value={content.header.breadcrumb}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      header: { ...content.header, breadcrumb: value },
-                    })
-                  }
-                  placeholder="News & Updates"
-                />
-                <Input
-                  label="Page Title"
-                  value={content.header.title}
-                  onChange={(value) =>
-                    setContent({
-                      ...content,
-                      header: { ...content.header, title: value },
-                    })
-                  }
-                  placeholder="News & Updates"
-                />
-              </FormGrid>
-              <Textarea
-                label="Subtitle"
-                value={content.header.subtitle || ''}
-                onChange={(value) =>
-                  setContent({
-                    ...content,
-                    header: { ...content.header, subtitle: value },
-                  })
-                }
-                placeholder="Stay updated with insights, tips, and trends..."
-                rows={2}
-              />
-            </Section>
-
-            <div className="mt-5">
-              <Section 
-                title="News Posts Management" 
-                description="Manage news articles and blog posts"
+          <div className="admin-cms-form">
+            <div style={{ padding: '16px', background: '#f3f4f6', borderRadius: '6px' }}>
+              <p style={{ margin: '0 0 12px 0' }}>
+                <strong>News posts are managed separately.</strong>
+              </p>
+              <a
+                href="/admin/managenews"
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 16px',
+                  background: '#000',
+                  color: '#fff',
+                  textDecoration: 'none',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                }}
               >
-                <div className="alert alert-info d-flex align-items-center gap-2">
-                  <i className="icon-InfoCircle" style={{ fontSize: '1.2rem' }}></i>
-                  <div>
-                    <strong>News posts are managed separately.</strong>
-                    <br />
-                    <a href="/admin/managenews" className="alert-link">
-                      Go to News Management →
-                    </a>
-                  </div>
-                </div>
-              </Section>
+                Go to News Management →
+              </a>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
 }
-
