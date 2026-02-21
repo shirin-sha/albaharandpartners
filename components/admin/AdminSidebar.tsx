@@ -38,12 +38,7 @@ export default function AdminSidebar() {
         <span className="admin-sidebar-title">Admin</span>
       </div>
       <nav className="admin-sidebar-nav">
-        <Link
-          href="/admin/homepage"
-          className={`admin-sidebar-link ${isActive('/admin/homepage') ? 'active' : ''}`}
-        >
-          Dashboard
-        </Link>
+     
         
         <div className={`admin-sidebar-group ${isCmsActive() ? 'active' : ''}`}>
           <button
