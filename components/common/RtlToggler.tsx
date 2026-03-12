@@ -42,8 +42,8 @@ export default function RtlToggler() {
       id="toggle-rtl"
       className="btn-style-2 radius-3"
     >
-      <span>rtl</span>
-      <span>ltr</span>
+      <span>AR</span>
+      <span>EN</span>
     </button>
   );
 }
