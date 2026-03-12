@@ -220,6 +220,15 @@
     }
 }
 
+/* Override Swiper default absolute positioning for testimonials pagination */
+section#testimonials .swiper-pagination {
+    position: static !important;
+    left: auto;
+    top: auto;
+    transform: none;
+    margin-top: 24px;
+}
+
 .sw-benefit-h6 {
 
     .box-icon {

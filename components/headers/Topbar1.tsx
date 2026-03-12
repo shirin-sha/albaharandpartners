@@ -21,7 +21,7 @@ export default function Topbar1() {
                   info@albahargroup.com
                   </a>
                 </div>
-                <LanguageDropdown />
+                {/* <LanguageDropdown /> */}
               </div>
               <div className="tf-tb-right">
                 <div className="top-bar-content tf-phone-topbar">
