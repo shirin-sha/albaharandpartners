@@ -443,117 +443,87 @@ export default function BrandsManagePage() {
         </p>
       </div>
 
-      <div className="admin-cms-section-card">
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Image</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Name</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Description</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'right', fontSize: '14px', fontWeight: '600' }}>Actions</th>
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {brands.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="admin-table-empty">
+                  No brands added yet. Click &ldquo;Add New Brand&rdquo; to get started.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {brands.length === 0 ? (
-                <tr>
-                  <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
-                    No brands added yet. Click "Add New Brand" to get started.
-                  </td>
-                </tr>
-              ) : (
-                brands.map((brand, index) => (
-                  <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <td style={{ padding: '12px' }}>
-                      {brand.imagePath ? (
-                        <img
-                          src={brand.imagePath}
-                          alt={brand.name || 'Brand'}
-                          style={{
-                            width: '80px',
-                            height: '40px',
-                            objectFit: 'contain',
-                            borderRadius: '4px',
-                            background: '#fff',
-                            padding: '4px',
-                          }}
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: '80px',
-                            height: '40px',
-                            background: '#f3f4f6',
-                            borderRadius: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '12px',
-                            color: '#9ca3af',
-                          }}
-                        >
-                          No Image
-                        </div>
-                      )}
+            ) : (
+              brands.map((brand, index) => {
+                const isEditing = editingIndex === index;
+                return (
+                  <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
+                    <td>
+                      <div className="admin-section-thumb-brand">
+                        {brand.imagePath ? (
+                          <img
+                            src={brand.imagePath}
+                            alt={brand.name || 'Brand'}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <span className="admin-section-thumb-brand-placeholder">
+                            No Image
+                          </span>
+                        )}
+                      </div>
                     </td>
-                    <td style={{ padding: '12px', fontWeight: '500' }}>{brand.name || 'Untitled Brand'}</td>
-                    <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280', maxWidth: '300px' }}>
+                    <td><strong>{brand.name || 'Untitled Brand'}</strong></td>
+                    <td>
                       {brand.description ? (
-                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px' }}>
                           {brand.description}
                         </div>
                       ) : (
                         '-'
                       )}
                     </td>
-                    <td style={{ padding: '12px' }}>
-                      <span
-                        style={{
-                          padding: '2px 8px',
-                          background: brand.isActive ? '#d1fae5' : '#f3f4f6',
-                          color: brand.isActive ? '#065f46' : '#6b7280',
-                          borderRadius: '4px',
-                          fontSize: '12px',
-                        }}
-                      >
-                        {brand.isActive ? 'Active' : 'Inactive'}
+                    <td>
+                      <span className={`admin-badge ${brand.isActive !== false ? 'published' : 'draft'}`}>
+                        {brand.isActive !== false ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                    <td>
+                      <div className="admin-table-actions">
                         <button
                           type="button"
-                          onClick={() => handleEdit(index)}
-                          className="button"
-                          style={{ fontSize: '12px', padding: '6px 12px' }}
+                          onClick={() => isEditing ? resetForm() : handleEdit(index)}
+                          className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
                         >
-                          Edit
+                          {isEditing ? 'Close' : 'Edit'}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(index)}
-                          className="button"
-                          style={{
-                            fontSize: '12px',
-                            padding: '6px 12px',
-                            background: '#ef4444',
-                            color: 'white',
-                          }}
-                        >
-                          Delete
-                        </button>
+                        {!isEditing && (
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(index)}
+                            className="admin-btn admin-btn-delete"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

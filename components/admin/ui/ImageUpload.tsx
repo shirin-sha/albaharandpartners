@@ -176,22 +176,22 @@ export default function ImageUpload({
               />
               {/* Trash / bin icon */}
               {!required && (
-                <div
-                  onClick={handleRemove}
-                  title="Remove image"
-                  style={{
-                    position: 'absolute',
-                    top: '8px',
-                    right: '8px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                    borderRadius: '4px',
-                    padding: '4px',
-                    cursor: 'pointer',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
+              <div
+                onClick={handleRemove}
+                title="Remove image"
+                style={{
+                  position: 'absolute',
+                  top: '8px',
+                  right: '8px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                  borderRadius: '4px',
+                  padding: '4px',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -209,7 +209,7 @@ export default function ImageUpload({
                   <path d="M14 11v6" />
                   <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
                 </svg>
-                </div>
+              </div>
               )}
             </div>
           </div>

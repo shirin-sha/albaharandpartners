@@ -263,141 +263,155 @@ export default function NewsManagePage() {
           className="admin-cms-section-card" 
           style={{ 
             marginBottom: '24px',
-            border: '2px solid #000000',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            background: '#ffffff',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
             animation: 'fadeIn 0.3s ease-in',
           }}
         >
-          <div className="admin-cms-section-header" style={{ background: '#000000', color: '#ffffff' }}>
-            <h3 style={{ color: '#ffffff', fontWeight: '600' }}>{editingIndex !== null ? 'Edit Post' : 'Add New Post'}</h3>
+          <div className="admin-cms-section-header" style={{ background: '#ffffff', borderBottom: '1px solid #e5e7eb', padding: '16px 24px' }}>
+            <h3 style={{ color: '#1f2937', fontWeight: '600', margin: 0 }}>{editingIndex !== null ? 'Edit Post' : 'Add New Post'}</h3>
             <button
               onClick={resetForm}
+              className="admin-btn admin-btn-edit"
               style={{
-                padding: '6px 12px',
-                background: '#ffffff',
-                color: '#000000',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
+                padding: '6px 14px',
                 fontSize: '13px',
-                fontWeight: '500',
               }}
             >
               Cancel
             </button>
           </div>
           <form onSubmit={handleSubmit} className="admin-cms-form">
-            <div className="hero-slides-container">
-              <div className="hero-slide-card">
-                <div className="hero-slide-fields">
-                  <div className="form-group">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={formData.isActive}
-                        onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                        style={{ marginRight: '8px' }}
-                      />
-                      Active
-                    </label>
-                  </div>
-                  <div className="form-group">
-                    <label>Title (English) *</label>
-                    <input
-                      type="text"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Title (Arabic)</label>
-                    <input
-                      type="text"
-                      dir="rtl"
-                      value={formData.titleAr}
-                      onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Category (English)</label>
-                    <input
-                      type="text"
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Category (Arabic)</label>
-                    <input
-                      type="text"
-                      dir="rtl"
-                      value={formData.categoryAr}
-                      onChange={(e) => setFormData({ ...formData, categoryAr: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Image</label>
-                    <ImageUpload
-                      value={formData.imagePath}
-                      onChange={(value) => setFormData({ ...formData, imagePath: value })}
-                      folder="news"
-                    />
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
-                    <div className="form-group">
-                      <label>Day</label>
-                      <input
-                        type="text"
-                        value={formData.date.day}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            date: { ...formData.date, day: e.target.value },
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Month</label>
-                      <input
-                        type="text"
-                        value={formData.date.month}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            date: { ...formData.date, month: e.target.value },
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Width</label>
-                      <input
-                        type="number"
-                        value={formData.imgWidth}
-                        onChange={(e) => setFormData({ ...formData, imgWidth: Number(e.target.value) })}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Height</label>
-                      <input
-                        type="number"
-                        value={formData.imgHeight}
-                        onChange={(e) => setFormData({ ...formData, imgHeight: Number(e.target.value) })}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label>Link</label>
-                    <input
-                      type="text"
-                      value={formData.link}
-                      onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                    />
-                  </div>
+            <div className="form-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={formData.isActive}
+                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                  style={{ marginRight: '8px' }}
+                />
+                Active
+              </label>
+            </div>
+            
+            {/* Title Row */}
+            <div>
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English</div>
+                <div className="form-label-header">العربية</div>
+              </div>
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Title *</label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={formData.titleAr}
+                    onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+                  />
                 </div>
               </div>
+            </div>
+
+            {/* Category Row */}
+            <div>
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English</div>
+                <div className="form-label-header">العربية</div>
+              </div>
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Category</label>
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Category</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={formData.categoryAr}
+                    onChange={(e) => setFormData({ ...formData, categoryAr: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="form-group">
+              <label>Image</label>
+              <ImageUpload
+                value={formData.imagePath}
+                onChange={(value) => setFormData({ ...formData, imagePath: value })}
+                folder="news"
+              />
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
+              <div className="form-group">
+                <label>Day</label>
+                <input
+                  type="text"
+                  value={formData.date.day}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      date: { ...formData.date, day: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Month</label>
+                <input
+                  type="text"
+                  value={formData.date.month}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      date: { ...formData.date, month: e.target.value },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Width</label>
+                <input
+                  type="number"
+                  value={formData.imgWidth}
+                  onChange={(e) => setFormData({ ...formData, imgWidth: Number(e.target.value) })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Height</label>
+                <input
+                  type="number"
+                  value={formData.imgHeight}
+                  onChange={(e) => setFormData({ ...formData, imgHeight: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+            
+            <div className="form-group">
+              <label>Link</label>
+              <input
+                type="text"
+                value={formData.link}
+                onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+              />
             </div>
             <div className="form-actions">
               <button type="submit" className="button button-primary" disabled={saving}>
@@ -414,125 +428,81 @@ export default function NewsManagePage() {
         </p>
       </div>
 
-      <div className="admin-cms-section-card">
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Image</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Title</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Category</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Date</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'right', fontSize: '14px', fontWeight: '600' }}>Actions</th>
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {posts.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="admin-table-empty">
+                  No posts added yet. Click &ldquo;Add New Post&rdquo; to get started.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {posts.length === 0 ? (
-                <tr>
-                  <td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
-                    No posts added yet. Click "Add New Post" to get started.
-                  </td>
-                </tr>
-              ) : (
-                posts.map((post, index) => (
-                  <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <td style={{ padding: '12px' }}>
-                      {post.imagePath ? (
-                        <img
-                          src={post.imagePath}
-                          alt={post.title || 'Post'}
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            objectFit: 'cover',
-                            borderRadius: '4px',
-                          }}
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            background: '#f3f4f6',
-                            borderRadius: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '12px',
-                            color: '#9ca3af',
-                          }}
-                        >
-                          No Image
-                        </div>
-                      )}
+            ) : (
+              posts.map((post, index) => {
+                const isEditing = editingIndex === index;
+                return (
+                  <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
+                    <td>
+                      <div className="admin-section-thumb">
+                        {post.imagePath ? (
+                          <img
+                            src={post.imagePath}
+                            alt={post.title || 'Post'}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <span className="admin-section-thumb-placeholder">
+                            No Image
+                          </span>
+                        )}
+                      </div>
                     </td>
-                    <td style={{ padding: '12px', fontWeight: '500' }}>{post.title || 'Untitled Post'}</td>
-                    <td style={{ padding: '12px' }}>
-                      {post.category && (
-                        <span
-                          style={{
-                            padding: '2px 8px',
-                            background: '#e0f2fe',
-                            color: '#0369a1',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                          }}
-                        >
-                          {post.category}
-                        </span>
-                      )}
-                    </td>
-                    <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280' }}>
-                      {post.date?.day} {post.date?.month}
-                    </td>
-                    <td style={{ padding: '12px' }}>
-                      <span
-                        style={{
-                          padding: '2px 8px',
-                          background: post.isActive ? '#d1fae5' : '#f3f4f6',
-                          color: post.isActive ? '#065f46' : '#6b7280',
-                          borderRadius: '4px',
-                          fontSize: '12px',
-                        }}
-                      >
-                        {post.isActive ? 'Active' : 'Inactive'}
+                    <td><strong>{post.title || 'Untitled Post'}</strong></td>
+                    <td>{post.category || '-'}</td>
+                    <td>{post.date?.day} {post.date?.month}</td>
+                    <td>
+                      <span className={`admin-badge ${post.isActive !== false ? 'published' : 'draft'}`}>
+                        {post.isActive !== false ? 'Published' : 'Draft'}
                       </span>
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                    <td>
+                      <div className="admin-table-actions">
                         <button
                           type="button"
-                          onClick={() => handleEdit(index)}
-                          className="button"
-                          style={{ fontSize: '12px', padding: '6px 12px' }}
+                          onClick={() => isEditing ? resetForm() : handleEdit(index)}
+                          className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
                         >
-                          Edit
+                          {isEditing ? 'Close' : 'Edit'}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(index)}
-                          className="button"
-                          style={{
-                            fontSize: '12px',
-                            padding: '6px 12px',
-                            background: '#ef4444',
-                            color: 'white',
-                          }}
-                        >
-                          Delete
-                        </button>
+                        {!isEditing && (
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(index)}
+                            className="admin-btn admin-btn-delete"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

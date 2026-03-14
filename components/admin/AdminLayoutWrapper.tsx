@@ -66,9 +66,9 @@ export default function AdminLayoutWrapper({
     <div className="admin-shell">
       <AdminSidebar />
       <div className="admin-main">
-        <AdminHeader />
+      <AdminHeader />
         <main className="admin-main-content">{children}</main>
-      </div>
+        </div>
     </div>
   );
 }

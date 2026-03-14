@@ -358,115 +358,87 @@ export default function StoriesManagePage() {
         </p>
       </div>
 
-      <div className="admin-cms-section-card">
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Image</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Title</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Description</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'right', fontSize: '14px', fontWeight: '600' }}>Actions</th>
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stories.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="admin-table-empty">
+                  No stories added yet. Click &ldquo;Add New Story&rdquo; to get started.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {stories.length === 0 ? (
-                <tr>
-                  <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
-                    No stories added yet. Click "Add New Story" to get started.
-                  </td>
-                </tr>
-              ) : (
-                stories.map((story, index) => (
-                  <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <td style={{ padding: '12px' }}>
-                      {story.imagePath ? (
-                        <img
-                          src={story.imagePath}
-                          alt={story.title || 'Story'}
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            objectFit: 'cover',
-                            borderRadius: '4px',
-                          }}
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            background: '#f3f4f6',
-                            borderRadius: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '12px',
-                            color: '#9ca3af',
-                          }}
-                        >
-                          No Image
-                        </div>
-                      )}
+            ) : (
+              stories.map((story, index) => {
+                const isEditing = editingIndex === index;
+                return (
+                  <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
+                    <td>
+                      <div className="admin-section-thumb">
+                        {story.imagePath ? (
+                          <img
+                            src={story.imagePath}
+                            alt={story.title || 'Story'}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <span className="admin-section-thumb-placeholder">
+                            No Image
+                          </span>
+                        )}
+                      </div>
                     </td>
-                    <td style={{ padding: '12px', fontWeight: '500' }}>{story.title || 'Untitled Story'}</td>
-                    <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280', maxWidth: '300px' }}>
+                    <td><strong>{story.title || 'Untitled Story'}</strong></td>
+                    <td>
                       {story.description ? (
-                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px' }}>
                           {story.description}
                         </div>
                       ) : (
                         '-'
                       )}
                     </td>
-                    <td style={{ padding: '12px' }}>
-                      <span
-                        style={{
-                          padding: '2px 8px',
-                          background: story.isActive ? '#d1fae5' : '#f3f4f6',
-                          color: story.isActive ? '#065f46' : '#6b7280',
-                          borderRadius: '4px',
-                          fontSize: '12px',
-                        }}
-                      >
-                        {story.isActive ? 'Active' : 'Inactive'}
+                    <td>
+                      <span className={`admin-badge ${story.isActive !== false ? 'published' : 'draft'}`}>
+                        {story.isActive !== false ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                    <td>
+                      <div className="admin-table-actions">
                         <button
                           type="button"
-                          onClick={() => handleEdit(index)}
-                          className="button"
-                          style={{ fontSize: '12px', padding: '6px 12px' }}
+                          onClick={() => isEditing ? resetForm() : handleEdit(index)}
+                          className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
                         >
-                          Edit
+                          {isEditing ? 'Close' : 'Edit'}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(index)}
-                          className="button"
-                          style={{
-                            fontSize: '12px',
-                            padding: '6px 12px',
-                            background: '#ef4444',
-                            color: 'white',
-                          }}
-                        >
-                          Delete
-                        </button>
+                        {!isEditing && (
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(index)}
+                            className="admin-btn admin-btn-delete"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

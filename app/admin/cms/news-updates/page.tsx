@@ -84,11 +84,11 @@ export default function NewsUpdatesManager() {
         }),
         fetch('/api/news-updates', {
           method: contentRtl._id ? 'PUT' : 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ ...contentRtl, language: 'rtl' }),
         }),
       ]);
-      
+
       const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
       
       if (ltrResult.success && rtlResult.success) {
@@ -113,7 +113,7 @@ export default function NewsUpdatesManager() {
     <div className="admin-cms-container">
       <div className="admin-cms-header">
         <h1>News & Updates</h1>
-      </div>
+              </div>
 
       {message && (
         <div
@@ -126,7 +126,7 @@ export default function NewsUpdatesManager() {
           }}
         >
           {message.text}
-        </div>
+              </div>
       )}
 
       <div className="admin-cms-sections">
@@ -153,8 +153,8 @@ export default function NewsUpdatesManager() {
                       header: { ...contentLtr.header, breadcrumb: e.target.value },
                     })
                   }
-                />
-              </div>
+            />
+          </div>
               <div className="form-group">
                 <label>Breadcrumb (Arabic)</label>
                 <input
@@ -204,8 +204,8 @@ export default function NewsUpdatesManager() {
                     setContentLtr({
                       ...contentLtr,
                       header: { ...contentLtr.header, subtitle: e.target.value },
-                    })
-                  }
+                  })
+                }
                   rows={3}
                 />
               </div>
@@ -221,7 +221,7 @@ export default function NewsUpdatesManager() {
                     })
                   }
                   rows={3}
-                />
+              />
               </div>
               <div className="form-actions">
                 <button
@@ -243,7 +243,7 @@ export default function NewsUpdatesManager() {
           <div className="admin-cms-form">
             <div style={{ padding: '16px', background: '#f3f4f6', borderRadius: '6px' }}>
               <p style={{ margin: '0 0 12px 0' }}>
-                <strong>News posts are managed separately.</strong>
+                    <strong>News posts are managed separately.</strong>
               </p>
               <a
                 href="/admin/managenews"
@@ -257,8 +257,8 @@ export default function NewsUpdatesManager() {
                   fontSize: '14px',
                 }}
               >
-                Go to News Management →
-              </a>
+                      Go to News Management →
+                    </a>
             </div>
           </div>
         </div>

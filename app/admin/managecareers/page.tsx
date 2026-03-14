@@ -543,85 +543,71 @@ export default function CareersManagePage() {
         </p>
       </div>
 
-      <div className="admin-cms-section-card">
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Title</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Description</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Salary</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'right', fontSize: '14px', fontWeight: '600' }}>Actions</th>
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Salary</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {jobs.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="admin-table-empty">
+                  No jobs added yet. Click &ldquo;Add New Job&rdquo; to get started.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {jobs.length === 0 ? (
-                <tr>
-                  <td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
-                    No jobs added yet. Click "Add New Job" to get started.
-                  </td>
-                </tr>
-              ) : (
-                jobs.map((job, index) => (
-                  <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <td style={{ padding: '12px', fontWeight: '500' }}>{job.title || 'Untitled Job'}</td>
-                    <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280', maxWidth: '300px' }}>
+            ) : (
+              jobs.map((job, index) => {
+                const isEditing = editingIndex === index;
+                return (
+                  <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
+                    <td><strong>{job.title || 'Untitled Job'}</strong></td>
+                    <td>
                       {job.description ? (
-                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '300px' }}>
                           {job.description}
                         </div>
                       ) : (
                         '-'
                       )}
                     </td>
-                    <td style={{ padding: '12px', fontSize: '14px', color: '#6b7280' }}>
-                      {job.salary?.amount ? `${job.salary.amount} ${job.salary.period}` : '-'}
-                    </td>
-                    <td style={{ padding: '12px' }}>
-                      <span
-                        style={{
-                          padding: '2px 8px',
-                          background: job.isActive ? '#d1fae5' : '#f3f4f6',
-                          color: job.isActive ? '#065f46' : '#6b7280',
-                          borderRadius: '4px',
-                          fontSize: '12px',
-                        }}
-                      >
-                        {job.isActive ? 'Active' : 'Inactive'}
+                    <td>{job.salary?.amount ? `${job.salary.amount} ${job.salary.period}` : '-'}</td>
+                    <td>
+                      <span className={`admin-badge ${job.isActive !== false ? 'published' : 'draft'}`}>
+                        {job.isActive !== false ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                    <td>
+                      <div className="admin-table-actions">
                         <button
                           type="button"
-                          onClick={() => handleEdit(index)}
-                          className="button"
-                          style={{ fontSize: '12px', padding: '6px 12px' }}
+                          onClick={() => isEditing ? resetForm() : handleEdit(index)}
+                          className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
                         >
-                          Edit
+                          {isEditing ? 'Close' : 'Edit'}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(index)}
-                          className="button"
-                          style={{
-                            fontSize: '12px',
-                            padding: '6px 12px',
-                            background: '#ef4444',
-                            color: 'white',
-                          }}
-                        >
-                          Delete
-                        </button>
+                        {!isEditing && (
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(index)}
+                            className="admin-btn admin-btn-delete"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

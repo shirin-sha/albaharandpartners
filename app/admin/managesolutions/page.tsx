@@ -453,109 +453,81 @@ export default function SolutionsManagePage() {
         </p>
       </div>
 
-      <div className="admin-cms-section-card">
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Image</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>ID</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Tab Title</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Title</th>
-                <th style={{ padding: '12px', textAlign: 'left', fontSize: '14px', fontWeight: '600' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'right', fontSize: '14px', fontWeight: '600' }}>Actions</th>
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>ID</th>
+              <th>Tab Title</th>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {solutions.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="admin-table-empty">
+                  No solutions added yet. Click &ldquo;Add New Solution&rdquo; to get started.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {solutions.length === 0 ? (
-                <tr>
-                  <td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>
-                    No solutions added yet. Click "Add New Solution" to get started.
-                  </td>
-                </tr>
-              ) : (
-                solutions.map((solution, index) => (
-                  <tr key={index} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <td style={{ padding: '12px' }}>
-                      {solution.imgSrc ? (
-                        <img
-                          src={solution.imgSrc}
-                          alt={solution.title || 'Solution'}
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            objectFit: 'cover',
-                            borderRadius: '4px',
-                          }}
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            background: '#f3f4f6',
-                            borderRadius: '4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '12px',
-                            color: '#9ca3af',
-                          }}
-                        >
-                          No Image
-                        </div>
-                      )}
+            ) : (
+              solutions.map((solution, index) => {
+                const isEditing = editingIndex === index;
+                return (
+                  <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
+                    <td>
+                      <div className="admin-section-thumb">
+                        {solution.imgSrc ? (
+                          <img
+                            src={solution.imgSrc}
+                            alt={solution.title || 'Solution'}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <span className="admin-section-thumb-placeholder">
+                            No Image
+                          </span>
+                        )}
+                      </div>
                     </td>
-                    <td style={{ padding: '12px', fontWeight: '500' }}>{solution.id || 'N/A'}</td>
-                    <td style={{ padding: '12px' }}>{solution.tabTitle || 'N/A'}</td>
-                    <td style={{ padding: '12px', fontWeight: '500' }}>{solution.title || 'Untitled Solution'}</td>
-                    <td style={{ padding: '12px' }}>
-                      <span
-                        style={{
-                          padding: '2px 8px',
-                          background: solution.isActive ? '#d1fae5' : '#f3f4f6',
-                          color: solution.isActive ? '#065f46' : '#6b7280',
-                          borderRadius: '4px',
-                          fontSize: '12px',
-                        }}
-                      >
-                        {solution.isActive ? 'Active' : 'Inactive'}
+                    <td><strong>{solution.id || 'N/A'}</strong></td>
+                    <td>{solution.tabTitle || 'N/A'}</td>
+                    <td><strong>{solution.title || 'Untitled Solution'}</strong></td>
+                    <td>
+                      <span className={`admin-badge ${solution.isActive !== false ? 'published' : 'draft'}`}>
+                        {solution.isActive !== false ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td style={{ padding: '12px', textAlign: 'right' }}>
-                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                    <td>
+                      <div className="admin-table-actions">
                         <button
                           type="button"
-                          onClick={() => handleEdit(index)}
-                          className="button"
-                          style={{ fontSize: '12px', padding: '6px 12px' }}
+                          onClick={() => isEditing ? resetForm() : handleEdit(index)}
+                          className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
                         >
-                          Edit
+                          {isEditing ? 'Close' : 'Edit'}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(index)}
-                          className="button"
-                          style={{
-                            fontSize: '12px',
-                            padding: '6px 12px',
-                            background: '#ef4444',
-                            color: 'white',
-                          }}
-                        >
-                          Delete
-                        </button>
+                        {!isEditing && (
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(index)}
+                            className="admin-btn admin-btn-delete"
+                          >
+                            Delete
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
