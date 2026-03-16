@@ -942,9 +942,8 @@
 
 }
 
-.style-ltr {
-    direction: rtl;
-
+/* RTL header tweaks when <html dir="rtl"> */
+html[dir="rtl"] {
     .top-bar {
         .tf-phone {
             padding-left: 24px;
@@ -954,6 +953,23 @@
         .tf-language {
             padding-left: 0;
             padding-right: 24px;
+        }
+    }
+
+    /* In RTL, move the dropdown arrow icon to appear after the text (to the left) */
+    .menu-primary-menu {
+        .menu-item {
+            &.menu-item-has-children {
+                padding-right: 0;
+                padding-left: 20px;
+
+                .item-link {
+                    &::before {
+                        right: auto;
+                        left: -19px;
+                    }
+                }
+            }
         }
     }
 }
