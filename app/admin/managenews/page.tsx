@@ -284,17 +284,17 @@ export default function NewsManagePage() {
             </button>
           </div>
           <form onSubmit={handleSubmit} className="admin-cms-form">
-            <div className="form-group">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={formData.isActive}
-                  onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  style={{ marginRight: '8px' }}
-                />
-                Active
-              </label>
-            </div>
+                  <div className="form-group">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={formData.isActive}
+                        onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                        style={{ marginRight: '8px' }}
+                      />
+                      Active
+                    </label>
+                  </div>
             
             {/* Title Row */}
             <div>
@@ -303,24 +303,24 @@ export default function NewsManagePage() {
                 <div className="form-label-header">العربية</div>
               </div>
               <div className="form-row-bilingual">
-                <div className="form-group">
+                  <div className="form-group">
                   <label>Title *</label>
-                  <input
-                    type="text"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    required
-                  />
-                </div>
-                <div className="form-group">
+                    <input
+                      type="text"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
                   <label>Title</label>
-                  <input
-                    type="text"
-                    dir="rtl"
-                    value={formData.titleAr}
-                    onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
-                  />
-                </div>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.titleAr}
+                      onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+                    />
+                  </div>
               </div>
             </div>
 
@@ -331,87 +331,87 @@ export default function NewsManagePage() {
                 <div className="form-label-header">العربية</div>
               </div>
               <div className="form-row-bilingual">
-                <div className="form-group">
+                  <div className="form-group">
                   <label>Category</label>
-                  <input
-                    type="text"
-                    value={formData.category}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  />
-                </div>
-                <div className="form-group">
+                    <input
+                      type="text"
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
                   <label>Category</label>
-                  <input
-                    type="text"
-                    dir="rtl"
-                    value={formData.categoryAr}
-                    onChange={(e) => setFormData({ ...formData, categoryAr: e.target.value })}
-                  />
-                </div>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={formData.categoryAr}
+                      onChange={(e) => setFormData({ ...formData, categoryAr: e.target.value })}
+                    />
+                  </div>
               </div>
             </div>
             
-            <div className="form-group">
-              <label>Image</label>
-              <ImageUpload
-                value={formData.imagePath}
-                onChange={(value) => setFormData({ ...formData, imagePath: value })}
-                folder="news"
-              />
-            </div>
+                  <div className="form-group">
+                    <label>Image</label>
+                    <ImageUpload
+                      value={formData.imagePath}
+                      onChange={(value) => setFormData({ ...formData, imagePath: value })}
+                      folder="news"
+                    />
+                  </div>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
-              <div className="form-group">
-                <label>Day</label>
-                <input
-                  type="text"
-                  value={formData.date.day}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      date: { ...formData.date, day: e.target.value },
-                    })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Month</label>
-                <input
-                  type="text"
-                  value={formData.date.month}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      date: { ...formData.date, month: e.target.value },
-                    })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Width</label>
-                <input
-                  type="number"
-                  value={formData.imgWidth}
-                  onChange={(e) => setFormData({ ...formData, imgWidth: Number(e.target.value) })}
-                />
-              </div>
-              <div className="form-group">
-                <label>Height</label>
-                <input
-                  type="number"
-                  value={formData.imgHeight}
-                  onChange={(e) => setFormData({ ...formData, imgHeight: Number(e.target.value) })}
-                />
-              </div>
-            </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
+                    <div className="form-group">
+                      <label>Day</label>
+                      <input
+                        type="text"
+                        value={formData.date.day}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            date: { ...formData.date, day: e.target.value },
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Month</label>
+                      <input
+                        type="text"
+                        value={formData.date.month}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            date: { ...formData.date, month: e.target.value },
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Width</label>
+                      <input
+                        type="number"
+                        value={formData.imgWidth}
+                        onChange={(e) => setFormData({ ...formData, imgWidth: Number(e.target.value) })}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Height</label>
+                      <input
+                        type="number"
+                        value={formData.imgHeight}
+                        onChange={(e) => setFormData({ ...formData, imgHeight: Number(e.target.value) })}
+                      />
+                    </div>
+                  </div>
             
-            <div className="form-group">
-              <label>Link</label>
-              <input
-                type="text"
-                value={formData.link}
-                onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-              />
+                  <div className="form-group">
+                    <label>Link</label>
+                    <input
+                      type="text"
+                      value={formData.link}
+                      onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                    />
             </div>
             <div className="form-actions">
               <button type="submit" className="button button-primary" disabled={saving}>
@@ -430,7 +430,7 @@ export default function NewsManagePage() {
 
       <div className="admin-table-wrapper">
         <table className="admin-table">
-          <thead>
+            <thead>
             <tr>
               <th>Image</th>
               <th>Title</th>
@@ -438,35 +438,35 @@ export default function NewsManagePage() {
               <th>Date</th>
               <th>Status</th>
               <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {posts.length === 0 ? (
-              <tr>
+              </tr>
+            </thead>
+            <tbody>
+              {posts.length === 0 ? (
+                <tr>
                 <td colSpan={6} className="admin-table-empty">
                   No posts added yet. Click &ldquo;Add New Post&rdquo; to get started.
-                </td>
-              </tr>
-            ) : (
+                  </td>
+                </tr>
+              ) : (
               posts.map((post, index) => {
                 const isEditing = editingIndex === index;
                 return (
                   <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
                     <td>
                       <div className="admin-section-thumb">
-                        {post.imagePath ? (
-                          <img
-                            src={post.imagePath}
-                            alt={post.title || 'Post'}
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        ) : (
+                      {post.imagePath ? (
+                        <img
+                          src={post.imagePath}
+                          alt={post.title || 'Post'}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
                           <span className="admin-section-thumb-placeholder">
-                            No Image
-                          </span>
-                        )}
+                          No Image
+                        </span>
+                      )}
                       </div>
                     </td>
                     <td><strong>{post.title || 'Untitled Post'}</strong></td>
@@ -487,22 +487,22 @@ export default function NewsManagePage() {
                           {isEditing ? 'Close' : 'Edit'}
                         </button>
                         {!isEditing && (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(index)}
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(index)}
                             className="admin-btn admin-btn-delete"
-                          >
-                            Delete
-                          </button>
+                        >
+                          Delete
+                        </button>
                         )}
                       </div>
                     </td>
                   </tr>
                 );
               })
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
       </div>
     </div>
   );

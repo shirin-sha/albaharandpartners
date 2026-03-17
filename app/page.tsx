@@ -73,20 +73,14 @@ export default async function Page() {
       {content?.heroSlides && content.heroSlides.length > 0 ? (
         <HeroSlider slides={content.heroSlides} language={language} />
       ) : (
-        <div style={{padding: '50px', background: '#f0f0f0', textAlign: 'center'}}>
-          <p>No Hero Slides Found - Please add content in admin</p>
+        <div style={{height: '100vh', background: '#f0f0f0', textAlign: 'center'}}>
+          {/* <p>No Hero Slides Found - Please add content in admin</p> */}
         </div>
       )}
       
       <div className="main-content">
         {/* Debug: Show if content exists */}
-        {!content && (
-          <div style={{padding: '50px', background: '#ffebee', textAlign: 'center', margin: '20px'}}>
-            <h2>⚠️ No Content Loaded from Database</h2>
-            <p>Please run: npm run seed:homepage</p>
-          </div>
-        )}
-
+    
         {/* CMS-driven About Section */}
         {content?.aboutSection && (
           <AboutSection content={content.aboutSection} language={language} />

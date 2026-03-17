@@ -160,21 +160,38 @@ const headerDataRTL = {
       hasDropdown: true,
       dropdownItems: [
         {
-          title: "حلول الخدمات المصرفية والمدفوعات والهوية",
+          // Banking, Payment and Identity Solutions
+          title: "حلول الخدمات المصرفية والدفع والهوية",
           href: "#",
           order: 0,
           isActive: true,
         },
         {
-          title: "الطباعة والتصوير",
+          // Printing & Imaging
+          title: "حلول الطباعة والتصوير",
           href: "#",
           order: 1,
           isActive: true,
         },
         {
-          title: "الصوت والصورة",
+          // Audio & Visual
+          title: "حلول الصوتيات والمرئيات",
           href: "#",
           order: 2,
+          isActive: true,
+        },
+        {
+          // IT Infrastructure, Support and Cloud
+          title: "البنية التحتية لتقنية المعلومات والدعم والحوسبة السحابية",
+          href: "#",
+          order: 3,
+          isActive: true,
+        },
+        {
+          // Information and Cyber Security
+          title: "أمن المعلومات والأمن السيبراني",
+          href: "#",
+          order: 4,
           isActive: true,
         },
       ],

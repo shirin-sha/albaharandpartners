@@ -445,43 +445,43 @@ export default function BrandsManagePage() {
 
       <div className="admin-table-wrapper">
         <table className="admin-table">
-          <thead>
+            <thead>
             <tr>
               <th>Image</th>
               <th>Name</th>
               <th>Description</th>
               <th>Status</th>
               <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {brands.length === 0 ? (
-              <tr>
+              </tr>
+            </thead>
+            <tbody>
+              {brands.length === 0 ? (
+                <tr>
                 <td colSpan={5} className="admin-table-empty">
                   No brands added yet. Click &ldquo;Add New Brand&rdquo; to get started.
-                </td>
-              </tr>
-            ) : (
+                  </td>
+                </tr>
+              ) : (
               brands.map((brand, index) => {
                 const isEditing = editingIndex === index;
                 return (
                   <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
                     <td>
                       <div className="admin-section-thumb-brand">
-                        {brand.imagePath ? (
-                          <img
-                            src={brand.imagePath}
-                            alt={brand.name || 'Brand'}
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        ) : (
+                      {brand.imagePath ? (
+                        <img
+                          src={brand.imagePath}
+                          alt={brand.name || 'Brand'}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
                           <span className="admin-section-thumb-brand-placeholder">
-                            No Image
+                          No Image
                           </span>
                         )}
-                      </div>
+                        </div>
                     </td>
                     <td><strong>{brand.name || 'Untitled Brand'}</strong></td>
                     <td>
@@ -508,22 +508,22 @@ export default function BrandsManagePage() {
                           {isEditing ? 'Close' : 'Edit'}
                         </button>
                         {!isEditing && (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(index)}
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(index)}
                             className="admin-btn admin-btn-delete"
-                          >
-                            Delete
-                          </button>
+                        >
+                          Delete
+                        </button>
                         )}
                       </div>
                     </td>
                   </tr>
                 );
               })
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
       </div>
     </div>
   );

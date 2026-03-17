@@ -25,9 +25,9 @@ async function createAdmin() {
     const adminCollection = db.collection('admins');
 
     // Default admin credentials (change these!)
-    const email = process.env.ADMIN_EMAIL || 'admin@albahar.com';
-    const password = process.env.ADMIN_PASSWORD || 'admin123';
-    const name = process.env.ADMIN_NAME || 'Admin User';
+    const email = process.env.ADMIN_EMAIL;
+    const password = process.env.ADMIN_PASSWORD;
+    const name = process.env.ADMIN_NAME;
 
     // Check if admin already exists
     const existingAdmin = await adminCollection.findOne({ 

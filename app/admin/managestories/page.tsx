@@ -360,43 +360,43 @@ export default function StoriesManagePage() {
 
       <div className="admin-table-wrapper">
         <table className="admin-table">
-          <thead>
+            <thead>
             <tr>
               <th>Image</th>
               <th>Title</th>
               <th>Description</th>
               <th>Status</th>
               <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {stories.length === 0 ? (
-              <tr>
+              </tr>
+            </thead>
+            <tbody>
+              {stories.length === 0 ? (
+                <tr>
                 <td colSpan={5} className="admin-table-empty">
                   No stories added yet. Click &ldquo;Add New Story&rdquo; to get started.
-                </td>
-              </tr>
-            ) : (
+                  </td>
+                </tr>
+              ) : (
               stories.map((story, index) => {
                 const isEditing = editingIndex === index;
                 return (
                   <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
                     <td>
                       <div className="admin-section-thumb">
-                        {story.imagePath ? (
-                          <img
-                            src={story.imagePath}
-                            alt={story.title || 'Story'}
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        ) : (
+                      {story.imagePath ? (
+                        <img
+                          src={story.imagePath}
+                          alt={story.title || 'Story'}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
                           <span className="admin-section-thumb-placeholder">
-                            No Image
+                          No Image
                           </span>
                         )}
-                      </div>
+                        </div>
                     </td>
                     <td><strong>{story.title || 'Untitled Story'}</strong></td>
                     <td>
@@ -423,22 +423,22 @@ export default function StoriesManagePage() {
                           {isEditing ? 'Close' : 'Edit'}
                         </button>
                         {!isEditing && (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(index)}
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(index)}
                             className="admin-btn admin-btn-delete"
-                          >
-                            Delete
-                          </button>
+                        >
+                          Delete
+                        </button>
                         )}
                       </div>
                     </td>
                   </tr>
                 );
               })
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
       </div>
     </div>
   );

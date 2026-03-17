@@ -455,7 +455,7 @@ export default function SolutionsManagePage() {
 
       <div className="admin-table-wrapper">
         <table className="admin-table">
-          <thead>
+            <thead>
             <tr>
               <th>Image</th>
               <th>ID</th>
@@ -463,36 +463,36 @@ export default function SolutionsManagePage() {
               <th>Title</th>
               <th>Status</th>
               <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {solutions.length === 0 ? (
-              <tr>
+              </tr>
+            </thead>
+            <tbody>
+              {solutions.length === 0 ? (
+                <tr>
                 <td colSpan={6} className="admin-table-empty">
                   No solutions added yet. Click &ldquo;Add New Solution&rdquo; to get started.
-                </td>
-              </tr>
-            ) : (
+                  </td>
+                </tr>
+              ) : (
               solutions.map((solution, index) => {
                 const isEditing = editingIndex === index;
                 return (
                   <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
                     <td>
                       <div className="admin-section-thumb">
-                        {solution.imgSrc ? (
-                          <img
-                            src={solution.imgSrc}
-                            alt={solution.title || 'Solution'}
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                        ) : (
+                      {solution.imgSrc ? (
+                        <img
+                          src={solution.imgSrc}
+                          alt={solution.title || 'Solution'}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : (
                           <span className="admin-section-thumb-placeholder">
-                            No Image
+                          No Image
                           </span>
                         )}
-                      </div>
+                        </div>
                     </td>
                     <td><strong>{solution.id || 'N/A'}</strong></td>
                     <td>{solution.tabTitle || 'N/A'}</td>
@@ -512,22 +512,22 @@ export default function SolutionsManagePage() {
                           {isEditing ? 'Close' : 'Edit'}
                         </button>
                         {!isEditing && (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(index)}
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(index)}
                             className="admin-btn admin-btn-delete"
-                          >
-                            Delete
-                          </button>
+                        >
+                          Delete
+                        </button>
                         )}
                       </div>
                     </td>
                   </tr>
                 );
               })
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
       </div>
     </div>
   );

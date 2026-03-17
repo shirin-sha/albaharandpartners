@@ -545,23 +545,23 @@ export default function CareersManagePage() {
 
       <div className="admin-table-wrapper">
         <table className="admin-table">
-          <thead>
+            <thead>
             <tr>
               <th>Title</th>
               <th>Description</th>
               <th>Salary</th>
               <th>Status</th>
               <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {jobs.length === 0 ? (
-              <tr>
+              </tr>
+            </thead>
+            <tbody>
+              {jobs.length === 0 ? (
+                <tr>
                 <td colSpan={5} className="admin-table-empty">
                   No jobs added yet. Click &ldquo;Add New Job&rdquo; to get started.
-                </td>
-              </tr>
-            ) : (
+                  </td>
+                </tr>
+              ) : (
               jobs.map((job, index) => {
                 const isEditing = editingIndex === index;
                 return (
@@ -592,22 +592,22 @@ export default function CareersManagePage() {
                           {isEditing ? 'Close' : 'Edit'}
                         </button>
                         {!isEditing && (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(index)}
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(index)}
                             className="admin-btn admin-btn-delete"
-                          >
-                            Delete
-                          </button>
+                        >
+                          Delete
+                        </button>
                         )}
                       </div>
                     </td>
                   </tr>
                 );
               })
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
       </div>
     </div>
   );

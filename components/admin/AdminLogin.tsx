@@ -131,7 +131,7 @@ export default function AdminLogin() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="admin@albahar.com"
+              placeholder="Enter your email address"
               required
               style={{
                 width: "100%",
