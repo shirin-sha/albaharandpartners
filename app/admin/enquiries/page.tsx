@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, Alert, Button } from "@/components/admin/ui";
+import { Alert, Button } from "@/components/admin/ui";
 
 interface Enquiry {
   _id?: string;
@@ -54,121 +54,105 @@ export default function EnquiriesPage() {
   }, []);
 
   return (
-    <div className="admin-bg-gradient">
-      <div className="admin-header-sticky border-bottom">
-        <div className="container-fluid py-3">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h1 className="h2 mb-1" style={{ fontSize: "2rem", fontWeight: 700 }}>
-                📥 Enquiries
-              </h1>
-              <p className="text-muted mb-0" style={{ fontSize: "1.1rem" }}>
-                View contact form submissions from the website
-              </p>
-            </div>
-            <div className="d-flex align-items-center gap-2">
-              <Button variant="secondary" size="sm" onClick={loadEnquiries} disabled={loading}>
-                {loading ? "Refreshing..." : "Refresh"}
-              </Button>
+    <div className="admin-cms-container">
+      <div className="admin-cms-header">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+          <div>
+            <h1>Enquiries</h1>
+            <div style={{ fontSize: 13, opacity: 0.8 }}>
+              View contact form submissions from the website
             </div>
           </div>
+          <button
+            type="button"
+            className="button button-primary"
+            onClick={loadEnquiries}
+            disabled={loading}
+          >
+            {loading ? "Refreshing..." : "Refresh"}
+          </button>
         </div>
       </div>
 
-      <div className="container-fluid py-3">
+      <div style={{ paddingTop: 16 }}>
         {error && (
           <div className="mb-3">
             <Alert type="error" message={error} onClose={() => setError(null)} />
           </div>
         )}
 
-<Card>
-  <div className="table-responsive">
-     <table className="table align-middle mb-0 enquiries-table">
-      <thead>
-        <tr>
-           <th style={{ width: "120px" }}>Date</th>
-           <th style={{ width: "200px" }}>Name</th>
-           <th style={{ width: "260px" }}>Email</th>
-           <th>Subject</th>
-           <th style={{ width: "80px" }} className="text-end">
-            Action
-          </th>
-        </tr>
-      </thead>
+        <div className="admin-table-wrapper">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th style={{ width: 140 }}>Date</th>
+                <th style={{ width: 220 }}>Name</th>
+                <th style={{ width: 280 }}>Email</th>
+                <th>Subject</th>
+                <th style={{ width: 120 }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading && enquiries.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="admin-table-empty">
+                    Loading enquiries…
+                  </td>
+                </tr>
+              )}
 
-      <tbody>
-        {loading && enquiries.length === 0 && (
-           <tr>
-             <td colSpan={5} className="text-center py-5 text-muted">
-              Loading enquiries…
-            </td>
-          </tr>
-        )}
+              {!loading && enquiries.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="admin-table-empty">
+                    No enquiries received yet.
+                  </td>
+                </tr>
+              )}
 
-        {!loading && enquiries.length === 0 && (
-           <tr>
-             <td colSpan={5} className="text-center py-5 text-muted">
-              No enquiries received yet.
-            </td>
-          </tr>
-        )}
+              {enquiries.map((enquiry) => {
+                const isActive =
+                  selected &&
+                  (selected._id && enquiry._id
+                    ? selected._id === enquiry._id
+                    : selected.email === enquiry.email &&
+                      selected.createdAt === enquiry.createdAt);
 
-        {enquiries.map((enquiry) => {
-          const isActive =
-            selected &&
-            (selected._id && enquiry._id
-              ? selected._id === enquiry._id
-              : selected.email === enquiry.email &&
-                selected.createdAt === enquiry.createdAt);
-
-          return (
-            <tr
-              key={enquiry._id || `${enquiry.email}-${enquiry.createdAt}`}
-              className={isActive ? "table-active" : ""}
-            >
-              <td className="text-muted small">
-                {enquiry.createdAt
-                  ? new Date(enquiry.createdAt).toLocaleDateString(undefined, {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })
-                  : "-"}
-              </td>
-
-              <td>
-                <div className="fw-semibold">{enquiry.name}</div>
-              </td>
-
-               <td>
-                 <a href={`mailto:${enquiry.email}`} className="text-decoration-none">
-                   {enquiry.email}
-                 </a>
-               </td>
-
-              <td>
-                <div className="subject-cell">
-                  {enquiry.subject || "-"}
-                </div>
-              </td>
-              <td className="text-center">
-  <span
-    className="view-icon"
-    onClick={() => setSelected(enquiry)}
-    title="View enquiry"
-  >
-    <i className="icon-Eye" />
-  </span>
-</td>
-
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  </div>
-</Card>
+                return (
+                  <tr
+                    key={enquiry._id || `${enquiry.email}-${enquiry.createdAt}`}
+                    className={isActive ? "admin-table-row-active" : ""}
+                  >
+                    <td>
+                      {enquiry.createdAt
+                        ? new Date(enquiry.createdAt).toLocaleDateString(undefined, {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })
+                        : "-"}
+                    </td>
+                    <td>
+                      <strong>{enquiry.name || "-"}</strong>
+                    </td>
+                    <td>
+                      {enquiry.email ? <a href={`mailto:${enquiry.email}`}>{enquiry.email}</a> : "-"}
+                    </td>
+                    <td>{enquiry.subject || "-"}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="admin-btn admin-btn-edit"
+                        onClick={() => setSelected(enquiry)}
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
 
 
         {/* Details modal */}

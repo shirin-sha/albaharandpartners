@@ -1,7 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { SolutionsContent } from '@/types/solutions';
+
+const SOLUTIONS_SECTIONS = [
+  {
+    id: 'header',
+    label: 'Page Header',
+    description: 'Breadcrumb, title, subtitle',
+  },
+] as const;
+
+type SolutionsSectionId = (typeof SOLUTIONS_SECTIONS)[number]['id'];
 
 export default function SolutionsManager() {
   const [loading, setLoading] = useState(false);
@@ -9,9 +20,7 @@ export default function SolutionsManager() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [contentLtr, setContentLtr] = useState<SolutionsContent | null>(null);
   const [contentRtl, setContentRtl] = useState<SolutionsContent | null>(null);
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    header: true,
-  });
+  const [selectedSection, setSelectedSection] = useState<SolutionsSectionId | null>(null);
 
   useEffect(() => {
     loadContent();
@@ -67,10 +76,6 @@ export default function SolutionsManager() {
     setTimeout(() => setMessage(null), 5000);
   };
 
-  const toggleSection = (section: string) => {
-    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
-
   const handleSaveSection = async (section: string) => {
     if (!contentLtr || !contentRtl) return;
     setSaving(section);
@@ -109,38 +114,29 @@ export default function SolutionsManager() {
     return <div className="admin-loading">Loading...</div>;
   }
 
-  return (
-    <div className="admin-cms-container">
-      <div className="admin-cms-header">
-        <h1>Solutions</h1>
-      </div>
+  const renderSelectedSectionForm = () => {
+    if (!selectedSection) return null;
 
-      {message && (
-        <div
-          style={{
-            padding: '12px 16px',
-            marginBottom: '16px',
-            borderRadius: '6px',
-            background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
-            color: message.type === 'success' ? '#065f46' : '#991b1b',
-          }}
-        >
-          {message.text}
-        </div>
-      )}
+    switch (selectedSection) {
+      case 'header':
+        return (
+          <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+            <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Editing: Page Header</h3>
+                <div style={{ fontSize: 13, opacity: 0.8 }}>
+                  Breadcrumb, title, subtitle (English + Arabic)
+                </div>
+              </div>
+              <button
+                type="button"
+                className="button"
+                onClick={() => setSelectedSection(null)}
+              >
+                Close
+              </button>
+            </div>
 
-      <div className="admin-cms-sections">
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('header')}
-          >
-            <h3>Page Header</h3>
-            <span className="admin-cms-toggle">
-              {openSections.header ? '−' : '+'}
-            </span>
-          </div>
-          {openSections.header && (
             <div className="admin-cms-form">
               <div className="form-group">
                 <label>Breadcrumb (English)</label>
@@ -233,8 +229,84 @@ export default function SolutionsManager() {
                 </button>
               </div>
             </div>
-          )}
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="admin-cms-container">
+      <div className="admin-cms-header">
+        <h1>Solutions</h1>
+      </div>
+
+      {message && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: '16px',
+            borderRadius: '6px',
+            background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
+            color: message.type === 'success' ? '#065f46' : '#991b1b',
+          }}
+        >
+          {message.text}
         </div>
+      )}
+
+      {renderSelectedSectionForm()}
+
+      <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+        <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+          <div>
+            <h3 style={{ margin: 0 }}>Solutions list</h3>
+            <div style={{ fontSize: 13, opacity: 0.8 }}>
+              Individual solutions (cards/sidebar items) are managed separately.
+            </div>
+          </div>
+          <Link href="/admin/managesolutions" className="button button-primary">
+            Manage Solutions List
+          </Link>
+        </div>
+      </div>
+
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SOLUTIONS_SECTIONS.map((section) => {
+              const isEditing = selectedSection === section.id;
+              return (
+                <tr key={section.id} className={isEditing ? 'admin-table-row-active' : ''}>
+                  <td>
+                    <strong>{section.label}</strong>
+                  </td>
+                  <td>{section.description}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
+                      onClick={() => {
+                        setSelectedSection(section.id);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      {isEditing ? 'Close' : 'Edit'}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );

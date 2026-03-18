@@ -1,7 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { NewsUpdatesContent } from '@/types/news-updates';
+
+const NEWS_UPDATES_SECTIONS = [
+  { id: 'header', label: 'Page Header', description: 'Breadcrumb, title, subtitle' },
+] as const;
+
+type NewsUpdatesSectionId = (typeof NEWS_UPDATES_SECTIONS)[number]['id'];
 
 export default function NewsUpdatesManager() {
   const [loading, setLoading] = useState(false);
@@ -9,9 +16,7 @@ export default function NewsUpdatesManager() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [contentLtr, setContentLtr] = useState<NewsUpdatesContent | null>(null);
   const [contentRtl, setContentRtl] = useState<NewsUpdatesContent | null>(null);
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    header: true,
-  });
+  const [selectedSection, setSelectedSection] = useState<NewsUpdatesSectionId | null>(null);
 
   useEffect(() => {
     loadContent();
@@ -67,10 +72,6 @@ export default function NewsUpdatesManager() {
     setTimeout(() => setMessage(null), 5000);
   };
 
-  const toggleSection = (section: string) => {
-    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
-
   const handleSaveSection = async (section: string) => {
     if (!contentLtr || !contentRtl) return;
     setSaving(section);
@@ -109,38 +110,26 @@ export default function NewsUpdatesManager() {
     return <div className="admin-loading">Loading...</div>;
   }
 
-  return (
-    <div className="admin-cms-container">
-      <div className="admin-cms-header">
-        <h1>News & Updates</h1>
-              </div>
+  const renderSelectedSectionForm = () => {
+    if (!selectedSection) return null;
 
-      {message && (
-        <div
-          style={{
-            padding: '12px 16px',
-            marginBottom: '16px',
-            borderRadius: '6px',
-            background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
-            color: message.type === 'success' ? '#065f46' : '#991b1b',
-          }}
-        >
-          {message.text}
-              </div>
-      )}
+    const closeBtn = (
+      <button type="button" className="button" onClick={() => setSelectedSection(null)}>
+        Close
+      </button>
+    );
 
-      <div className="admin-cms-sections">
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('header')}
-          >
-            <h3>Page Header</h3>
-            <span className="admin-cms-toggle">
-              {openSections.header ? '−' : '+'}
-            </span>
-          </div>
-          {openSections.header && (
+    switch (selectedSection) {
+      case 'header':
+        return (
+          <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+            <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Editing: Page Header</h3>
+                <div style={{ fontSize: 13, opacity: 0.8 }}>Breadcrumb, title, subtitle</div>
+              </div>
+              {closeBtn}
+            </div>
             <div className="admin-cms-form">
               <div className="form-group">
                 <label>Breadcrumb (English)</label>
@@ -153,8 +142,8 @@ export default function NewsUpdatesManager() {
                       header: { ...contentLtr.header, breadcrumb: e.target.value },
                     })
                   }
-            />
-          </div>
+                />
+              </div>
               <div className="form-group">
                 <label>Breadcrumb (Arabic)</label>
                 <input
@@ -204,8 +193,8 @@ export default function NewsUpdatesManager() {
                     setContentLtr({
                       ...contentLtr,
                       header: { ...contentLtr.header, subtitle: e.target.value },
-                  })
-                }
+                    })
+                  }
                   rows={3}
                 />
               </div>
@@ -221,7 +210,7 @@ export default function NewsUpdatesManager() {
                     })
                   }
                   rows={3}
-              />
+                />
               </div>
               <div className="form-actions">
                 <button
@@ -233,35 +222,80 @@ export default function NewsUpdatesManager() {
                 </button>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
-        <div className="admin-cms-section-card">
-          <div className="admin-cms-section-header">
-            <h3>News Posts</h3>
-          </div>
-          <div className="admin-cms-form">
-            <div style={{ padding: '16px', background: '#f3f4f6', borderRadius: '6px' }}>
-              <p style={{ margin: '0 0 12px 0' }}>
-                    <strong>News posts are managed separately.</strong>
-              </p>
-              <a
-                href="/admin/managenews"
-                style={{
-                  display: 'inline-block',
-                  padding: '8px 16px',
-                  background: '#000',
-                  color: '#fff',
-                  textDecoration: 'none',
-                  borderRadius: '6px',
-                  fontSize: '14px',
-                }}
-              >
-                      Go to News Management →
-                    </a>
-            </div>
-          </div>
+  return (
+    <div className="admin-cms-container">
+      <div className="admin-cms-header">
+        <h1>News & Updates</h1>
+      </div>
+
+      {message && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: '16px',
+            borderRadius: '6px',
+            background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
+            color: message.type === 'success' ? '#065f46' : '#991b1b',
+          }}
+        >
+          {message.text}
         </div>
+      )}
+
+      {renderSelectedSectionForm()}
+
+      <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+        <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+          <div>
+            <h3 style={{ margin: 0 }}>News Posts</h3>
+            <div style={{ fontSize: 13, opacity: 0.8 }}>News posts are managed separately.</div>
+          </div>
+          <Link href="/admin/managenews" className="button button-primary">
+            Go to News Management →
+          </Link>
+        </div>
+      </div>
+
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {NEWS_UPDATES_SECTIONS.map((section) => {
+              const isEditing = selectedSection === section.id;
+              return (
+                <tr key={section.id} className={isEditing ? 'admin-table-row-active' : ''}>
+                  <td><strong>{section.label}</strong></td>
+                  <td>{section.description}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
+                      onClick={() => {
+                        setSelectedSection(section.id);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      {isEditing ? 'Close' : 'Edit'}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );

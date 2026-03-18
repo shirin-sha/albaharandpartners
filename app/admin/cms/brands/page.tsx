@@ -1,7 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { BrandsContent } from '@/types/brands';
+
+const BRANDS_SECTIONS = [
+  { id: 'header', label: 'Page Header', description: 'Breadcrumb, title, subtitle' },
+  { id: 'brands', label: 'Brands Section', description: 'Tag, heading, subheading' },
+] as const;
+
+type BrandsSectionId = (typeof BRANDS_SECTIONS)[number]['id'];
 
 export default function BrandsManager() {
   const [loading, setLoading] = useState(false);
@@ -9,10 +17,7 @@ export default function BrandsManager() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [contentLtr, setContentLtr] = useState<BrandsContent | null>(null);
   const [contentRtl, setContentRtl] = useState<BrandsContent | null>(null);
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    header: true,
-    brands: true,
-  });
+  const [selectedSection, setSelectedSection] = useState<BrandsSectionId | null>(null);
 
   useEffect(() => {
     loadContent();
@@ -71,10 +76,6 @@ export default function BrandsManager() {
     setTimeout(() => setMessage(null), 5000);
   };
 
-  const toggleSection = (section: string) => {
-    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
-
   const handleSaveSection = async (section: string) => {
     if (!contentLtr || !contentRtl) return;
     setSaving(section);
@@ -113,38 +114,30 @@ export default function BrandsManager() {
     return <div className="admin-loading">Loading...</div>;
   }
 
-  return (
-    <div className="admin-cms-container">
-      <div className="admin-cms-header">
-        <h1>Brands</h1>
-      </div>
+  const renderSelectedSectionForm = () => {
+    if (!selectedSection) return null;
 
-      {message && (
-        <div
-          style={{
-            padding: '12px 16px',
-            marginBottom: '16px',
-            borderRadius: '6px',
-            background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
-            color: message.type === 'success' ? '#065f46' : '#991b1b',
-          }}
-        >
-          {message.text}
-        </div>
-      )}
+    const closeBtn = (
+      <button
+        type="button"
+        className="button"
+        onClick={() => setSelectedSection(null)}
+      >
+        Close
+      </button>
+    );
 
-      <div className="admin-cms-sections">
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('header')}
-          >
-            <h3>Page Header</h3>
-            <span className="admin-cms-toggle">
-              {openSections.header ? '−' : '+'}
-            </span>
-          </div>
-          {openSections.header && (
+    switch (selectedSection) {
+      case 'header':
+        return (
+          <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+            <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Editing: Page Header</h3>
+                <div style={{ fontSize: 13, opacity: 0.8 }}>Breadcrumb, title, subtitle</div>
+              </div>
+              {closeBtn}
+            </div>
             <div className="admin-cms-form">
               <div className="form-group">
                 <label>Breadcrumb (English)</label>
@@ -237,20 +230,18 @@ export default function BrandsManager() {
                 </button>
               </div>
             </div>
-          )}
-        </div>
-
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('brands')}
-          >
-            <h3>Brands Section</h3>
-            <span className="admin-cms-toggle">
-              {openSections.brands ? '−' : '+'}
-            </span>
           </div>
-          {openSections.brands && (
+        );
+      case 'brands':
+        return (
+          <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+            <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Editing: Brands Section</h3>
+                <div style={{ fontSize: 13, opacity: 0.8 }}>Tag, heading, subheading</div>
+              </div>
+              {closeBtn}
+            </div>
             <div className="admin-cms-form">
               <div className="form-group">
                 <label>Section Tag (English)</label>
@@ -343,35 +334,80 @@ export default function BrandsManager() {
                 </button>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
-        <div className="admin-cms-section-card">
-          <div className="admin-cms-section-header">
-            <h3>Brand Management</h3>
-          </div>
-          <div className="admin-cms-form">
-            <div style={{ padding: '16px', background: '#f3f4f6', borderRadius: '6px' }}>
-              <p style={{ margin: '0 0 12px 0' }}>
-                <strong>Brands are managed separately.</strong>
-              </p>
-              <a
-                href="/admin/managebrands"
-                style={{
-                  display: 'inline-block',
-                  padding: '8px 16px',
-                  background: '#000',
-                  color: '#fff',
-                  textDecoration: 'none',
-                  borderRadius: '6px',
-                  fontSize: '14px',
-                }}
-              >
-                Go to Brand Management →
-              </a>
-            </div>
-          </div>
+  return (
+    <div className="admin-cms-container">
+      <div className="admin-cms-header">
+        <h1>Brands</h1>
+      </div>
+
+      {message && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: '16px',
+            borderRadius: '6px',
+            background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
+            color: message.type === 'success' ? '#065f46' : '#991b1b',
+          }}
+        >
+          {message.text}
         </div>
+      )}
+
+      {renderSelectedSectionForm()}
+
+      <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+        <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+          <div>
+            <h3 style={{ margin: 0 }}>Brand Management</h3>
+            <div style={{ fontSize: 13, opacity: 0.8 }}>Brands are managed separately.</div>
+          </div>
+          <Link href="/admin/managebrands" className="button button-primary">
+            Go to Brand Management →
+          </Link>
+        </div>
+      </div>
+
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {BRANDS_SECTIONS.map((section) => {
+              const isEditing = selectedSection === section.id;
+              return (
+                <tr key={section.id} className={isEditing ? 'admin-table-row-active' : ''}>
+                  <td><strong>{section.label}</strong></td>
+                  <td>{section.description}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
+                      onClick={() => {
+                        setSelectedSection(section.id);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      {isEditing ? 'Close' : 'Edit'}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );

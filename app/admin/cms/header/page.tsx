@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import { HeaderContent, MenuItem } from '@/types/header';
 import ImageUpload from '@/components/admin/ui/ImageUpload';
 
+const HEADER_SECTIONS = [
+  { id: 'logo', label: 'Logo Settings', description: 'Logo image, link, alt, size (shared)' },
+  { id: 'menu', label: 'Navigation Menu', description: 'Menu items + dropdown items (bilingual)' },
+  { id: 'button', label: 'Header Button', description: 'Button text (bilingual) + link' },
+] as const;
+
+type HeaderSectionId = (typeof HEADER_SECTIONS)[number]['id'];
+
 interface MenuItemsManagerProps {
   menuItemsLtr: MenuItem[];
   menuItemsRtl: MenuItem[];
@@ -441,11 +449,7 @@ export default function HeaderManager() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [contentLtr, setContentLtr] = useState<HeaderContent | null>(null);
   const [contentRtl, setContentRtl] = useState<HeaderContent | null>(null);
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    logo: true,
-    menu: true,
-    button: true,
-  });
+  const [selectedSection, setSelectedSection] = useState<HeaderSectionId | null>(null);
 
   useEffect(() => {
     loadContent();
@@ -501,10 +505,6 @@ export default function HeaderManager() {
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 5000);
-  };
-
-  const toggleSection = (section: string) => {
-    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
   };
 
   const handleSaveSection = async (section: string) => {
@@ -589,225 +589,250 @@ export default function HeaderManager() {
         </div>
       )}
 
-      <div className="admin-cms-sections">
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('logo')}
-          >
+      {/* Selected section form (shown on top). Table below controls selection. */}
+      {selectedSection === 'logo' && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
             <h3>Logo Settings</h3>
-            <span className="admin-cms-toggle">
-              {openSections.logo ? '−' : '+'}
-            </span>
+            <button type="button" className="admin-btn admin-btn-delete" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
           </div>
-          {openSections.logo && (
-            <div className="admin-cms-form">
-              <div className="form-group">
-                <label>Logo Image</label>
-                <ImageUpload
-                  value={contentLtr.logo.imagePath}
-                  onChange={(value) => {
-                    setContentLtr({
-                      ...contentLtr,
-                      logo: { ...contentLtr.logo, imagePath: value },
-                    });
-                    setContentRtl({
-                      ...contentRtl,
-                      logo: { ...contentRtl.logo, imagePath: value },
-                    });
-                  }}
-                  folder="logo"
-                />
-              </div>
-              <div className="form-group">
-                <label>Logo Link</label>
-                <input
-                  type="text"
-                  value={contentLtr.logo.link}
-                  onChange={(e) => {
-                    const link = e.target.value;
-                    setContentLtr({
-                      ...contentLtr,
-                      logo: { ...contentLtr.logo, link },
-                    });
-                    setContentRtl({
-                      ...contentRtl,
-                      logo: { ...contentRtl.logo, link },
-                    });
-                  }}
-                />
-              </div>
-              <div className="form-group">
-                <label>Logo Alt Text</label>
-                <input
-                  type="text"
-                  value={contentLtr.logo.alt}
-                  onChange={(e) => {
-                    const alt = e.target.value;
-                    setContentLtr({
-                      ...contentLtr,
-                      logo: { ...contentLtr.logo, alt },
-                    });
-                    setContentRtl({
-                      ...contentRtl,
-                      logo: { ...contentRtl.logo, alt },
-                    });
-                  }}
-                />
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div className="form-group">
-                  <label>Width</label>
-                  <input
-                    type="number"
-                    value={contentLtr.logo.width}
-                    onChange={(e) => {
-                      const width = Number(e.target.value);
-                      setContentLtr({
-                        ...contentLtr,
-                        logo: { ...contentLtr.logo, width },
-                      });
-                      setContentRtl({
-                        ...contentRtl,
-                        logo: { ...contentRtl.logo, width },
-                      });
-                    }}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Height</label>
-                  <input
-                    type="number"
-                    value={contentLtr.logo.height}
-                    onChange={(e) => {
-                      const height = Number(e.target.value);
-                      setContentLtr({
-                        ...contentLtr,
-                        logo: { ...contentLtr.logo, height },
-                      });
-                      setContentRtl({
-                        ...contentRtl,
-                        logo: { ...contentRtl.logo, height },
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="form-actions">
-                <button
-                  className="button button-primary"
-                  onClick={() => handleSaveSection('logo')}
-                  disabled={saving === 'logo'}
-                >
-                  {saving === 'logo' ? 'Saving...' : 'Save Logo'}
-                </button>
-              </div>
+          <div className="admin-cms-form">
+            <div className="form-group">
+              <label>Logo Image</label>
+              <ImageUpload
+                value={contentLtr.logo.imagePath}
+                onChange={(value) => {
+                  setContentLtr({
+                    ...contentLtr,
+                    logo: { ...contentLtr.logo, imagePath: value },
+                  });
+                  setContentRtl({
+                    ...contentRtl,
+                    logo: { ...contentRtl.logo, imagePath: value },
+                  });
+                }}
+                folder="logo"
+              />
             </div>
-          )}
-        </div>
-
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('menu')}
-          >
-            <h3>Navigation Menu</h3>
-            <span className="admin-cms-toggle">
-              {openSections.menu ? '−' : '+'}
-            </span>
-          </div>
-          {openSections.menu && (
-            <div className="admin-cms-form">
-              <MenuItemsManager
-                menuItemsLtr={contentLtr.menuItems || []}
-                menuItemsRtl={contentRtl.menuItems || []}
-                onUpdate={(ltrItems, rtlItems) => {
-                  setContentLtr({ ...contentLtr, menuItems: ltrItems });
-                  setContentRtl({ ...contentRtl, menuItems: rtlItems });
+            <div className="form-group">
+              <label>Logo Link</label>
+              <input
+                type="text"
+                value={contentLtr.logo.link}
+                onChange={(e) => {
+                  const link = e.target.value;
+                  setContentLtr({
+                    ...contentLtr,
+                    logo: { ...contentLtr.logo, link },
+                  });
+                  setContentRtl({
+                    ...contentRtl,
+                    logo: { ...contentRtl.logo, link },
+                  });
                 }}
               />
-              <div className="form-actions">
-                <button
-                  className="button button-primary"
-                  onClick={() => handleSaveSection('menu')}
-                  disabled={saving === 'menu'}
-                >
-                  {saving === 'menu' ? 'Saving...' : 'Save Menu'}
-                </button>
-              </div>
             </div>
-          )}
-        </div>
-
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('button')}
-          >
-            <h3>Header Button</h3>
-            <span className="admin-cms-toggle">
-              {openSections.button ? '−' : '+'}
-            </span>
-          </div>
-          {openSections.button && (
-            <div className="admin-cms-form">
+            <div className="form-group">
+              <label>Logo Alt Text</label>
+              <input
+                type="text"
+                value={contentLtr.logo.alt}
+                onChange={(e) => {
+                  const alt = e.target.value;
+                  setContentLtr({
+                    ...contentLtr,
+                    logo: { ...contentLtr.logo, alt },
+                  });
+                  setContentRtl({
+                    ...contentRtl,
+                    logo: { ...contentRtl.logo, alt },
+                  });
+                }}
+              />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               <div className="form-group">
-                <label>Button Text (English)</label>
+                <label>Width</label>
                 <input
-                  type="text"
-                  value={contentLtr.buttonText}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      buttonText: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Button Text (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.buttonText}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      buttonText: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Button Link</label>
-                <input
-                  type="text"
-                  value={contentLtr.buttonLink}
+                  type="number"
+                  value={contentLtr.logo.width}
                   onChange={(e) => {
-                    const link = e.target.value;
+                    const width = Number(e.target.value);
                     setContentLtr({
                       ...contentLtr,
-                      buttonLink: link,
+                      logo: { ...contentLtr.logo, width },
                     });
                     setContentRtl({
                       ...contentRtl,
-                      buttonLink: link,
+                      logo: { ...contentRtl.logo, width },
                     });
                   }}
                 />
               </div>
-              <div className="form-actions">
-                <button
-                  className="button button-primary"
-                  onClick={() => handleSaveSection('button')}
-                  disabled={saving === 'button'}
-                >
-                  {saving === 'button' ? 'Saving...' : 'Save Button'}
-                </button>
+              <div className="form-group">
+                <label>Height</label>
+                <input
+                  type="number"
+                  value={contentLtr.logo.height}
+                  onChange={(e) => {
+                    const height = Number(e.target.value);
+                    setContentLtr({
+                      ...contentLtr,
+                      logo: { ...contentLtr.logo, height },
+                    });
+                    setContentRtl({
+                      ...contentRtl,
+                      logo: { ...contentRtl.logo, height },
+                    });
+                  }}
+                />
               </div>
             </div>
-          )}
+            <div className="form-actions">
+              <button
+                className="button button-primary"
+                onClick={() => handleSaveSection('logo')}
+                disabled={saving === 'logo'}
+              >
+                {saving === 'logo' ? 'Saving...' : 'Save Logo'}
+              </button>
+            </div>
+          </div>
         </div>
+      )}
+
+      {selectedSection === 'menu' && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+            <h3>Navigation Menu</h3>
+            <button type="button" className="admin-btn admin-btn-delete" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
+          </div>
+          <div className="admin-cms-form">
+            <MenuItemsManager
+              menuItemsLtr={contentLtr.menuItems || []}
+              menuItemsRtl={contentRtl.menuItems || []}
+              onUpdate={(ltrItems, rtlItems) => {
+                setContentLtr({ ...contentLtr, menuItems: ltrItems });
+                setContentRtl({ ...contentRtl, menuItems: rtlItems });
+              }}
+            />
+            <div className="form-actions">
+              <button
+                className="button button-primary"
+                onClick={() => handleSaveSection('menu')}
+                disabled={saving === 'menu'}
+              >
+                {saving === 'menu' ? 'Saving...' : 'Save Menu'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedSection === 'button' && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+            <h3>Header Button</h3>
+            <button type="button" className="admin-btn admin-btn-delete" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
+          </div>
+          <div className="admin-cms-form">
+            <div className="form-group">
+              <label>Button Text (English)</label>
+              <input
+                type="text"
+                value={contentLtr.buttonText}
+                onChange={(e) =>
+                  setContentLtr({
+                    ...contentLtr,
+                    buttonText: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="form-group">
+              <label>Button Text (Arabic)</label>
+              <input
+                type="text"
+                dir="rtl"
+                value={contentRtl.buttonText}
+                onChange={(e) =>
+                  setContentRtl({
+                    ...contentRtl,
+                    buttonText: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="form-group">
+              <label>Button Link</label>
+              <input
+                type="text"
+                value={contentLtr.buttonLink}
+                onChange={(e) => {
+                  const link = e.target.value;
+                  setContentLtr({
+                    ...contentLtr,
+                    buttonLink: link,
+                  });
+                  setContentRtl({
+                    ...contentRtl,
+                    buttonLink: link,
+                  });
+                }}
+              />
+            </div>
+            <div className="form-actions">
+              <button
+                className="button button-primary"
+                onClick={() => handleSaveSection('button')}
+                disabled={saving === 'button'}
+              >
+                {saving === 'button' ? 'Saving...' : 'Save Button'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {HEADER_SECTIONS.map((section) => {
+              const isEditing = selectedSection === section.id;
+              return (
+                <tr key={section.id} className={isEditing ? 'admin-table-row-active' : ''}>
+                  <td><strong>{section.label}</strong></td>
+                  <td>{section.description}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
+                      onClick={() => {
+                        setSelectedSection(isEditing ? null : section.id);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      {isEditing ? 'Close' : 'Edit'}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );

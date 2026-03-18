@@ -4,18 +4,21 @@ import { useState, useEffect } from 'react';
 import { FooterContent } from '@/types/footer';
 import ImageUpload from '@/components/admin/ui/ImageUpload';
 
+const FOOTER_SECTIONS = [
+  { id: 'logo', label: 'Logo & Description', description: 'Logo image/link + bilingual description' },
+  { id: 'newsletter', label: 'Newsletter Section', description: 'Title, description, placeholder (bilingual)' },
+  { id: 'bottom', label: 'Footer Bottom', description: 'Copyright (bilingual)' },
+] as const;
+
+type FooterSectionId = (typeof FOOTER_SECTIONS)[number]['id'];
+
 export default function FooterManager() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [contentLtr, setContentLtr] = useState<FooterContent | null>(null);
   const [contentRtl, setContentRtl] = useState<FooterContent | null>(null);
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    logo: true,
-    description: true,
-    newsletter: true,
-    bottom: true,
-  });
+  const [selectedSection, setSelectedSection] = useState<FooterSectionId | null>(null);
 
   useEffect(() => {
     loadContent();
@@ -95,10 +98,6 @@ export default function FooterManager() {
     setTimeout(() => setMessage(null), 5000);
   };
 
-  const toggleSection = (section: string) => {
-    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
-
   const handleSaveSection = async (section: string) => {
     if (!contentLtr || !contentRtl) return;
     setSaving(section);
@@ -157,19 +156,16 @@ export default function FooterManager() {
         </div>
       )}
 
-      <div className="admin-cms-sections">
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('logo')}
-          >
+      {/* Selected section form (shown on top). Table below controls selection. */}
+      {selectedSection === 'logo' && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
             <h3>Logo & Description</h3>
-            <span className="admin-cms-toggle">
-              {openSections.logo ? '−' : '+'}
-            </span>
+            <button type="button" className="admin-btn admin-btn-delete" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
           </div>
-          {openSections.logo && (
-            <div className="admin-cms-form">
+          <div className="admin-cms-form">
               <div className="form-group">
                 <label>Logo Image</label>
                 <ImageUpload
@@ -242,21 +238,18 @@ export default function FooterManager() {
                 </button>
               </div>
             </div>
-          )}
         </div>
+      )}
 
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('newsletter')}
-          >
+      {selectedSection === 'newsletter' && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
             <h3>Newsletter Section</h3>
-            <span className="admin-cms-toggle">
-              {openSections.newsletter ? '−' : '+'}
-            </span>
+            <button type="button" className="admin-btn admin-btn-delete" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
           </div>
-          {openSections.newsletter && (
-            <div className="admin-cms-form">
+          <div className="admin-cms-form">
               <div className="form-group">
                 <label>Title (English)</label>
                 <input
@@ -348,21 +341,18 @@ export default function FooterManager() {
                 </button>
               </div>
             </div>
-          )}
         </div>
+      )}
 
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('bottom')}
-          >
+      {selectedSection === 'bottom' && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
             <h3>Footer Bottom</h3>
-            <span className="admin-cms-toggle">
-              {openSections.bottom ? '−' : '+'}
-            </span>
+            <button type="button" className="admin-btn admin-btn-delete" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
           </div>
-          {openSections.bottom && (
-            <div className="admin-cms-form">
+          <div className="admin-cms-form">
               <div className="form-group">
                 <label>Copyright Text (English)</label>
                 <input
@@ -400,8 +390,42 @@ export default function FooterManager() {
                 </button>
               </div>
             </div>
-          )}
         </div>
+      )}
+
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {FOOTER_SECTIONS.map((section) => {
+              const isEditing = selectedSection === section.id;
+              return (
+                <tr key={section.id} className={isEditing ? 'admin-table-row-active' : ''}>
+                  <td><strong>{section.label}</strong></td>
+                  <td>{section.description}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
+                      onClick={() => {
+                        setSelectedSection(isEditing ? null : section.id);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      {isEditing ? 'Close' : 'Edit'}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );

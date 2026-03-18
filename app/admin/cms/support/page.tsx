@@ -3,17 +3,19 @@
 import { useState, useEffect } from 'react';
 import { SupportContent } from '@/types/support';
 
+const SUPPORT_SECTIONS = [
+  { id: 'header', label: 'Page Header', description: 'Breadcrumb, title, subtitle' },
+  { id: 'services', label: 'Services Section', description: 'Tag, heading, subheading' },
+  { id: 'contact', label: 'Contact Section', description: 'Tag, heading, subheading, contact info, form title' },
+] as const;
+
 export default function SupportManager() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [contentLtr, setContentLtr] = useState<SupportContent | null>(null);
   const [contentRtl, setContentRtl] = useState<SupportContent | null>(null);
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    header: true,
-    services: true,
-    contact: true,
-  });
+  const [selectedSection, setSelectedSection] = useState<'header' | 'services' | 'contact' | null>(null);
 
   useEffect(() => {
     loadContent();
@@ -88,10 +90,6 @@ export default function SupportManager() {
     setTimeout(() => setMessage(null), 5000);
   };
 
-  const toggleSection = (section: string) => {
-    setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
-
   const handleSaveSection = async (section: string) => {
     if (!contentLtr || !contentRtl) return;
     setSaving(section);
@@ -150,18 +148,26 @@ export default function SupportManager() {
         </div>
       )}
 
-      <div className="admin-cms-sections">
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('header')}
-          >
-            <h3>Page Header</h3>
-            <span className="admin-cms-toggle">
-              {openSections.header ? '−' : '+'}
-            </span>
+      {/* Selected section form on top */}
+      {selectedSection && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+            <div>
+              <h3 style={{ margin: 0 }}>
+                Editing:{' '}
+                {selectedSection === 'header'
+                  ? 'Page Header'
+                  : selectedSection === 'services'
+                    ? 'Services Section'
+                    : 'Contact Section'}
+              </h3>
+            </div>
+            <button type="button" className="button" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
           </div>
-          {openSections.header && (
+
+          {selectedSection === 'header' && (
             <div className="admin-cms-form">
               <div className="form-group">
                 <label>Breadcrumb (English)</label>
@@ -255,19 +261,8 @@ export default function SupportManager() {
               </div>
             </div>
           )}
-        </div>
 
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('services')}
-          >
-            <h3>Services Section</h3>
-            <span className="admin-cms-toggle">
-              {openSections.services ? '−' : '+'}
-            </span>
-          </div>
-          {openSections.services && (
+          {selectedSection === 'services' && (
             <div className="admin-cms-form">
               <div className="form-group">
                 <label>Section Tag (English)</label>
@@ -361,19 +356,8 @@ export default function SupportManager() {
               </div>
             </div>
           )}
-        </div>
 
-        <div className="admin-cms-section-card">
-          <div
-            className="admin-cms-section-header"
-            onClick={() => toggleSection('contact')}
-          >
-            <h3>Contact Section</h3>
-            <span className="admin-cms-toggle">
-              {openSections.contact ? '−' : '+'}
-            </span>
-          </div>
-          {openSections.contact && (
+          {selectedSection === 'contact' && (
             <div className="admin-cms-form">
               <div className="form-group">
                 <label>Section Tag (English)</label>
@@ -555,6 +539,42 @@ export default function SupportManager() {
             </div>
           )}
         </div>
+      )}
+
+      {/* Sections table */}
+      <div className="admin-table-wrapper">
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Section</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {SUPPORT_SECTIONS.map((section) => {
+              const isEditing = selectedSection === section.id;
+              return (
+                <tr key={section.id} className={isEditing ? 'admin-table-row-active' : ''}>
+                  <td><strong>{section.label}</strong></td>
+                  <td>{section.description}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className={`admin-btn ${isEditing ? 'admin-btn-delete' : 'admin-btn-edit'}`}
+                      onClick={() => {
+                        setSelectedSection(isEditing ? null : (section.id as any));
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      {isEditing ? 'Close' : 'Edit'}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   );
