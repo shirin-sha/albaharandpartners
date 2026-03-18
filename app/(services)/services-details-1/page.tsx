@@ -136,6 +136,14 @@ export default async function ServiceDetailsPage({ searchParams }: PageProps) {
                     />
                   </div>
                 )}
+                {service.detailDescription && (
+                  <div className="detalis-content mb-40">
+                    <div
+                      className="body-2"
+                      dangerouslySetInnerHTML={{ __html: service.detailDescription }}
+                    />
+                  </div>
+                )}
                 {service.benefits && service.benefits.length > 0 && (
                   <div className="detalis-content mb-60" id="menu-sidebar-1">
                     <ul className="benefit-lists">

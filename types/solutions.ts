@@ -13,6 +13,7 @@ export interface SolutionItem {
   tabTitle: string;
   title: string;
   description: string;
+  detailDescription?: string;
   benefits: string[];
   imgSrc: string;
   imgWidth: number;

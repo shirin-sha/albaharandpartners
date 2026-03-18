@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { SolutionItem } from '@/types/solutions';
 import ImageUpload from '@/components/admin/ui/ImageUpload';
+import RichTextEditor from '@/components/admin/ui/RichTextEditor';
 
 export default function SolutionsManagePage() {
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,8 @@ export default function SolutionsManagePage() {
     titleAr: string;
     description: string;
     descriptionAr: string;
+    detailDescription: string;
+    detailDescriptionAr: string;
     benefits: string[];
     benefitsAr: string[];
     imgSrc: string;
@@ -36,6 +39,8 @@ export default function SolutionsManagePage() {
     titleAr: '',
     description: '',
     descriptionAr: '',
+    detailDescription: '',
+    detailDescriptionAr: '',
     benefits: [],
     benefitsAr: [],
     imgSrc: '',
@@ -105,6 +110,7 @@ export default function SolutionsManagePage() {
         tabTitle: formData.tabTitle,
         title: formData.title,
         description: formData.description,
+        detailDescription: formData.detailDescription,
         benefits: formData.benefits,
         imgSrc: formData.imgSrc,
         imgWidth: formData.imgWidth,
@@ -117,6 +123,7 @@ export default function SolutionsManagePage() {
         tabTitle: formData.tabTitleAr || formData.tabTitle,
         title: formData.titleAr || formData.title,
         description: formData.descriptionAr || formData.description,
+        detailDescription: formData.detailDescriptionAr || formData.detailDescription,
         benefits: formData.benefitsAr.length > 0 ? formData.benefitsAr : formData.benefits,
         imgSrc: formData.imgSrc,
         imgWidth: formData.imgWidth,
@@ -176,6 +183,8 @@ export default function SolutionsManagePage() {
       titleAr: solutionRtl.title || '',
       description: solutionLtr.description || '',
       descriptionAr: solutionRtl.description || '',
+      detailDescription: (solutionLtr as any).detailDescription || '',
+      detailDescriptionAr: (solutionRtl as any).detailDescription || '',
       benefits: solutionLtr.benefits || [],
       benefitsAr: solutionRtl.benefits || [],
       imgSrc: solutionLtr.imgSrc || '',
@@ -222,6 +231,8 @@ export default function SolutionsManagePage() {
       titleAr: '',
       description: '',
       descriptionAr: '',
+      detailDescription: '',
+      detailDescriptionAr: '',
       benefits: [],
       benefitsAr: [],
       imgSrc: '',
@@ -366,22 +377,35 @@ export default function SolutionsManagePage() {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Description (English)</label>
+                    <label>Short Description (English)</label>
                     <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      rows={4}
+                      rows={3}
                     />
                   </div>
                   <div className="form-group">
-                    <label>Description (Arabic)</label>
+                    <label>Short Description (Arabic)</label>
                     <textarea
                       dir="rtl"
                       value={formData.descriptionAr}
                       onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
-                      rows={4}
+                      rows={3}
                     />
                   </div>
+                  <RichTextEditor
+                    label="Detail Description (English)"
+                    value={formData.detailDescription}
+                    onChange={(value) => setFormData({ ...formData, detailDescription: value })}
+                    placeholder="This will appear in the details content on the service details page."
+                  />
+                  <RichTextEditor
+                    label="Detail Description (Arabic)"
+                    value={formData.detailDescriptionAr}
+                    onChange={(value) => setFormData({ ...formData, detailDescriptionAr: value })}
+                    placeholder="هذا الوصف سيظهر في محتوى تفاصيل الخدمة."
+                    className="rtl-editor"
+                  />
                   <div className="form-group">
                     <label>Benefits (English) - one per line</label>
                     <textarea
