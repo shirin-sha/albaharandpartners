@@ -23,7 +23,10 @@ export default function ServicesCMS({ data }: Props) {
               return (
                 <div className="section-services-item style-border" key={solution.id || index}>
                   <div className="image tf-animate-1">
-                    <Link href="#" className="link" />
+                    <Link
+                      href={`/services-details-1?id=${solution.id}`}
+                      className="link"
+                    />
                     <Image
                       src={solution.imgSrc}
                       alt={solution.title}
@@ -36,7 +39,7 @@ export default function ServicesCMS({ data }: Props) {
                     <div className="heading">
                       <h3 className="wow fadeInUp">
                         <Link
-                          href="#"
+                          href={`/services-details-1?id=${solution.id}`}
                           className="name-services"
                         >
                           {solution.title}
@@ -66,7 +69,7 @@ export default function ServicesCMS({ data }: Props) {
                     )}
                     <div className="wow fadeInUp">
                       <Link
-                        href="#"
+                        href={`/services-details-1?id=${solution.id}`}
                         className="tf-btn style-1 bg-on-suface-container"
                       >
                         <span> View Services </span>

@@ -12,7 +12,10 @@ export default function Services() {
             {servicesData2.map((service, index) => (
               <div className="section-services-item style-border" key={index}>
                 <div className="image tf-animate-1">
-                  <Link href="#" className="link" />
+                  <Link
+                    href={`/services-details-1?id=${service.id}`}
+                    className="link"
+                  />
                   <Image
                     src={service.imgSrc}
                     alt=""
@@ -25,7 +28,7 @@ export default function Services() {
                   <div className="heading">
                     <h3 className="wow fadeInUp">
                       <Link
-                        href="#"
+                        href={`/services-details-1?id=${service.id}`}
                         className="name-services"
                       >
                         {service.title}
@@ -53,7 +56,7 @@ export default function Services() {
                   </div>
                   <div className="wow fadeInUp">
                     <Link
-                      href="#"
+                      href={`/services-details-1?id=${service.id}`}
                       className="tf-btn style-1 bg-on-suface-container"
                     >
                       <span> View Services </span>

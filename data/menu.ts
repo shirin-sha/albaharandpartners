@@ -125,11 +125,28 @@ export const navItemsStratagy = [
 
 // Menu data for Header7
 export const solutionsLinks = [
-  { title: "Banking, Payment and Identity Solutions", href: "#" },
-  { title: "Printing & Imaging", href: "#" },
-  { title: "Audio & Visual", href: "#" },
-  { title: "IT Infrastructure, Support and Cloud", href: "#" },
-  { title: "Information and Cyber Security", href: "#" },
+  {
+    title: "Banking, Payment and Identity Solutions",
+    href: "/services-details-1?id=banking-payment-identity",
+  },
+  {
+    title: "Printing & Imaging",
+    href: "/services-details-1?id=printing-imaging",
+  },
+  {
+    title: "Audio & Visual",
+    href: "/services-details-1?id=audio-visual",
+  },
+  {
+    title: "IT Infrastructure, Support and Cloud",
+    href: "/services-details-1?id=it-infrastructure-support-cloud",
+  },
+  // Information and Cyber Security – if you add a dedicated service id later,
+  // you can update this to point to that id. For now, send to banking as placeholder.
+  {
+    title: "Information and Cyber Security",
+    href: "/services-details-1?id=banking-payment-identity",
+  },
 ];
 
 export const corpInfoLinks = [

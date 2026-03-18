@@ -69,7 +69,9 @@ export default function Services() {
                       <div className="services-inner bg-surface">
                         <div className="services-content p-40" style={{ paddingTop: '50px', paddingBottom: '50px' }}>
                           <h4 className="title-content mb-12">
-                            <Link href="/services-details-1">{title}</Link>
+                            <Link href={`/services-details-1?id=${id}`}>
+                              {title}
+                            </Link>
                           </h4>
                           <div className="sub-title mb-28 body-2">
                             {description.split('<br/>').map((line, index, array) => (
@@ -90,7 +92,7 @@ export default function Services() {
                             ))}
                           </div>
                           <Link
-                            href="#"
+                            href={`/services-details-1?id=${id}`}
                             className="tf-btn style-1 bg-on-suface-container"
                           >
                             <span>Learn More</span>

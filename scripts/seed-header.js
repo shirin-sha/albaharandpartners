@@ -39,33 +39,34 @@ const headerDataLTR = {
       isActive: true,
       hasDropdown: true,
       dropdownItems: [
+    
         {
           title: "Banking, Payment and Identity Solutions",
-          href: "#",
+          href: "/services-details-1?id=banking-payment-identity",
           order: 0,
           isActive: true,
         },
         {
           title: "Printing & Imaging",
-          href: "#",
+          href: "/services-details-1?id=printing-imaging",
           order: 1,
           isActive: true,
         },
         {
           title: "Audio & Visual",
-          href: "#",
+          href: "/services-details-1?id=audio-visual",
           order: 2,
           isActive: true,
         },
         {
           title: "IT Infrastructure, Support and Cloud",
-          href: "#",
+          href: "/services-details-1?id=it-infrastructure-support-cloud",
           order: 3,
           isActive: true,
         },
         {
           title: "Information and Cyber Security",
-          href: "#",
+          href: "/services-details-1?id=information-cyber-security",
           order: 4,
           isActive: true,
         },
