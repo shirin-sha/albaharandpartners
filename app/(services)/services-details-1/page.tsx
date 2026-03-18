@@ -11,11 +11,12 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  searchParams?: { id?: string };
+  searchParams?: Promise<{ id?: string }>;
 }
 
 export default async function ServiceDetailsPage({ searchParams }: PageProps) {
-  const id = searchParams?.id;
+  const resolvedSearchParams = await searchParams;
+  const id = resolvedSearchParams?.id;
 
   const content = await getSolutionsContent();
   const solutions = content?.solutions || [];

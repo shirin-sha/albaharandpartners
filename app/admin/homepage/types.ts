@@ -4,8 +4,10 @@ export interface SectionData {
   sectionId: string;
   enabled: boolean;
   order: number;
-  ltr: Record<string, unknown>;
-  rtl: Record<string, unknown>;
+  // Section shapes vary a lot (hero/about/process/etc). Keep this permissive
+  // for admin editing, while the actual site types remain strict in `@/types/homepage`.
+  ltr: any;
+  rtl: any;
 }
 
 export interface SectionEditorProps {
@@ -18,8 +20,8 @@ export interface SectionEditorProps {
 
 /** Form data shape used by section field components (permissive for form bindings) */
 export interface SectionFormData {
-  ltr: Record<string, unknown>;
-  rtl: Record<string, unknown>;
+  ltr: any;
+  rtl: any;
 }
 
 export interface SectionFieldsProps {

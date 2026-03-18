@@ -6,7 +6,7 @@ import { servicesData2 } from "@/data/services";
 export default async function SerceDetail1Page({
   searchParams,
 }: {
-  searchParams: Promise<{ id?: string }> | { id?: string };
+  searchParams: Promise<{ id?: string }>;
 }) {
   const resolvedSearchParams = await searchParams;
   const id = resolvedSearchParams?.id;

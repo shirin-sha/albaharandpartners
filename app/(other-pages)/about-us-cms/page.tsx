@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   description: "Al bahar and partners",
 };
 
+// This page intentionally uses live CMS data (no-store fetch),
+// so it must be rendered dynamically (not statically prerendered at build time).
+export const dynamic = 'force-dynamic';
+
 async function getAboutUsContent(): Promise<AboutUsContent | null> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';

@@ -10,9 +10,10 @@
 !.yarn/releases
 !.yarn/versions
 
+
 # testing
 /coverage
-
+.next-build
 # next.js
 /.next/
 /out/
