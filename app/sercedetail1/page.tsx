@@ -3,12 +3,13 @@ import Header7 from "@/components/headers/Header7";
 import Footer2 from "@/components/footers/Footer2";
 import { servicesData2 } from "@/data/services";
 
-export default function SerceDetail1Page({
+export default async function SerceDetail1Page({
   searchParams,
 }: {
-  searchParams: { id?: string };
+  searchParams: Promise<{ id?: string }> | { id?: string };
 }) {
-  const id = searchParams?.id;
+  const resolvedSearchParams = await searchParams;
+  const id = resolvedSearchParams?.id;
   const service = id
     ? servicesData2.find((s) => s.id === id)
     : servicesData2[0];
