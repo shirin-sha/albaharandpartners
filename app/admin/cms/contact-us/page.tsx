@@ -160,8 +160,14 @@ export default function ContactUsManager() {
             </button>
           </div>
           <div className="admin-cms-form">
+            <div className="form-row-bilingual-header">
+              <div className="form-label-header">English</div>
+              <div className="form-label-header">Arabic</div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Breadcrumb (English)</label>
+                <label>Breadcrumb</label>
                 <input
                   type="text"
                   value={contentLtr.header.breadcrumb}
@@ -174,7 +180,7 @@ export default function ContactUsManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Breadcrumb (Arabic)</label>
+                <label>Breadcrumb</label>
                 <input
                   type="text"
                   dir="rtl"
@@ -187,8 +193,11 @@ export default function ContactUsManager() {
                   }
                 />
               </div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Title (English)</label>
+                <label>Title</label>
                 <input
                   type="text"
                   value={contentLtr.header.title}
@@ -201,7 +210,7 @@ export default function ContactUsManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Title (Arabic)</label>
+                <label>Title</label>
                 <input
                   type="text"
                   dir="rtl"
@@ -214,8 +223,11 @@ export default function ContactUsManager() {
                   }
                 />
               </div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Subtitle (English)</label>
+                <label>Subtitle</label>
                 <textarea
                   value={contentLtr.header.subtitle || ''}
                   onChange={(e) =>
@@ -228,7 +240,7 @@ export default function ContactUsManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Subtitle (Arabic)</label>
+                <label>Subtitle</label>
                 <textarea
                   dir="rtl"
                   value={contentRtl.header.subtitle || ''}
@@ -241,6 +253,7 @@ export default function ContactUsManager() {
                   rows={3}
                 />
               </div>
+            </div>
               <div className="form-actions">
                 <button
                   className="button button-primary"
@@ -267,8 +280,14 @@ export default function ContactUsManager() {
             </button>
           </div>
           <div className="admin-cms-form">
+            <div className="form-row-bilingual-header">
+              <div className="form-label-header">English</div>
+              <div className="form-label-header">Arabic</div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Section Tag (English)</label>
+                <label>Section Tag</label>
                 <input
                   type="text"
                   value={contentLtr.contactSection.tag}
@@ -281,7 +300,7 @@ export default function ContactUsManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Section Tag (Arabic)</label>
+                <label>Section Tag</label>
                 <input
                   type="text"
                   dir="rtl"
@@ -294,8 +313,11 @@ export default function ContactUsManager() {
                   }
                 />
               </div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Heading (English)</label>
+                <label>Heading</label>
                 <input
                   type="text"
                   value={contentLtr.contactSection.heading}
@@ -308,7 +330,7 @@ export default function ContactUsManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Heading (Arabic)</label>
+                <label>Heading</label>
                 <input
                   type="text"
                   dir="rtl"
@@ -321,8 +343,11 @@ export default function ContactUsManager() {
                   }
                 />
               </div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Subheading (English)</label>
+                <label>Subheading</label>
                 <textarea
                   value={contentLtr.contactSection.subheading || ''}
                   onChange={(e) =>
@@ -335,7 +360,7 @@ export default function ContactUsManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Subheading (Arabic)</label>
+                <label>Subheading</label>
                 <textarea
                   dir="rtl"
                   value={contentRtl.contactSection.subheading || ''}
@@ -348,6 +373,7 @@ export default function ContactUsManager() {
                   rows={3}
                 />
               </div>
+            </div>
               <div className="form-group">
                 <label>Address</label>
                 <input

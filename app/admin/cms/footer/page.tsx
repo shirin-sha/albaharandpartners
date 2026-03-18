@@ -201,32 +201,39 @@ export default function FooterManager() {
                   }}
                 />
               </div>
-              <div className="form-group">
-                <label>Description (English)</label>
-                <textarea
-                  value={contentLtr.description || ''}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      description: e.target.value,
-                    })
-                  }
-                  rows={4}
-                />
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English</div>
+                <div className="form-label-header">Arabic</div>
               </div>
-              <div className="form-group">
-                <label>Description (Arabic)</label>
-                <textarea
-                  dir="rtl"
-                  value={contentRtl.description || ''}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      description: e.target.value,
-                    })
-                  }
-                  rows={4}
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Description</label>
+                  <textarea
+                    value={contentLtr.description || ''}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        description: e.target.value,
+                      })
+                    }
+                    rows={4}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Description</label>
+                  <textarea
+                    dir="rtl"
+                    value={contentRtl.description || ''}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        description: e.target.value,
+                      })
+                    }
+                    rows={4}
+                  />
+                </div>
               </div>
               <div className="form-actions">
                 <button
@@ -250,8 +257,14 @@ export default function FooterManager() {
             </button>
           </div>
           <div className="admin-cms-form">
+            <div className="form-row-bilingual-header">
+              <div className="form-label-header">English</div>
+              <div className="form-label-header">Arabic</div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Title (English)</label>
+                <label>Title</label>
                 <input
                   type="text"
                   value={contentLtr.newsletter.title}
@@ -264,7 +277,7 @@ export default function FooterManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Title (Arabic)</label>
+                <label>Title</label>
                 <input
                   type="text"
                   dir="rtl"
@@ -277,8 +290,11 @@ export default function FooterManager() {
                   }
                 />
               </div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Description (English)</label>
+                <label>Description</label>
                 <textarea
                   value={contentLtr.newsletter.description || ''}
                   onChange={(e) =>
@@ -291,7 +307,7 @@ export default function FooterManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Description (Arabic)</label>
+                <label>Description</label>
                 <textarea
                   dir="rtl"
                   value={contentRtl.newsletter.description || ''}
@@ -304,8 +320,11 @@ export default function FooterManager() {
                   rows={3}
                 />
               </div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Placeholder (English)</label>
+                <label>Placeholder</label>
                 <input
                   type="text"
                   value={contentLtr.newsletter.placeholder}
@@ -318,7 +337,7 @@ export default function FooterManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Placeholder (Arabic)</label>
+                <label>Placeholder</label>
                 <input
                   type="text"
                   dir="rtl"
@@ -331,6 +350,7 @@ export default function FooterManager() {
                   }
                 />
               </div>
+            </div>
               <div className="form-actions">
                 <button
                   className="button button-primary"
@@ -353,8 +373,14 @@ export default function FooterManager() {
             </button>
           </div>
           <div className="admin-cms-form">
+            <div className="form-row-bilingual-header">
+              <div className="form-label-header">English</div>
+              <div className="form-label-header">Arabic</div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
-                <label>Copyright Text (English)</label>
+                <label>Copyright Text</label>
                 <input
                   type="text"
                   value={contentLtr.footerBottom.copyright}
@@ -367,7 +393,7 @@ export default function FooterManager() {
                 />
               </div>
               <div className="form-group">
-                <label>Copyright Text (Arabic)</label>
+                <label>Copyright Text</label>
                 <input
                   type="text"
                   dir="rtl"
@@ -380,6 +406,7 @@ export default function FooterManager() {
                   }
                 />
               </div>
+            </div>
               <div className="form-actions">
                 <button
                   className="button button-primary"

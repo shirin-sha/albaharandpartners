@@ -131,86 +131,99 @@ export default function NewsUpdatesManager() {
               {closeBtn}
             </div>
             <div className="admin-cms-form">
-              <div className="form-group">
-                <label>Breadcrumb (English)</label>
-                <input
-                  type="text"
-                  value={contentLtr.header.breadcrumb}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      header: { ...contentLtr.header, breadcrumb: e.target.value },
-                    })
-                  }
-                />
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English</div>
+                <div className="form-label-header">Arabic</div>
               </div>
-              <div className="form-group">
-                <label>Breadcrumb (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.header.breadcrumb}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      header: { ...contentRtl.header, breadcrumb: e.target.value },
-                    })
-                  }
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Breadcrumb</label>
+                  <input
+                    type="text"
+                    value={contentLtr.header.breadcrumb}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        header: { ...contentLtr.header, breadcrumb: e.target.value },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Breadcrumb</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl.header.breadcrumb}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        header: { ...contentRtl.header, breadcrumb: e.target.value },
+                      })
+                    }
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Title (English)</label>
-                <input
-                  type="text"
-                  value={contentLtr.header.title}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      header: { ...contentLtr.header, title: e.target.value },
-                    })
-                  }
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    value={contentLtr.header.title}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        header: { ...contentLtr.header, title: e.target.value },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl.header.title}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        header: { ...contentRtl.header, title: e.target.value },
+                      })
+                    }
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Title (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.header.title}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      header: { ...contentRtl.header, title: e.target.value },
-                    })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Subtitle (English)</label>
-                <textarea
-                  value={contentLtr.header.subtitle || ''}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      header: { ...contentLtr.header, subtitle: e.target.value },
-                    })
-                  }
-                  rows={3}
-                />
-              </div>
-              <div className="form-group">
-                <label>Subtitle (Arabic)</label>
-                <textarea
-                  dir="rtl"
-                  value={contentRtl.header.subtitle || ''}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      header: { ...contentRtl.header, subtitle: e.target.value },
-                    })
-                  }
-                  rows={3}
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Subtitle</label>
+                  <textarea
+                    value={contentLtr.header.subtitle || ''}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        header: { ...contentLtr.header, subtitle: e.target.value },
+                      })
+                    }
+                    rows={3}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Subtitle</label>
+                  <textarea
+                    dir="rtl"
+                    value={contentRtl.header.subtitle || ''}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        header: { ...contentRtl.header, subtitle: e.target.value },
+                      })
+                    }
+                    rows={3}
+                  />
+                </div>
               </div>
               <div className="form-actions">
                 <button

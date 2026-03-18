@@ -169,86 +169,99 @@ export default function SupportManager() {
 
           {selectedSection === 'header' && (
             <div className="admin-cms-form">
-              <div className="form-group">
-                <label>Breadcrumb (English)</label>
-                <input
-                  type="text"
-                  value={contentLtr.header.breadcrumb}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      header: { ...contentLtr.header, breadcrumb: e.target.value },
-                    })
-                  }
-                />
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English</div>
+                <div className="form-label-header">Arabic</div>
               </div>
-              <div className="form-group">
-                <label>Breadcrumb (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.header.breadcrumb}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      header: { ...contentRtl.header, breadcrumb: e.target.value },
-                    })
-                  }
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Breadcrumb</label>
+                  <input
+                    type="text"
+                    value={contentLtr.header.breadcrumb}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        header: { ...contentLtr.header, breadcrumb: e.target.value },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Breadcrumb</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl.header.breadcrumb}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        header: { ...contentRtl.header, breadcrumb: e.target.value },
+                      })
+                    }
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Title (English)</label>
-                <input
-                  type="text"
-                  value={contentLtr.header.title}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      header: { ...contentLtr.header, title: e.target.value },
-                    })
-                  }
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    value={contentLtr.header.title}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        header: { ...contentLtr.header, title: e.target.value },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl.header.title}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        header: { ...contentRtl.header, title: e.target.value },
+                      })
+                    }
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Title (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.header.title}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      header: { ...contentRtl.header, title: e.target.value },
-                    })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Subtitle (English)</label>
-                <textarea
-                  value={contentLtr.header.subtitle || ''}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      header: { ...contentLtr.header, subtitle: e.target.value },
-                    })
-                  }
-                  rows={3}
-                />
-              </div>
-              <div className="form-group">
-                <label>Subtitle (Arabic)</label>
-                <textarea
-                  dir="rtl"
-                  value={contentRtl.header.subtitle || ''}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      header: { ...contentRtl.header, subtitle: e.target.value },
-                    })
-                  }
-                  rows={3}
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Subtitle</label>
+                  <textarea
+                    value={contentLtr.header.subtitle || ''}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        header: { ...contentLtr.header, subtitle: e.target.value },
+                      })
+                    }
+                    rows={3}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Subtitle</label>
+                  <textarea
+                    dir="rtl"
+                    value={contentRtl.header.subtitle || ''}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        header: { ...contentRtl.header, subtitle: e.target.value },
+                      })
+                    }
+                    rows={3}
+                  />
+                </div>
               </div>
               <div className="form-actions">
                 <button
@@ -264,86 +277,105 @@ export default function SupportManager() {
 
           {selectedSection === 'services' && (
             <div className="admin-cms-form">
-              <div className="form-group">
-                <label>Section Tag (English)</label>
-                <input
-                  type="text"
-                  value={contentLtr.servicesSection.tag}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      servicesSection: { ...contentLtr.servicesSection, tag: e.target.value },
-                    })
-                  }
-                />
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English</div>
+                <div className="form-label-header">Arabic</div>
               </div>
-              <div className="form-group">
-                <label>Section Tag (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.servicesSection.tag}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      servicesSection: { ...contentRtl.servicesSection, tag: e.target.value },
-                    })
-                  }
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Section Tag</label>
+                  <input
+                    type="text"
+                    value={contentLtr.servicesSection.tag}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        servicesSection: { ...contentLtr.servicesSection, tag: e.target.value },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Section Tag</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl.servicesSection.tag}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        servicesSection: { ...contentRtl.servicesSection, tag: e.target.value },
+                      })
+                    }
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Heading (English)</label>
-                <input
-                  type="text"
-                  value={contentLtr.servicesSection.heading}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      servicesSection: { ...contentLtr.servicesSection, heading: e.target.value },
-                    })
-                  }
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Heading</label>
+                  <input
+                    type="text"
+                    value={contentLtr.servicesSection.heading}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        servicesSection: { ...contentLtr.servicesSection, heading: e.target.value },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Heading</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl.servicesSection.heading}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        servicesSection: { ...contentRtl.servicesSection, heading: e.target.value },
+                      })
+                    }
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Heading (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.servicesSection.heading}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      servicesSection: { ...contentRtl.servicesSection, heading: e.target.value },
-                    })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Subheading (English)</label>
-                <textarea
-                  value={contentLtr.servicesSection.subheading || ''}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      servicesSection: { ...contentLtr.servicesSection, subheading: e.target.value },
-                    })
-                  }
-                  rows={3}
-                />
-              </div>
-              <div className="form-group">
-                <label>Subheading (Arabic)</label>
-                <textarea
-                  dir="rtl"
-                  value={contentRtl.servicesSection.subheading || ''}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      servicesSection: { ...contentRtl.servicesSection, subheading: e.target.value },
-                    })
-                  }
-                  rows={3}
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Subheading</label>
+                  <textarea
+                    value={contentLtr.servicesSection.subheading || ''}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        servicesSection: {
+                          ...contentLtr.servicesSection,
+                          subheading: e.target.value,
+                        },
+                      })
+                    }
+                    rows={3}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Subheading</label>
+                  <textarea
+                    dir="rtl"
+                    value={contentRtl.servicesSection.subheading || ''}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        servicesSection: {
+                          ...contentRtl.servicesSection,
+                          subheading: e.target.value,
+                        },
+                      })
+                    }
+                    rows={3}
+                  />
+                </div>
               </div>
               <div className="form-actions">
                 <button
@@ -359,86 +391,105 @@ export default function SupportManager() {
 
           {selectedSection === 'contact' && (
             <div className="admin-cms-form">
-              <div className="form-group">
-                <label>Section Tag (English)</label>
-                <input
-                  type="text"
-                  value={contentLtr.contactSection.tag}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      contactSection: { ...contentLtr.contactSection, tag: e.target.value },
-                    })
-                  }
-                />
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English</div>
+                <div className="form-label-header">Arabic</div>
               </div>
-              <div className="form-group">
-                <label>Section Tag (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.contactSection.tag}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      contactSection: { ...contentRtl.contactSection, tag: e.target.value },
-                    })
-                  }
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Section Tag</label>
+                  <input
+                    type="text"
+                    value={contentLtr.contactSection.tag}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        contactSection: { ...contentLtr.contactSection, tag: e.target.value },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Section Tag</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl.contactSection.tag}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        contactSection: { ...contentRtl.contactSection, tag: e.target.value },
+                      })
+                    }
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Heading (English)</label>
-                <input
-                  type="text"
-                  value={contentLtr.contactSection.heading}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      contactSection: { ...contentLtr.contactSection, heading: e.target.value },
-                    })
-                  }
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Heading</label>
+                  <input
+                    type="text"
+                    value={contentLtr.contactSection.heading}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        contactSection: { ...contentLtr.contactSection, heading: e.target.value },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Heading</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl.contactSection.heading}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        contactSection: { ...contentRtl.contactSection, heading: e.target.value },
+                      })
+                    }
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label>Heading (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.contactSection.heading}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      contactSection: { ...contentRtl.contactSection, heading: e.target.value },
-                    })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Subheading (English)</label>
-                <textarea
-                  value={contentLtr.contactSection.subheading || ''}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      contactSection: { ...contentLtr.contactSection, subheading: e.target.value },
-                    })
-                  }
-                  rows={3}
-                />
-              </div>
-              <div className="form-group">
-                <label>Subheading (Arabic)</label>
-                <textarea
-                  dir="rtl"
-                  value={contentRtl.contactSection.subheading || ''}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      contactSection: { ...contentRtl.contactSection, subheading: e.target.value },
-                    })
-                  }
-                  rows={3}
-                />
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Subheading</label>
+                  <textarea
+                    value={contentLtr.contactSection.subheading || ''}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        contactSection: {
+                          ...contentLtr.contactSection,
+                          subheading: e.target.value,
+                        },
+                      })
+                    }
+                    rows={3}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Subheading</label>
+                  <textarea
+                    dir="rtl"
+                    value={contentRtl.contactSection.subheading || ''}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        contactSection: {
+                          ...contentRtl.contactSection,
+                          subheading: e.target.value,
+                        },
+                      })
+                    }
+                    rows={3}
+                  />
+                </div>
               </div>
               <div className="form-group">
                 <label>Location</label>
@@ -500,32 +551,34 @@ export default function SupportManager() {
                   }}
                 />
               </div>
-              <div className="form-group">
-                <label>Form Title (English)</label>
-                <input
-                  type="text"
-                  value={contentLtr.contactSection.formTitle}
-                  onChange={(e) =>
-                    setContentLtr({
-                      ...contentLtr,
-                      contactSection: { ...contentLtr.contactSection, formTitle: e.target.value },
-                    })
-                  }
-                />
-              </div>
-              <div className="form-group">
-                <label>Form Title (Arabic)</label>
-                <input
-                  type="text"
-                  dir="rtl"
-                  value={contentRtl.contactSection.formTitle}
-                  onChange={(e) =>
-                    setContentRtl({
-                      ...contentRtl,
-                      contactSection: { ...contentRtl.contactSection, formTitle: e.target.value },
-                    })
-                  }
-                />
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Form Title</label>
+                  <input
+                    type="text"
+                    value={contentLtr.contactSection.formTitle}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...contentLtr,
+                        contactSection: { ...contentLtr.contactSection, formTitle: e.target.value },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Form Title</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl.contactSection.formTitle}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...contentRtl,
+                        contactSection: { ...contentRtl.contactSection, formTitle: e.target.value },
+                      })
+                    }
+                  />
+                </div>
               </div>
               <div className="form-actions">
                 <button
