@@ -20,7 +20,7 @@ export default function AboutBDSCMS({ data }: Props) {
           <div className="col-12">
             <div className="heading-section">
               <div className="wow fadeInUp">
-                <a href="#" className="tag label text-btn-uppercase">
+                <a href="#" className="tag label bg-white text-btn-uppercase">
                   {data.tag}
                 </a>
               </div>

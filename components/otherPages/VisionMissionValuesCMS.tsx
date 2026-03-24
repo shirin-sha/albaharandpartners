@@ -19,7 +19,7 @@ export default function VisionMissionValuesCMS({ data }: Props) {
           <div className="col-12">
             <div className="heading-section text-center">
               <div className="text-anime-wave-1">
-                <a href="#" className="tag label text-btn-uppercase">
+                <a href="#" className="tag bg-white label text-btn-uppercase">
                   {data.tag}
                 </a>
               </div>
