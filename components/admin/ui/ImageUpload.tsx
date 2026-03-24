@@ -108,6 +108,10 @@ export default function ImageUpload({
     setError(null);
   };
 
+  const resolvedImageSrc = value.startsWith('/image/')
+    ? value.replace('/image/', '/api/uploads/')
+    : value;
+
   return (
     <div className={className}>
       {label && (
@@ -166,7 +170,7 @@ export default function ImageUpload({
             </div>
             <div style={{ maxWidth: '300px', position: 'relative', display: 'inline-block' }}>
               <img
-                src={value}
+                src={resolvedImageSrc}
                 alt="Preview"
                 className="img-fluid rounded"
                 style={{ maxHeight: '200px', width: 'auto' }}

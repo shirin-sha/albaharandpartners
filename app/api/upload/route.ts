@@ -58,8 +58,8 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
     await writeFile(filePath, buffer);
 
-    // Return the public URL path
-    const publicPath = `/image/${uploadFolder}/${fileName}`;
+    // Return a runtime-served URL path (more reliable in container deployments)
+    const publicPath = `/api/uploads/${uploadFolder}/${fileName}`;
 
     return NextResponse.json({
       success: true,
