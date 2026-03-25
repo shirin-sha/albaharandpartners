@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 type IconName =
   | 'cms'
@@ -93,8 +94,13 @@ export default function AdminSidebar() {
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-brand">
-        <span className="admin-sidebar-logo">AB</span>
-        <span className="admin-sidebar-title">Admin</span>
+      <Image
+            src="/image/logo/logo-2.png"
+            alt="Al Bahar & Partners"
+            width={180}
+            height={45}
+            style={{ margin: "0 auto" }}
+          />
       </div>
       <nav className="admin-sidebar-nav">
      
