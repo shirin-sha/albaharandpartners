@@ -6,7 +6,6 @@
 }
 
 .admin-sidebar {
-  width: 240px;
   min-width: 240px;
   background-color: #ffffff;
   color: #1f2937;
@@ -20,6 +19,12 @@
   overflow-y: auto;
   flex-shrink: 0;
   border-right: 1px solid #e5e7eb;
+  -ms-overflow-style: none; /* IE and old Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.admin-sidebar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .admin-sidebar-brand {
@@ -55,12 +60,27 @@
 
 .admin-sidebar-link {
   padding: 10px 12px;
-  color: #374151;
+  color: #111827;
   text-decoration: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 400;
   transition: background-color 0.15s ease, color 0.15s ease;
   display: block;
+}
+
+.admin-sidebar-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-sidebar-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  flex-shrink: 0;
 }
 
 .admin-sidebar-link:hover {
@@ -80,11 +100,12 @@
 
 .admin-sidebar-group-toggle {
   padding: 10px 12px;
-  color: #374151;
+  color: #111827;
   background: transparent;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 400;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -123,7 +144,9 @@
 
 .admin-sidebar-sublink {
   padding: 7px 10px;
-  font-size: 13px;
+  font-size: 15px;
+  font-weight: 400;
+  color: #111827;
 }
 
 .admin-main {
