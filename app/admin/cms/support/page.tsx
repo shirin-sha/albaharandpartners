@@ -10,13 +10,15 @@ const SUPPORT_SECTIONS = [
   { id: 'contact', label: 'Contact Section', description: 'Tag, heading, subheading, contact info, form title' },
 ] as const;
 
+type SupportSectionId = (typeof SUPPORT_SECTIONS)[number]['id'];
+
 export default function SupportManager() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [contentLtr, setContentLtr] = useState<SupportContent | null>(null);
   const [contentRtl, setContentRtl] = useState<SupportContent | null>(null);
-  const [selectedSection, setSelectedSection] = useState<'header' | 'services' | 'contact' | null>(null);
+  const [selectedSection, setSelectedSection] = useState<SupportSectionId | null>(null);
 
   useEffect(() => {
     loadContent();
