@@ -37,14 +37,12 @@ export function buildSectionsFromContent(
         title: ltrContent.seo?.title ?? '',
         description: ltrContent.seo?.description ?? '',
         keywords: (ltrContent.seo?.keywords ?? []).join(', '),
-        ogImage: ltrContent.seo?.ogImage ?? '',
       },
       rtl: rtl
         ? {
             title: rtl.seo?.title ?? '',
             description: rtl.seo?.description ?? '',
             keywords: (rtl.seo?.keywords ?? []).join(', '),
-            ogImage: rtl.seo?.ogImage ?? '',
           }
         : {},
     },
