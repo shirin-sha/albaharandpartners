@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ContactUsContent } from '@/types/contact-us';
 
 const CONTACT_US_SECTIONS = [
+  { id: 'meta', label: 'Meta (SEO)', description: 'Title, description, keywords (English & Arabic)' },
   { id: 'header', label: 'Page Header', description: 'Breadcrumb, title, subtitle' },
   { id: 'contact', label: 'Contact Section', description: 'Tag, heading, subheading, address, phone, email' },
   { id: 'map', label: 'Map Section', description: 'Google Maps embed URL' },
@@ -58,6 +59,11 @@ export default function ContactUsManager() {
   const getEmptyContent = (lang: 'ltr' | 'rtl'): ContactUsContent => ({
     language: lang,
     isActive: true,
+    seo: {
+      title: '',
+      description: '',
+      keywords: [],
+    },
     header: {
       breadcrumb: 'Contact Us',
       title: 'Contact Us',
@@ -527,17 +533,34 @@ export default function ContactUsManager() {
           <thead>
             <tr>
               <th>Section</th>
-              <th>Description</th>
+              <th>Title (English)</th>
+              <th>Title (Arabic)</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {CONTACT_US_SECTIONS.map((section) => {
               const isEditing = selectedSection === section.id;
+              let titleEn = '-';
+              let titleAr = '-';
+              if (section.id === 'meta') {
+                titleEn = contentLtr?.seo?.title || '-';
+                titleAr = contentRtl?.seo?.title || '-';
+              } else if (section.id === 'header') {
+                titleEn = contentLtr?.header?.title || '-';
+                titleAr = contentRtl?.header?.title || '-';
+              } else if (section.id === 'contact') {
+                titleEn = contentLtr?.contactSection?.heading || '-';
+                titleAr = contentRtl?.contactSection?.heading || '-';
+              } else if (section.id === 'map') {
+                titleEn = contentLtr?.mapSection?.mapUrl ? 'Embedded Map' : '-';
+                titleAr = contentRtl?.mapSection?.mapUrl ? 'Embedded Map' : '-';
+              }
               return (
                 <tr key={section.id} className={isEditing ? 'admin-table-row-active' : ''}>
                   <td><strong>{section.label}</strong></td>
-                  <td>{section.description}</td>
+                  <td>{titleEn}</td>
+                  <td style={{ direction: 'rtl', textAlign: 'right' }}>{titleAr}</td>
                   <td>
                     <button
                       type="button"

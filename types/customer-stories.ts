@@ -20,6 +20,12 @@ export interface CustomerStoriesHeader {
 
 export interface CustomerStoriesContent {
   _id?: string;
+  /** SEO metadata for the page (per language document) */
+  seo?: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
   header: CustomerStoriesHeader;
   tag: string;
   heading: string;

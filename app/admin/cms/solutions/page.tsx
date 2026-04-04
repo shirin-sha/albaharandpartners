@@ -5,11 +5,8 @@ import Link from 'next/link';
 import { SolutionsContent } from '@/types/solutions';
 
 const SOLUTIONS_SECTIONS = [
-  {
-    id: 'header',
-    label: 'Page Header',
-    description: 'Breadcrumb, title, subtitle',
-  },
+  { id: 'meta', label: 'Meta (SEO)', description: 'Title, description, keywords (English & Arabic)' },
+  { id: 'header', label: 'Page Header', description: 'Breadcrumb, title, subtitle' },
 ] as const;
 
 type SolutionsSectionId = (typeof SOLUTIONS_SECTIONS)[number]['id'];
@@ -61,6 +58,11 @@ export default function SolutionsManager() {
   const getEmptyContent = (lang: 'ltr' | 'rtl'): SolutionsContent => ({
     language: lang,
     isActive: true,
+    seo: {
+      title: '',
+      description: '',
+      keywords: [],
+    },
     header: {
       breadcrumb: 'Solutions',
       title: 'Solutions',
@@ -118,6 +120,133 @@ export default function SolutionsManager() {
     if (!selectedSection) return null;
 
     switch (selectedSection) {
+      case 'meta':
+        return (
+          <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+            <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Editing: Meta (SEO)</h3>
+                <div style={{ fontSize: 13, opacity: 0.8 }}>
+                  Title, description, and keywords (English + Arabic)
+                </div>
+              </div>
+              <button
+                type="button"
+                className="button"
+                onClick={() => setSelectedSection(null)}
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="admin-cms-form">
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English (SEO)</div>
+                <div className="form-label-header">العربية (SEO)</div>
+              </div>
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Meta Title</label>
+                  <input
+                    type="text"
+                    value={contentLtr?.seo?.title ?? ''}
+                    onChange={(e) =>
+                      setContentLtr({ ...(contentLtr as SolutionsContent), seo: { ...(contentLtr?.seo ?? { title: '', description: '', keywords: [] }), title: e.target.value } })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Meta Title</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl?.seo?.title ?? ''}
+                    onChange={(e) =>
+                      setContentRtl({ ...(contentRtl as SolutionsContent), seo: { ...(contentRtl?.seo ?? { title: '', description: '', keywords: [] }), title: e.target.value } })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Meta Description</label>
+                  <textarea
+                    rows={3}
+                    value={contentLtr?.seo?.description ?? ''}
+                    onChange={(e) =>
+                      setContentLtr({ ...(contentLtr as SolutionsContent), seo: { ...(contentLtr?.seo ?? { title: '', description: '', keywords: [] }), description: e.target.value } })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Meta Description</label>
+                  <textarea
+                    rows={3}
+                    dir="rtl"
+                    value={contentRtl?.seo?.description ?? ''}
+                    onChange={(e) =>
+                      setContentRtl({ ...(contentRtl as SolutionsContent), seo: { ...(contentRtl?.seo ?? { title: '', description: '', keywords: [] }), description: e.target.value } })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Keywords (comma-separated)</label>
+                  <input
+                    type="text"
+                    value={(contentLtr?.seo?.keywords ?? []).join(', ')}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...(contentLtr as SolutionsContent),
+                        seo: {
+                          ...(contentLtr?.seo ?? { title: '', description: '', keywords: [] }),
+                          keywords: e.target.value.split(',').map((k) => k.trim()).filter(Boolean),
+                        },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Keywords (comma-separated)</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={(contentRtl?.seo?.keywords ?? []).join(', ')}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...(contentRtl as SolutionsContent),
+                        seo: {
+                          ...(contentRtl?.seo ?? { title: '', description: '', keywords: [] }),
+                          keywords: e.target.value.split(',').map((k) => k.trim()).filter(Boolean),
+                        },
+                      })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button
+                  className="button button-primary"
+                  onClick={() => handleSaveSection('meta')}
+                  disabled={saving === 'meta'}
+                >
+                  {saving === 'meta' ? 'Saving...' : 'Save (English & Arabic)'}
+                </button>
+                <button
+                  className="admin-btn admin-btn-edit"
+                  onClick={() => setSelectedSection(null)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        );
       case 'header':
         return (
           <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
@@ -290,19 +419,28 @@ export default function SolutionsManager() {
           <thead>
             <tr>
               <th>Section</th>
-              <th>Description</th>
+              <th>Title (English)</th>
+              <th>Title (Arabic)</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {SOLUTIONS_SECTIONS.map((section) => {
               const isEditing = selectedSection === section.id;
+              let titleEn = '-';
+              let titleAr = '-';
+              if (section.id === 'meta') {
+                titleEn = contentLtr?.seo?.title || '-';
+                titleAr = contentRtl?.seo?.title || '-';
+              } else if (section.id === 'header') {
+                titleEn = contentLtr?.header?.title || '-';
+                titleAr = contentRtl?.header?.title || '-';
+              }
               return (
                 <tr key={section.id} className={isEditing ? 'admin-table-row-active' : ''}>
-                  <td>
-                    <strong>{section.label}</strong>
-                  </td>
-                  <td>{section.description}</td>
+                  <td><strong>{section.label}</strong></td>
+                  <td>{titleEn}</td>
+                  <td style={{ direction: 'rtl', textAlign: 'right' }}>{titleAr}</td>
                   <td>
                     <button
                       type="button"

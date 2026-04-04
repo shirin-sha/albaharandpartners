@@ -130,6 +130,12 @@ export interface FAQsSection {
 
 export interface AboutUsContent {
   _id?: string;
+  /** SEO metadata for the page (per language document) */
+  seo?: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
   header: AboutUsHeader;
   aboutAlBahar: AboutAlBaharSection;
   visionMissionValues: VisionMissionValuesSection;

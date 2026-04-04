@@ -8,10 +8,21 @@ import { Metadata } from "next";
 import { SolutionsContent } from "@/types/solutions";
 import { getSolutionsContent } from "@/lib/data-fetch";
 
-export const metadata: Metadata = {
-  title: "Solutions",
-  description: "Our comprehensive solutions for your business needs",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getSolutionsContent();
+  const title = content?.seo?.title || "Solutions";
+  const description = content?.seo?.description || "Our comprehensive solutions for your business needs";
+  const keywords = content?.seo?.keywords || [];
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+    },
+  };
+}
 
 // Static generation with on-demand revalidation (triggered from admin panel)
 // Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath

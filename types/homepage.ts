@@ -178,8 +178,16 @@ export interface BlogsSection {
   isActive: boolean;
 }
 
+export interface SeoMetadata {
+  title: string;
+  description: string;
+  keywords: string[];
+}
+
 export interface HomepageContent {
   _id?: string;
+  /** SEO metadata for the page (per language document) */
+  seo?: SeoMetadata;
   heroSlides: HeroSlide[];
   aboutSection: AboutSection;
   processSection: ProcessSection;

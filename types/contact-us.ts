@@ -20,6 +20,12 @@ export interface ContactUsHeader {
 
 export interface ContactUsContent {
   _id?: string;
+  /** SEO metadata for the page (per language document) */
+  seo?: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
   header: ContactUsHeader;
   contactSection: {
     tag: string;

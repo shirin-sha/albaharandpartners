@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { SupportContent } from '@/types/support';
 
 const SUPPORT_SECTIONS = [
+  { id: 'meta', label: 'Meta (SEO)', description: 'Title, description, keywords (English & Arabic)' },
   { id: 'header', label: 'Page Header', description: 'Breadcrumb, title, subtitle' },
   { id: 'services', label: 'Services Section', description: 'Tag, heading, subheading' },
   { id: 'contact', label: 'Contact Section', description: 'Tag, heading, subheading, contact info, form title' },
@@ -56,6 +57,11 @@ export default function SupportManager() {
   const getEmptyContent = (lang: 'ltr' | 'rtl'): SupportContent => ({
     language: lang,
     isActive: true,
+    seo: {
+      title: '',
+      description: '',
+      keywords: [],
+    },
     header: {
       breadcrumb: 'Support',
       title: 'Support',
@@ -155,17 +161,118 @@ export default function SupportManager() {
             <div>
               <h3 style={{ margin: 0 }}>
                 Editing:{' '}
-                {selectedSection === 'header'
+                {selectedSection === 'meta'
+                  ? 'Meta (SEO)'
+                  : selectedSection === 'header'
                   ? 'Page Header'
                   : selectedSection === 'services'
-                    ? 'Services Section'
-                    : 'Contact Section'}
+                  ? 'Services Section'
+                  : 'Contact Section'}
               </h3>
             </div>
             <button type="button" className="button" onClick={() => setSelectedSection(null)}>
               Close
             </button>
           </div>
+
+          {selectedSection === 'meta' && (
+            <div className="admin-cms-form">
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English (SEO)</div>
+                <div className="form-label-header">العربية (SEO)</div>
+              </div>
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Meta Title</label>
+                  <input
+                    type="text"
+                    value={contentLtr!.seo?.title ?? ''}
+                    onChange={(e) =>
+                      setContentLtr({ ...(contentLtr as SupportContent), seo: { ...(contentLtr?.seo ?? { title: '', description: '', keywords: [] }), title: e.target.value } })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Meta Title</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={contentRtl!.seo?.title ?? ''}
+                    onChange={(e) =>
+                      setContentRtl({ ...(contentRtl as SupportContent), seo: { ...(contentRtl?.seo ?? { title: '', description: '', keywords: [] }), title: e.target.value } })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Meta Description</label>
+                  <textarea
+                    rows={3}
+                    value={contentLtr!.seo?.description ?? ''}
+                    onChange={(e) =>
+                      setContentLtr({ ...(contentLtr as SupportContent), seo: { ...(contentLtr?.seo ?? { title: '', description: '', keywords: [] }), description: e.target.value } })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Meta Description</label>
+                  <textarea
+                    rows={3}
+                    dir="rtl"
+                    value={contentRtl!.seo?.description ?? ''}
+                    onChange={(e) =>
+                      setContentRtl({ ...(contentRtl as SupportContent), seo: { ...(contentRtl?.seo ?? { title: '', description: '', keywords: [] }), description: e.target.value } })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Keywords (comma-separated)</label>
+                  <input
+                    type="text"
+                    value={(contentLtr!.seo?.keywords ?? []).join(', ')}
+                    onChange={(e) =>
+                      setContentLtr({
+                        ...(contentLtr as SupportContent),
+                        seo: {
+                          ...(contentLtr?.seo ?? { title: '', description: '', keywords: [] }),
+                          keywords: e.target.value.split(',').map((k) => k.trim()).filter(Boolean),
+                        },
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Keywords (comma-separated)</label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    value={(contentRtl!.seo?.keywords ?? []).join(', ')}
+                    onChange={(e) =>
+                      setContentRtl({
+                        ...(contentRtl as SupportContent),
+                        seo: {
+                          ...(contentRtl?.seo ?? { title: '', description: '', keywords: [] }),
+                          keywords: e.target.value.split(',').map((k) => k.trim()).filter(Boolean),
+                        },
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="form-actions">
+                <button
+                  className="button button-primary"
+                  onClick={() => handleSaveSection('meta')}
+                  disabled={saving === 'meta'}
+                >
+                  {saving === 'meta' ? 'Saving...' : 'Save (English & Arabic)'}
+                </button>
+              </div>
+            </div>
+          )}
 
           {selectedSection === 'header' && (
             <div className="admin-cms-form">

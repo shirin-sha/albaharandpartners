@@ -9,8 +9,10 @@ import { CaseStudiesFields } from './CaseStudiesFields';
 import { FeaturesFields } from './FeaturesFields';
 import { BlogsFields } from './BlogsFields';
 import { CtaFields } from './CtaFields';
+import { MetaFields } from './MetaFields';
 
 export const SECTION_FIELD_RENDERERS: Record<string, SectionFieldComponent> = {
+  meta: MetaFields,
   hero: HeroFields,
   about: AboutFields,
   process: ProcessFields,
@@ -23,4 +25,4 @@ export const SECTION_FIELD_RENDERERS: Record<string, SectionFieldComponent> = {
   cta: CtaFields,
 };
 
-export { HeroFields, AboutFields, ProcessFields, ServicesFields, TestimonialFields, BrandsFields, CaseStudiesFields, FeaturesFields, BlogsFields, CtaFields };
+export { MetaFields, HeroFields, AboutFields, ProcessFields, ServicesFields, TestimonialFields, BrandsFields, CaseStudiesFields, FeaturesFields, BlogsFields, CtaFields };

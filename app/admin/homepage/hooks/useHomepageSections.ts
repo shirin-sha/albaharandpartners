@@ -8,6 +8,11 @@ import { buildSectionsFromContent } from '../constants';
 function getEmptyContent(lang: 'ltr' | 'rtl'): HomepageContent {
   return {
     _id: '',
+    seo: {
+      title: '',
+      description: '',
+      keywords: [],
+    },
     language: lang,
     isActive: true,
     heroSlides: [],
@@ -109,6 +114,17 @@ function applySectionToContent(
   lang: 'ltr' | 'rtl'
 ): void {
   switch (sectionId) {
+    case 'meta':
+      content.seo = {
+        title: String((sectionData?.title as string) ?? content.seo?.title ?? ''),
+        description: String((sectionData?.description as string) ?? content.seo?.description ?? ''),
+        keywords: Array.isArray(sectionData?.keywords)
+          ? (sectionData.keywords as string[])
+          : (typeof sectionData?.keywords === 'string'
+              ? (sectionData.keywords as string).split(',').map((k) => k.trim()).filter(Boolean)
+              : (content.seo?.keywords ?? [])),
+      };
+      break;
     case 'hero':
       content.heroSlides = (sectionData?.slides as HomepageContent['heroSlides']) ?? [];
       break;

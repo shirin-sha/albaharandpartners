@@ -5,10 +5,21 @@ import CustomerStoriesCMS from "@/components/case-studies/CustomerStoriesCMS";
 import { CustomerStoriesContent } from "@/types/customer-stories";
 import { getCustomerStoriesContent } from "@/lib/data-fetch";
 
-export const metadata: Metadata = {
-  title: "Customer Stories - Al bahar and partners",
-  description: "See how Al Bahar & Partners helps organizations strengthen security, improve visibility, and modernize IT through proven technology deployments.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getCustomerStoriesContent();
+  const title = content?.seo?.title || "Customer Stories - Al bahar and partners";
+  const description = content?.seo?.description || "See how Al Bahar & Partners helps organizations strengthen security, improve visibility, and modernize IT through proven technology deployments.";
+  const keywords = content?.seo?.keywords || [];
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+    },
+  };
+}
 
 // Static generation with on-demand revalidation (triggered from admin panel)
 // Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath

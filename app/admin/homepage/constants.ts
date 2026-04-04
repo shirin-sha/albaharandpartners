@@ -3,6 +3,7 @@ import type { HomepageContent } from '@/types/homepage';
 
 /** Section IDs in display order for Home Page CMS */
 export const HOME_SECTION_IDS = [
+  'meta',
   'hero',
   'about',
   'process',
@@ -29,23 +30,42 @@ export function buildSectionsFromContent(
   const rtl = rtlContent ?? null;
   return [
     {
-      sectionId: 'hero',
+      sectionId: 'meta',
       enabled: true,
       order: 0,
+      ltr: {
+        title: ltrContent.seo?.title ?? '',
+        description: ltrContent.seo?.description ?? '',
+        keywords: (ltrContent.seo?.keywords ?? []).join(', '),
+        ogImage: ltrContent.seo?.ogImage ?? '',
+      },
+      rtl: rtl
+        ? {
+            title: rtl.seo?.title ?? '',
+            description: rtl.seo?.description ?? '',
+            keywords: (rtl.seo?.keywords ?? []).join(', '),
+            ogImage: rtl.seo?.ogImage ?? '',
+          }
+        : {},
+    },
+    {
+      sectionId: 'hero',
+      enabled: true,
+      order: 1,
       ltr: { slides: ltrContent.heroSlides ?? [] },
       rtl: rtl ? { slides: rtl.heroSlides ?? [] } : {},
     },
     {
       sectionId: 'about',
       enabled: true,
-      order: 1,
+      order: 2,
       ltr: ltrContent.aboutSection ?? {},
       rtl: rtl?.aboutSection ?? {},
     },
     {
       sectionId: 'process',
       enabled: true,
-      order: 2,
+      order: 3,
       ltr: ltrContent.processSection ?? {},
       rtl: rtl?.processSection ?? {},
     },

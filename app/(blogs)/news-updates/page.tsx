@@ -5,10 +5,21 @@ import NewsUpdatesCMS from "@/components/blogs/NewsUpdatesCMS";
 import { NewsUpdatesContent } from "@/types/news-updates";
 import { getNewsUpdatesContent } from "@/lib/data-fetch";
 
-export const metadata: Metadata = {
-  title: "News & Updates - Al bahar and partners",
-  description: "Stay updated with insights, tips, and trends in finance and business strategy—curated by our experts to keep you informed and ahead.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getNewsUpdatesContent();
+  const title = content?.seo?.title || "News & Updates - Al bahar and partners";
+  const description = content?.seo?.description || "Stay updated with insights, tips, and trends in finance and business strategy—curated by our experts to keep you informed and ahead.";
+  const keywords = content?.seo?.keywords || [];
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+    },
+  };
+}
 
 // Static generation with on-demand revalidation (triggered from admin panel)
 // Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath

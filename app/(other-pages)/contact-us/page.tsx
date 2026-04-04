@@ -6,10 +6,21 @@ import MapCMS from "@/components/otherPages/MapCMS";
 import { ContactUsContent } from "@/types/contact-us";
 import { getContactUsContent } from "@/lib/data-fetch";
 
-export const metadata: Metadata = {
-  title: "Contact Us - Al Bahar & Partners - Technology Solutions",
-  description: "Get in touch with Al Bahar & Partners. Reach out today to discuss how we can support your business goals.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getContactUsContent();
+  const title = content?.seo?.title || "Contact Us - Al Bahar & Partners - Technology Solutions";
+  const description = content?.seo?.description || "Get in touch with Al Bahar & Partners. Reach out today to discuss how we can support your business goals.";
+  const keywords = content?.seo?.keywords || [];
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+    },
+  };
+}
 
 // Static generation with on-demand revalidation (triggered from admin panel)
 // Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath

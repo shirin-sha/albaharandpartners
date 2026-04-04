@@ -6,10 +6,21 @@ import SupportContactCMS from "@/components/otherPages/SupportContactCMS";
 import { SupportContent } from "@/types/support";
 import { getSupportContent } from "@/lib/data-fetch";
 
-export const metadata: Metadata = {
-  title: "Support - Al Bahar & Partners",
-  description: "From incident resolution to preventive maintenance, our support teams keep your operations secure, stable, and always available.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getSupportContent();
+  const title = content?.seo?.title || "Support - Al Bahar & Partners";
+  const description = content?.seo?.description || "From incident resolution to preventive maintenance, our support teams keep your operations secure, stable, and always available.";
+  const keywords = content?.seo?.keywords || [];
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+    },
+  };
+}
 
 // Static generation with on-demand revalidation (triggered from admin panel)
 // Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath

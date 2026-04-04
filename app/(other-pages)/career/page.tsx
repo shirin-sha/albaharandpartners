@@ -5,10 +5,21 @@ import CareerCMS from "@/components/otherPages/CareerCMS";
 import { CareersContent } from "@/types/careers";
 import { getCareersContent } from "@/lib/data-fetch";
 
-export const metadata: Metadata = {
-  title: "Careers - Al bahar and partners",
-  description: "Join our team of industry experts and make a meaningful impact. Discover opportunities to grow your career with us in a dynamic & rewarding environment.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getCareersContent();
+  const title = content?.seo?.title || "Careers - Al bahar and partners";
+  const description = content?.seo?.description || "Join our team of industry experts and make a meaningful impact. Discover opportunities to grow your career with us in a dynamic & rewarding environment.";
+  const keywords = content?.seo?.keywords || [];
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+    },
+  };
+}
 
 // Static generation with on-demand revalidation (triggered from admin panel)
 // Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath

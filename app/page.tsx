@@ -32,10 +32,23 @@ import {
 } from "@/lib/data-fetch";
 import Topbar1 from "@/components/headers/Topbar1";
 
-export const metadata: Metadata = {
-  title: "Al bahar partners",
-  description: "",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const language: 'ltr' | 'rtl' = 'ltr';
+  const content = await getHomepageContent(language);
+  const title = content?.seo?.title || "Al bahar partners";
+  const description = content?.seo?.description || "";
+  const keywords = content?.seo?.keywords || [];
+
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+    },
+  };
+}
 
 // Static generation with on-demand revalidation (triggered from admin panel)
 // Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath

@@ -24,6 +24,12 @@ export interface CareersHeader {
 
 export interface CareersContent {
   _id?: string;
+  /** SEO metadata for the page (per language document) */
+  seo?: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
   header: CareersHeader;
   tag: string;
   heading: string;

@@ -27,6 +27,12 @@ export interface BrandsHeader {
 
 export interface BrandsContent {
   _id?: string;
+  /** SEO metadata for the page (per language document) */
+  seo?: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
   header: BrandsHeader;
   tag: string;
   heading: string;

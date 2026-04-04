@@ -25,6 +25,12 @@ export interface NewsUpdatesHeader {
 
 export interface NewsUpdatesContent {
   _id?: string;
+  /** SEO metadata for the page (per language document) */
+  seo?: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
   header: NewsUpdatesHeader;
   posts: NewsPost[];
   language: 'ltr' | 'rtl';

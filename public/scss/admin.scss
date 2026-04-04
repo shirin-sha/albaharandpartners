@@ -630,6 +630,14 @@
   background-color: #f8fafc;
 }
 
+.admin-table tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.admin-table tbody tr:nth-child(even):hover {
+  background-color: #f1f5f9;
+}
+
 .admin-table td strong {
   font-weight: 600;
   color: #1c2539;

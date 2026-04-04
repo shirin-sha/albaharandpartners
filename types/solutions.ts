@@ -23,6 +23,12 @@ export interface SolutionItem {
 
 export interface SolutionsContent {
   _id?: string;
+  /** SEO metadata for the page (per language document) */
+  seo?: {
+    title: string;
+    description: string;
+    keywords: string[];
+  };
   header: SolutionsHeader;
   solutions: SolutionItem[];
   language: 'ltr' | 'rtl';

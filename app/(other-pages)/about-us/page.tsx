@@ -13,10 +13,21 @@ import FaqsCMS from "@/components/otherPages/FaqsCMS";
 import { AboutUsContent } from "@/types/aboutus";
 import { getAboutUsContent } from "@/lib/data-fetch";
 
-export const metadata: Metadata = {
-  title: "About us || Al bahar and partners",
-  description: "Al bahar and partners",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getAboutUsContent();
+  const title = content?.seo?.title || "About us || Al bahar and partners";
+  const description = content?.seo?.description || "Al bahar and partners";
+  const keywords = content?.seo?.keywords || [];
+  return {
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+    },
+  };
+}
 
 // Static generation with on-demand revalidation (triggered from admin panel)
 // Pages are pre-generated at build time and regenerate when admin updates content via revalidatePath
