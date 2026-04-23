@@ -14,7 +14,7 @@ export default function AboutBDSCMS({ data }: Props) {
   const rightColumn = data.services?.slice(midPoint) || [];
 
   return (
-    <section className="section-why-choose h-2 tf-spacing-2 bg-surface">
+    <section className="section-why-choose h-2 tf-spacing-2 our-advantage-bg">
       <div className="tf-container position-relative">
         <div className="row">
           <div className="col-12">

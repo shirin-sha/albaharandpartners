@@ -1,5 +1,6 @@
 'use client';
 
+import ImageUpload from '@/components/admin/ui/ImageUpload';
 import type { SectionFieldsProps } from '@/app/admin/homepage/types';
 
 export function CtaFields({ formData, updateField }: SectionFieldsProps) {
@@ -73,6 +74,17 @@ export function CtaFields({ formData, updateField }: SectionFieldsProps) {
                   <input type="text" dir="rtl" value={String(rtl?.buttonText ?? '')} onChange={(e) => updateField('rtl', 'buttonText', e.target.value)} />
                 </div>
               </div>
+            </div>
+            <div className="form-group">
+              <ImageUpload
+                label="Background Image"
+                value={String(ltr?.imagePath ?? '')}
+                onChange={(value) => {
+                  updateField('ltr', 'imagePath', value);
+                  updateField('rtl', 'imagePath', value);
+                }}
+                folder="section"
+              />
             </div>
             <div className="form-group">
               <label>Button Link</label>

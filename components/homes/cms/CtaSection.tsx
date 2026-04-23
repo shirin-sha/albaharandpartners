@@ -12,11 +12,19 @@ export default function CtaSection({ content, language = 'ltr' }: CtaSectionProp
     return null;
   }
 
+  const ctaBackgroundImage =
+    content.imagePath || "/image/section/bg-section-banner-h8.jpg";
+
   return (
     <section
       className="section-banner h-8 tf-spacing-2 section-one-page"
       id="cta"
       dir={language}
+      style={
+        {
+          "--cta-bg-image": `url("${ctaBackgroundImage}")`,
+        } as React.CSSProperties
+      }
     >
       <div className="tf-container position-relative">
         <div className="row">

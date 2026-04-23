@@ -51,6 +51,7 @@ export interface CtaSection {
   tag: string;
   heading: string;
   description: string;
+  imagePath?: string;
   buttonText: string;
   buttonLink: string;
   phoneLabel: string;

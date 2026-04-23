@@ -29,7 +29,6 @@ export interface FooterContactInfo {
   _id?: string;
   label: string;
   value: string;
-  type: 'text' | 'phone' | 'email' | 'address';
   order: number;
   isActive: boolean;
 }

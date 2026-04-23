@@ -313,6 +313,12 @@
             align-items: center;
             gap: 40px;
 
+            .header-actions-tight {
+                @include mixin.d-flex();
+                align-items: center;
+                gap: 8px;
+            }
+
             &.gap-20 {
                 gap: 20px;
             }

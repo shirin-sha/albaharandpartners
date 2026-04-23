@@ -106,15 +106,17 @@ export default function HomepageSectionEditor({
 
   const updateField = (lang: 'ltr' | 'rtl', path: string, value: unknown) => {
     const keys = path.split('.');
-    const newData = { ...formData };
-    const langData = { ...newData[lang] } as Record<string, unknown>;
-    let current: Record<string, unknown> = langData;
-    for (let i = 0; i < keys.length - 1; i++) {
-      if (!current[keys[i]] || typeof current[keys[i]] !== 'object') current[keys[i]] = {};
-      current = current[keys[i]] as Record<string, unknown>;
-    }
-    current[keys[keys.length - 1]] = value;
-    setFormData({ ...newData, [lang]: langData });
+    setFormData((prev) => {
+      const newData = { ...prev };
+      const langData = { ...newData[lang] } as Record<string, unknown>;
+      let current: Record<string, unknown> = langData;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]] || typeof current[keys[i]] !== 'object') current[keys[i]] = {};
+        current = current[keys[i]] as Record<string, unknown>;
+      }
+      current[keys[keys.length - 1]] = value;
+      return { ...newData, [lang]: langData };
+    });
   };
 
   const FieldRenderer = SECTION_FIELD_RENDERERS[sectionId];

@@ -7,6 +7,9 @@ import ImageUpload from '@/components/admin/ui/ImageUpload';
 const FOOTER_SECTIONS = [
   { id: 'logo', label: 'Logo & Description', description: 'Logo image/link + bilingual description' },
   { id: 'newsletter', label: 'Newsletter Section', description: 'Title, description, placeholder (bilingual)' },
+  { id: 'quickLinks', label: 'Quick Links', description: 'Manage column titles, link titles, and shared link paths' },
+  { id: 'serviceAssistance', label: 'Service & Assistance', description: 'Manage title and simple items (text + shared value/path)' },
+  { id: 'contact', label: 'Contact Us', description: 'Manage title and simple items (text + shared value/path)' },
   { id: 'bottom', label: 'Footer Bottom', description: 'Copyright (bilingual)' },
 ] as const;
 
@@ -96,6 +99,128 @@ export default function FooterManager() {
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 5000);
+  };
+
+  const updateBothContents = (updater: (ltr: FooterContent, rtl: FooterContent) => { ltr: FooterContent; rtl: FooterContent }) => {
+    if (!contentLtr || !contentRtl) return;
+    const next = updater(contentLtr, contentRtl);
+    setContentLtr(next.ltr);
+    setContentRtl(next.rtl);
+  };
+
+  const addQuickLinksColumn = () => {
+    updateBothContents((ltr, rtl) => {
+      const newColumn = {
+        title: 'Quick Links',
+        links: [],
+        order: ltr.quickLinks.length,
+        isActive: true,
+      };
+      return {
+        ltr: { ...ltr, quickLinks: [...ltr.quickLinks, newColumn] },
+        rtl: { ...rtl, quickLinks: [...rtl.quickLinks, { ...newColumn, title: 'روابط سريعة' }] },
+      };
+    });
+  };
+
+  const removeQuickLinksColumn = (columnIndex: number) => {
+    updateBothContents((ltr, rtl) => ({
+      ltr: {
+        ...ltr,
+        quickLinks: ltr.quickLinks.filter((_, idx) => idx !== columnIndex).map((col, idx) => ({ ...col, order: idx })),
+      },
+      rtl: {
+        ...rtl,
+        quickLinks: rtl.quickLinks.filter((_, idx) => idx !== columnIndex).map((col, idx) => ({ ...col, order: idx })),
+      },
+    }));
+  };
+
+  const addQuickLinkItem = (columnIndex: number) => {
+    updateBothContents((ltr, rtl) => {
+      const ltrColumns = [...ltr.quickLinks];
+      const rtlColumns = [...rtl.quickLinks];
+      if (!ltrColumns[columnIndex] || !rtlColumns[columnIndex]) return { ltr, rtl };
+
+      const ltrLinks = [...ltrColumns[columnIndex].links];
+      const rtlLinks = [...rtlColumns[columnIndex].links];
+      const ltrItem = { title: 'New Link', href: '/', order: ltrLinks.length, isActive: true };
+      const rtlItem = { title: 'رابط جديد', href: '/', order: rtlLinks.length, isActive: true };
+      ltrColumns[columnIndex] = { ...ltrColumns[columnIndex], links: [...ltrLinks, ltrItem] };
+      rtlColumns[columnIndex] = { ...rtlColumns[columnIndex], links: [...rtlLinks, rtlItem] };
+
+      return {
+        ltr: { ...ltr, quickLinks: ltrColumns },
+        rtl: { ...rtl, quickLinks: rtlColumns },
+      };
+    });
+  };
+
+  const removeQuickLinkItem = (columnIndex: number, itemIndex: number) => {
+    updateBothContents((ltr, rtl) => {
+      const ltrColumns = [...ltr.quickLinks];
+      const rtlColumns = [...rtl.quickLinks];
+      if (!ltrColumns[columnIndex] || !rtlColumns[columnIndex]) return { ltr, rtl };
+
+      ltrColumns[columnIndex] = {
+        ...ltrColumns[columnIndex],
+        links: ltrColumns[columnIndex].links.filter((_, idx) => idx !== itemIndex).map((item, idx) => ({ ...item, order: idx })),
+      };
+      rtlColumns[columnIndex] = {
+        ...rtlColumns[columnIndex],
+        links: rtlColumns[columnIndex].links.filter((_, idx) => idx !== itemIndex).map((item, idx) => ({ ...item, order: idx })),
+      };
+
+      return {
+        ltr: { ...ltr, quickLinks: ltrColumns },
+        rtl: { ...rtl, quickLinks: rtlColumns },
+      };
+    });
+  };
+
+  const addFooterItem = (section: 'serviceAssistance' | 'contactSection') => {
+    updateBothContents((ltr, rtl) => {
+      const ltrItems = [...ltr[section].items];
+      const rtlItems = [...rtl[section].items];
+      const ltrItem = { label: 'Item Text', value: '', order: ltrItems.length, isActive: true };
+      const rtlItem = { label: 'نص العنصر', value: '', order: rtlItems.length, isActive: true };
+
+      return {
+        ltr: {
+          ...ltr,
+          [section]: {
+            ...ltr[section],
+            items: [...ltrItems, ltrItem],
+          },
+        },
+        rtl: {
+          ...rtl,
+          [section]: {
+            ...rtl[section],
+            items: [...rtlItems, rtlItem],
+          },
+        },
+      };
+    });
+  };
+
+  const removeFooterItem = (section: 'serviceAssistance' | 'contactSection', itemIndex: number) => {
+    updateBothContents((ltr, rtl) => ({
+      ltr: {
+        ...ltr,
+        [section]: {
+          ...ltr[section],
+          items: ltr[section].items.filter((_, idx) => idx !== itemIndex).map((item, idx) => ({ ...item, order: idx })),
+        },
+      },
+      rtl: {
+        ...rtl,
+        [section]: {
+          ...rtl[section],
+          items: rtl[section].items.filter((_, idx) => idx !== itemIndex).map((item, idx) => ({ ...item, order: idx })),
+        },
+      },
+    }));
   };
 
   const handleSaveSection = async (section: string) => {
@@ -417,6 +542,358 @@ export default function FooterManager() {
                 </button>
               </div>
             </div>
+        </div>
+      )}
+
+      {selectedSection === 'quickLinks' && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+            <h3>Quick Links</h3>
+            <button type="button" className="admin-btn admin-btn-delete" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
+          </div>
+          <div className="admin-cms-form">
+            <div className="form-actions" style={{ marginBottom: 16 }}>
+              <button type="button" className="button button-secondary" onClick={addQuickLinksColumn}>
+                Add Column
+              </button>
+            </div>
+            {contentLtr.quickLinks.map((column, columnIndex) => (
+              <div key={column._id || columnIndex} style={{ border: '1px solid #e5e7eb', borderRadius: 8, padding: 16, marginBottom: 16 }}>
+                <div className="form-row-bilingual-header">
+                  <div className="form-label-header">English</div>
+                  <div className="form-label-header">Arabic</div>
+                </div>
+                <div className="form-row-bilingual">
+                  <div className="form-group">
+                    <label>Column Title</label>
+                    <input
+                      type="text"
+                      value={contentLtr.quickLinks[columnIndex]?.title || ''}
+                      onChange={(e) => {
+                        const quickLinks = [...contentLtr.quickLinks];
+                        quickLinks[columnIndex] = { ...quickLinks[columnIndex], title: e.target.value };
+                        setContentLtr({ ...contentLtr, quickLinks });
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Column Title</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={contentRtl.quickLinks[columnIndex]?.title || ''}
+                      onChange={(e) => {
+                        const quickLinks = [...contentRtl.quickLinks];
+                        quickLinks[columnIndex] = { ...quickLinks[columnIndex], title: e.target.value };
+                        setContentRtl({ ...contentRtl, quickLinks });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-actions" style={{ marginBottom: 12 }}>
+                  <button type="button" className="button button-secondary" onClick={() => addQuickLinkItem(columnIndex)}>
+                    Add Link
+                  </button>
+                  <button type="button" className="button button-danger" onClick={() => removeQuickLinksColumn(columnIndex)}>
+                    Remove Column
+                  </button>
+                </div>
+                {column.links.map((link, linkIndex) => (
+                  <div key={link._id || linkIndex} style={{ border: '1px dashed #d1d5db', borderRadius: 8, padding: 12, marginBottom: 12 }}>
+                    <div className="form-row-bilingual-header">
+                      <div className="form-label-header">English</div>
+                      <div className="form-label-header">Arabic</div>
+                    </div>
+                    <div className="form-row-bilingual">
+                      <div className="form-group">
+                        <label>Link Title</label>
+                        <input
+                          type="text"
+                          value={contentLtr.quickLinks[columnIndex]?.links[linkIndex]?.title || ''}
+                          onChange={(e) => {
+                            const quickLinks = [...contentLtr.quickLinks];
+                            const links = [...(quickLinks[columnIndex]?.links || [])];
+                            links[linkIndex] = { ...links[linkIndex], title: e.target.value };
+                            quickLinks[columnIndex] = { ...quickLinks[columnIndex], links };
+                            setContentLtr({ ...contentLtr, quickLinks });
+                          }}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Link Title</label>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={contentRtl.quickLinks[columnIndex]?.links[linkIndex]?.title || ''}
+                          onChange={(e) => {
+                            const quickLinks = [...contentRtl.quickLinks];
+                            const links = [...(quickLinks[columnIndex]?.links || [])];
+                            links[linkIndex] = { ...links[linkIndex], title: e.target.value };
+                            quickLinks[columnIndex] = { ...quickLinks[columnIndex], links };
+                            setContentRtl({ ...contentRtl, quickLinks });
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label>Path (shared for both languages)</label>
+                      <input
+                        type="text"
+                        value={contentLtr.quickLinks[columnIndex]?.links[linkIndex]?.href || ''}
+                        onChange={(e) => {
+                          const href = e.target.value;
+                          updateBothContents((ltr, rtl) => {
+                            const ltrQuick = [...ltr.quickLinks];
+                            const rtlQuick = [...rtl.quickLinks];
+                            const ltrLinks = [...(ltrQuick[columnIndex]?.links || [])];
+                            const rtlLinks = [...(rtlQuick[columnIndex]?.links || [])];
+                            ltrLinks[linkIndex] = { ...ltrLinks[linkIndex], href };
+                            rtlLinks[linkIndex] = { ...rtlLinks[linkIndex], href };
+                            ltrQuick[columnIndex] = { ...ltrQuick[columnIndex], links: ltrLinks };
+                            rtlQuick[columnIndex] = { ...rtlQuick[columnIndex], links: rtlLinks };
+                            return {
+                              ltr: { ...ltr, quickLinks: ltrQuick },
+                              rtl: { ...rtl, quickLinks: rtlQuick },
+                            };
+                          });
+                        }}
+                      />
+                    </div>
+                    <button type="button" className="admin-btn admin-btn-delete" onClick={() => removeQuickLinkItem(columnIndex, linkIndex)}>
+                      Remove Link
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ))}
+            <div className="form-actions">
+              <button
+                className="button button-primary"
+                onClick={() => handleSaveSection('quick links')}
+                disabled={saving === 'quick links'}
+              >
+                {saving === 'quick links' ? 'Saving...' : 'Save Quick Links'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedSection === 'serviceAssistance' && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+            <h3>Service & Assistance</h3>
+            <button type="button" className="admin-btn admin-btn-delete" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
+          </div>
+          <div className="admin-cms-form">
+            <div className="form-row-bilingual-header">
+              <div className="form-label-header">English</div>
+              <div className="form-label-header">Arabic</div>
+            </div>
+            <div className="form-row-bilingual">
+              <div className="form-group">
+                <label>Section Title</label>
+                <input
+                  type="text"
+                  value={contentLtr.serviceAssistance.title}
+                  onChange={(e) => setContentLtr({ ...contentLtr, serviceAssistance: { ...contentLtr.serviceAssistance, title: e.target.value } })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Section Title</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.serviceAssistance.title}
+                  onChange={(e) => setContentRtl({ ...contentRtl, serviceAssistance: { ...contentRtl.serviceAssistance, title: e.target.value } })}
+                />
+              </div>
+            </div>
+            <div className="form-actions" style={{ marginBottom: 12 }}>
+              <button type="button" className="button button-secondary" onClick={() => addFooterItem('serviceAssistance')}>
+                Add Item
+              </button>
+            </div>
+            {contentLtr.serviceAssistance.items.map((item, itemIndex) => (
+              <div key={item._id || itemIndex} style={{ border: '1px dashed #d1d5db', borderRadius: 8, padding: 12, marginBottom: 12 }}>
+                <div className="form-row-bilingual-header">
+                  <div className="form-label-header">English</div>
+                  <div className="form-label-header">Arabic</div>
+                </div>
+                <div className="form-row-bilingual">
+                  <div className="form-group">
+                    <label>Item Text</label>
+                    <input
+                      type="text"
+                      value={contentLtr.serviceAssistance.items[itemIndex]?.label || ''}
+                      onChange={(e) => {
+                        const items = [...contentLtr.serviceAssistance.items];
+                        items[itemIndex] = { ...items[itemIndex], label: e.target.value };
+                        setContentLtr({ ...contentLtr, serviceAssistance: { ...contentLtr.serviceAssistance, items } });
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Item Text</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={contentRtl.serviceAssistance.items[itemIndex]?.label || ''}
+                      onChange={(e) => {
+                        const items = [...contentRtl.serviceAssistance.items];
+                        items[itemIndex] = { ...items[itemIndex], label: e.target.value };
+                        setContentRtl({ ...contentRtl, serviceAssistance: { ...contentRtl.serviceAssistance, items } });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Value (shared for both languages)</label>
+                  <input
+                    type="text"
+                    value={contentLtr.serviceAssistance.items[itemIndex]?.value || ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      updateBothContents((ltr, rtl) => {
+                        const ltrItems = [...ltr.serviceAssistance.items];
+                        const rtlItems = [...rtl.serviceAssistance.items];
+                        ltrItems[itemIndex] = { ...ltrItems[itemIndex], value };
+                        rtlItems[itemIndex] = { ...rtlItems[itemIndex], value };
+                        return {
+                          ltr: { ...ltr, serviceAssistance: { ...ltr.serviceAssistance, items: ltrItems } },
+                          rtl: { ...rtl, serviceAssistance: { ...rtl.serviceAssistance, items: rtlItems } },
+                        };
+                      });
+                    }}
+                  />
+                </div>
+                <button type="button" className="admin-btn admin-btn-delete" onClick={() => removeFooterItem('serviceAssistance', itemIndex)}>
+                  Remove Item
+                </button>
+              </div>
+            ))}
+            <div className="form-actions">
+              <button
+                className="button button-primary"
+                onClick={() => handleSaveSection('service & assistance')}
+                disabled={saving === 'service & assistance'}
+              >
+                {saving === 'service & assistance' ? 'Saving...' : 'Save Service & Assistance'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedSection === 'contact' && (
+        <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+          <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+            <h3>Contact Us</h3>
+            <button type="button" className="admin-btn admin-btn-delete" onClick={() => setSelectedSection(null)}>
+              Close
+            </button>
+          </div>
+          <div className="admin-cms-form">
+            <div className="form-row-bilingual-header">
+              <div className="form-label-header">English</div>
+              <div className="form-label-header">Arabic</div>
+            </div>
+            <div className="form-row-bilingual">
+              <div className="form-group">
+                <label>Section Title</label>
+                <input
+                  type="text"
+                  value={contentLtr.contactSection.title}
+                  onChange={(e) => setContentLtr({ ...contentLtr, contactSection: { ...contentLtr.contactSection, title: e.target.value } })}
+                />
+              </div>
+              <div className="form-group">
+                <label>Section Title</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.contactSection.title}
+                  onChange={(e) => setContentRtl({ ...contentRtl, contactSection: { ...contentRtl.contactSection, title: e.target.value } })}
+                />
+              </div>
+            </div>
+            <div className="form-actions" style={{ marginBottom: 12 }}>
+              <button type="button" className="button button-secondary" onClick={() => addFooterItem('contactSection')}>
+                Add Item
+              </button>
+            </div>
+            {contentLtr.contactSection.items.map((item, itemIndex) => (
+              <div key={item._id || itemIndex} style={{ border: '1px dashed #d1d5db', borderRadius: 8, padding: 12, marginBottom: 12 }}>
+                <div className="form-row-bilingual-header">
+                  <div className="form-label-header">English</div>
+                  <div className="form-label-header">Arabic</div>
+                </div>
+                <div className="form-row-bilingual">
+                  <div className="form-group">
+                    <label>Item Text</label>
+                    <input
+                      type="text"
+                      value={contentLtr.contactSection.items[itemIndex]?.label || ''}
+                      onChange={(e) => {
+                        const items = [...contentLtr.contactSection.items];
+                        items[itemIndex] = { ...items[itemIndex], label: e.target.value };
+                        setContentLtr({ ...contentLtr, contactSection: { ...contentLtr.contactSection, items } });
+                      }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Item Text</label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={contentRtl.contactSection.items[itemIndex]?.label || ''}
+                      onChange={(e) => {
+                        const items = [...contentRtl.contactSection.items];
+                        items[itemIndex] = { ...items[itemIndex], label: e.target.value };
+                        setContentRtl({ ...contentRtl, contactSection: { ...contentRtl.contactSection, items } });
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Value (shared for both languages)</label>
+                  <input
+                    type="text"
+                    value={contentLtr.contactSection.items[itemIndex]?.value || ''}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      updateBothContents((ltr, rtl) => {
+                        const ltrItems = [...ltr.contactSection.items];
+                        const rtlItems = [...rtl.contactSection.items];
+                        ltrItems[itemIndex] = { ...ltrItems[itemIndex], value };
+                        rtlItems[itemIndex] = { ...rtlItems[itemIndex], value };
+                        return {
+                          ltr: { ...ltr, contactSection: { ...ltr.contactSection, items: ltrItems } },
+                          rtl: { ...rtl, contactSection: { ...rtl.contactSection, items: rtlItems } },
+                        };
+                      });
+                    }}
+                  />
+                </div>
+                <button type="button" className="admin-btn admin-btn-delete" onClick={() => removeFooterItem('contactSection', itemIndex)}>
+                  Remove Item
+                </button>
+              </div>
+            ))}
+            <div className="form-actions">
+              <button
+                className="button button-primary"
+                onClick={() => handleSaveSection('contact')}
+                disabled={saving === 'contact'}
+              >
+                {saving === 'contact' ? 'Saving...' : 'Save Contact Us'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

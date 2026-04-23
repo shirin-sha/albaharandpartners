@@ -97,6 +97,7 @@ function getEmptyContent(lang: 'ltr' | 'rtl'): HomepageContent {
       tag: '',
       heading: '',
       description: '',
+      imagePath: '/image/section/bg-section-banner-h8.jpg',
       buttonText: '',
       buttonLink: '',
       phoneLabel: '',

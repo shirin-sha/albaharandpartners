@@ -5,7 +5,7 @@ import Image from "next/image";
 import React from "react";
 import { HeaderContent } from "@/types/header";
 import { usePathname } from "next/navigation";
-import { addLanguagePrefix } from "@/lib/language-utils";
+import { addLanguagePrefix, removeLanguagePrefix } from "@/lib/language-utils";
 
 interface Props {
   data: HeaderContent;
@@ -14,6 +14,13 @@ interface Props {
 export default function HeaderCMS({ data }: Props) {
   const [isFixed, setIsFixed] = useState(false);
   const pathname = usePathname();
+  const isArabic = pathname?.startsWith("/ar") ?? false;
+  const basePath = removeLanguagePrefix(pathname);
+  const languageSwitchHref = isArabic
+    ? basePath
+    : basePath === "/"
+      ? "/ar"
+      : `/ar${basePath}`;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -124,13 +131,23 @@ export default function HeaderCMS({ data }: Props) {
                 </nav>
               </div>
               <div className="header-right">
-                <div className="nav-btn">
-                  <Link
-                    href={addLanguagePrefix(data.buttonLink, pathname)}
-                    className="tf-btn bg-white style-1 hover-bg-primary"
-                  >
-                    <span>{data.buttonText}</span>
-                  </Link>
+                <div className="header-actions-tight">
+                  <div className="nav-btn">
+                    <Link
+                      href={languageSwitchHref}
+                      className="tf-btn bg-white style-1 hover-bg-primary"
+                    >
+                      <span>{isArabic ? "English" : "العربية"}</span>
+                    </Link>
+                  </div>
+                  <div className="nav-btn">
+                    <Link
+                      href={addLanguagePrefix(data.buttonLink, pathname)}
+                      className="tf-btn bg-white style-1 hover-bg-primary"
+                    >
+                      <span>{data.buttonText}</span>
+                    </Link>
+                  </div>
                 </div>
                 <div className="nav-icon">
                   <div className="canvas-btn">

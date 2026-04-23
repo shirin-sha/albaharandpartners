@@ -113,8 +113,20 @@ export function buildSectionsFromContent(
       sectionId: 'cta',
       enabled: true,
       order: 9,
-      ltr: ltrContent.ctaSection ?? {},
-      rtl: rtl?.ctaSection ?? {},
+      ltr: {
+        ...(ltrContent.ctaSection ?? {}),
+        imagePath:
+          (ltrContent.ctaSection as any)?.imagePath ||
+          (ltrContent.ctaSection as any)?.backgroundImage ||
+          '',
+      },
+      rtl: {
+        ...(rtl?.ctaSection ?? {}),
+        imagePath:
+          (rtl?.ctaSection as any)?.imagePath ||
+          (rtl?.ctaSection as any)?.backgroundImage ||
+          '',
+      },
     },
   ];
 }

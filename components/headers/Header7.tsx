@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
+import { usePathname } from "next/navigation";
 import NavOnepage from "./NavOnepage";
 import Nav from "./Nav";
 import Nav7 from "./Nav7";
@@ -11,6 +12,12 @@ import SearchButton from "./SearchButton";
 
 export default function Header7({ onepage = false }) {
   const [isFixed, setIsFixed] = useState(false);
+  const pathname = usePathname();
+  const isArabic = pathname === "/ar" || pathname.startsWith("/ar/");
+  const switchLocalePath = isArabic
+    ? pathname.replace(/^\/ar(?=\/|$)/, "") || "/"
+    : `/ar${pathname === "/" ? "" : pathname}`;
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 21) {
@@ -57,14 +64,23 @@ export default function Header7({ onepage = false }) {
                 </nav>
               </div>
               <div className="header-right">
-           
-                <div className="nav-btn">
-                  <Link
-                    href={`#`}
-                    className="tf-btn bg-on-suface-container style-1"
-                  >
-                    <span>Profile</span>
-                  </Link>
+                <div className="header-actions-tight">
+                  <div className="nav-btn">
+                    <Link
+                      href={switchLocalePath}
+                      className="tf-btn bg-on-suface-container style-1"
+                    >
+                      <span>{isArabic ? "English" : "العربية"}</span>
+                    </Link>
+                  </div>
+                  <div className="nav-btn">
+                    <Link
+                      href={`#`}
+                      className="tf-btn bg-on-suface-container style-1"
+                    >
+                      <span>Profile</span>
+                    </Link>
+                  </div>
                 </div>
                 <div className="nav-icon">
                

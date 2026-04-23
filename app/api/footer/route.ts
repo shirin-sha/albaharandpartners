@@ -6,6 +6,30 @@ import { revalidatePath } from 'next/cache';
 const DB_NAME = 'albaharpartners1';
 const COLLECTION_NAME = 'footer';
 
+function sanitizeContactItems(items: unknown[] = []) {
+  return items.map((item: any, index: number) => ({
+    _id: item?._id,
+    label: item?.label || '',
+    value: item?.value || '',
+    order: typeof item?.order === 'number' ? item.order : index,
+    isActive: item?.isActive !== false,
+  }));
+}
+
+function sanitizeFooterContent(body: FooterContent): FooterContent {
+  return {
+    ...body,
+    serviceAssistance: {
+      ...body.serviceAssistance,
+      items: sanitizeContactItems((body.serviceAssistance?.items as unknown[]) || []),
+    },
+    contactSection: {
+      ...body.contactSection,
+      items: sanitizeContactItems((body.contactSection?.items as unknown[]) || []),
+    },
+  };
+}
+
 // GET - Fetch Footer content
 export async function GET(request: NextRequest) {
   try {
@@ -27,7 +51,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: content,
+      data: sanitizeFooterContent(content),
     });
   } catch (error) {
     console.error('Error fetching Footer content:', error);
@@ -42,8 +66,9 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body: FooterContent = await request.json();
+    const sanitizedBody = sanitizeFooterContent(body);
 
-    if (!body.language) {
+    if (!sanitizedBody.language) {
       return NextResponse.json({
         success: false,
         message: 'Language is required',
@@ -55,17 +80,17 @@ export async function POST(request: NextRequest) {
     const collection = db.collection(COLLECTION_NAME);
 
     // Check if content already exists for this language
-    const existing = await collection.findOne({ language: body.language });
+    const existing = await collection.findOne({ language: sanitizedBody.language });
     if (existing) {
       return NextResponse.json({
         success: false,
-        message: `Content already exists for language: ${body.language}. Use PUT to update.`,
+        message: `Content already exists for language: ${sanitizedBody.language}. Use PUT to update.`,
       }, { status: 409 });
     }
 
     const now = new Date();
     // Exclude _id so MongoDB can generate a proper ObjectId
-    const { _id, ...bodyWithoutId } = body;
+    const { _id, ...bodyWithoutId } = sanitizedBody;
     const newContent = {
       ...bodyWithoutId,
       createdAt: now,
@@ -95,8 +120,9 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body: FooterContent = await request.json();
+    const sanitizedBody = sanitizeFooterContent(body);
 
-    if (!body.language) {
+    if (!sanitizedBody.language) {
       return NextResponse.json({
         success: false,
         message: 'Language is required',
@@ -107,14 +133,14 @@ export async function PUT(request: NextRequest) {
     const db = client.db(DB_NAME);
     const collection = db.collection(COLLECTION_NAME);
 
-    const { _id, createdAt, ...updateData } = body;
+    const { _id, createdAt, ...updateData } = sanitizedBody;
     const updatedContent = {
       ...updateData,
       updatedAt: new Date(),
     };
 
     const result = await collection.findOneAndUpdate(
-      { language: body.language },
+      { language: sanitizedBody.language },
       { $set: updatedContent },
       { returnDocument: 'after', upsert: true }
     );

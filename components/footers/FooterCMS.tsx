@@ -86,6 +86,14 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
     return <i className={icon} />;
   };
 
+  const getContactItemHref = (item: { value: string }) => {
+    const trimmed = (item.value || "").trim();
+    if (!trimmed) return "";
+    if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(trimmed)) return `mailto:${trimmed}`;
+    if (/^\+?[0-9()\-\s]{7,}$/.test(trimmed)) return `tel:${trimmed.replace(/\s+/g, "")}`;
+    return "";
+  };
+
   return (
     <footer className={parentClass} id="footer">
       <div className="tf-container position-relative z-5">
@@ -183,10 +191,17 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
                         <ul>
                           {activeServiceItems.map((item, index) => (
                             <li key={item._id || index} className="support-item-footer caption-1">
-                              <span>
-                                {item.label && `${item.label}: `}
-                                {item.value}
-                              </span>
+                              {getContactItemHref(item) ? (
+                                <Link href={getContactItemHref(item)}>
+                                  {item.label && `${item.label}: `}
+                                  {item.value}
+                                </Link>
+                              ) : (
+                                <span>
+                                  {item.label && `${item.label}: `}
+                                  {item.value}
+                                </span>
+                              )}
                             </li>
                           ))}
                         </ul>
@@ -203,10 +218,17 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
                         <ul>
                           {activeContactItems.map((item, index) => (
                             <li key={item._id || index} className="support-item-footer caption-1">
-                              <span>
-                                {item.label && `${item.label}: `}
-                                {item.value}
-                              </span>
+                              {getContactItemHref(item) ? (
+                                <Link href={getContactItemHref(item)}>
+                                  {item.label && `${item.label}: `}
+                                  {item.value}
+                                </Link>
+                              ) : (
+                                <span>
+                                  {item.label && `${item.label}: `}
+                                  {item.value}
+                                </span>
+                              )}
                             </li>
                           ))}
                         </ul>
