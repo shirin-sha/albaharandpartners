@@ -566,12 +566,6 @@
   &.h-7 {
     min-height: 100vh;
     
-    @media (min-width: 1920px) {
-      max-width: 1920px;
-      width: 100%;
-      margin: 0 auto;
-    }
-    
     .swiper-slide {
       position: relative;
       height: 100%;
@@ -619,20 +613,6 @@
       }
 
       padding: 283px 0 243px;
-      
-      @media (min-width: 1920px) {
-        width: 1920px;
-        max-width: 1920px;
-        height: 1000px;
-        min-height: 1000px;
-        max-height: 1000px;
-        padding: 0;
-        margin: 0 auto;
-        
-        .page-title-content {
-          padding: 283px 0 243px;
-        }
-      }
       
       .page-title-content {
         height: 100%;
