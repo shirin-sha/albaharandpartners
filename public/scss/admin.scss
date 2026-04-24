@@ -526,6 +526,12 @@
 .admin-cms-section-card.rtl {
   direction: rtl;
   text-align: right;
+  font-family: "Noto Sans Arabic", sans-serif;
+}
+
+.admin-cms-container.rtl *:not(i):not([class^="icon-"]):not([class*=" icon-"]),
+.admin-cms-section-card.rtl *:not(i):not([class^="icon-"]):not([class*=" icon-"]) {
+  font-family: "Noto Sans Arabic", sans-serif !important;
 }
 
 .admin-cms-container.rtl .form-group input,

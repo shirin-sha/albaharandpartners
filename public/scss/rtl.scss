@@ -21,6 +21,12 @@
 
 .rtl,
 .style-RTL {
+  font-family: "Noto Sans Arabic", sans-serif;
+  // Force Arabic font across UI text, even where base styles set explicit fonts.
+  *:not(i):not([class^="icon-"]):not([class*=" icon-"]) {
+    font-family: "Noto Sans Arabic", sans-serif !important;
+  }
+
   #toggle-rtl {
     left: 15px;
     right: auto;
