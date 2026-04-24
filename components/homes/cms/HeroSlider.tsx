@@ -38,7 +38,7 @@ export default function HeroSlider({ slides, language = 'ltr' }: HeroSliderProps
       dir={language}
     >
       <div className="tf-btn-arrow arrow-left sw-auto-next snbp7">
-        <i className={language === 'rtl' ? "icon-arrow-right1" : "icon-arrow-left"} />
+        <i className="icon-arrow-left" />
       </div>
       {activeSlides.map((slide, index) => (
         <SwiperSlide className="swiper-slide" key={index}>
@@ -88,7 +88,7 @@ export default function HeroSlider({ slides, language = 'ltr' }: HeroSliderProps
         </SwiperSlide>
       ))}
       <div className="tf-btn-arrow arrow-right sw-auto-prev snbn7">
-        <i className={language === 'rtl' ? "icon-arrow-left" : "icon-arrow-right1"} />
+        <i className="icon-arrow-right1" />
       </div>
     </Swiper>
   );
