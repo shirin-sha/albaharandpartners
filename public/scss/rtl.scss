@@ -85,17 +85,6 @@
     }
 
     &.h-7 {
-      .hero-container {
-        .row {
-          justify-content: flex-end;
-        }
-
-        .hero-col {
-          display: flex;
-          justify-content: flex-end;
-        }
-      }
-
       .page-title-content {
         align-items: flex-end;
         text-align: right;
@@ -112,6 +101,23 @@
 
         .tf-btn {
           align-self: flex-end;
+        }
+      }
+
+      // HeroSlider wraps the CTA button in .fade-item-3, so align that wrapper too.
+      .page-title-content.rtl-content {
+        align-items: flex-end;
+        text-align: right;
+
+        .fade-item-3 {
+          width: 100%;
+          align-self: flex-end;
+          text-align: right;
+
+          .tf-btn {
+            margin-left: auto !important;
+            margin-right: 0 !important;
+          }
         }
       }
     }
