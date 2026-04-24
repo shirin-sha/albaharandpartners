@@ -70,7 +70,9 @@ export default function Header7({ onepage = false }) {
                       href={switchLocalePath}
                       className="tf-btn bg-on-suface-container style-1"
                     >
-                      <span>{isArabic ? "English" : "العربية"}</span>
+                      <span className={!isArabic ? "font-noto-arabic" : ""}>
+                        {isArabic ? "English" : "العربية"}
+                      </span>
                     </Link>
                   </div>
                   <div className="nav-btn">

@@ -137,7 +137,9 @@ export default function HeaderCMS({ data }: Props) {
                       href={languageSwitchHref}
                       className="tf-btn bg-white style-1 hover-bg-primary"
                     >
-                      <span>{isArabic ? "English" : "العربية"}</span>
+                      <span className={!isArabic ? "font-noto-arabic" : ""}>
+                        {isArabic ? "English" : "العربية"}
+                      </span>
                     </Link>
                   </div>
                   <div className="nav-btn">

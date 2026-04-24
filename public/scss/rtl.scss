@@ -638,6 +638,14 @@
       .tf-phone {
         padding-right: 0;
         text-align: end;
+
+        h5,
+        a {
+          direction: ltr;
+          unicode-bidi: embed;
+          display: inline-block;
+          text-align: left;
+        }
       }
     }
   }
