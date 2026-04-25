@@ -19,7 +19,7 @@ export default function HistoryCMS({ data }: Props) {
   const items = data.items && data.items.length > 0 ? data.items : timelineItems;
 
   return (
-    <section className="section-history section-about bg-color-primary tf-spacing-2 hover-active-step">
+    <section className="section-process h-8 tf-spacing-2 hover-active-step">
       <div className="tf-container">
         <div className="row">
           <div className="col-12">

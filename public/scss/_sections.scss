@@ -1501,14 +1501,10 @@
 
 .section-why-choose {
   &.our-advantage-bg {
-    background-image: linear-gradient(
-        rgba(243, 245, 245, 0.93),
-        rgba(243, 245, 245, 0.93)
-      ),
-      url("/image/section/bg-section-process-h8.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+   
+        background-color: rgba(243, 245, 245, 0.93)
+     
+    
   }
 
   &.h-2 {

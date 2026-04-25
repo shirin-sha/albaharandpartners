@@ -8,7 +8,7 @@ import Image from "next/image";
 export default function History() {
   const [hoveredItems, setHoveredItems] = useState<number[]>([]);
   return (
-    <section className="section-history section-about bg-color-primary tf-spacing-2 hover-active-step">
+    <section className="section-process h-8 tf-spacing-2 hover-active-step">
       <div className="tf-container">
         <div className="row">
           <div className="col-12">
