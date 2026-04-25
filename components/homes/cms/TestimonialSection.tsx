@@ -12,20 +12,35 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
     return null;
   }
 
-  // Backward-compatible fallback for older CMS documents.
+  const testimonialContent = content as TestimonialSectionType & {
+    name?: string;
+    position?: string;
+    founderName?: string;
+    founderTitle?: string;
+    title?: string;
+    designation?: string;
+    role?: string;
+  };
   const personName =
-    content.personName || (content as TestimonialSectionType & { name?: string }).name || '';
+    testimonialContent.personName ||
+    testimonialContent.founderName ||
+    testimonialContent.name ||
+    "";
   const personTitle =
-    content.personTitle ||
-    (content as TestimonialSectionType & { position?: string }).position ||
-    '';
+    testimonialContent.personTitle ||
+    testimonialContent.founderTitle ||
+    testimonialContent.position ||
+    testimonialContent.designation ||
+    testimonialContent.role ||
+    testimonialContent.title ||
+    "";
 
   return (
     <section className="section-testimonials h-8 section-one-page" id="testimonials" dir={language}>
       <div className="tf-container position-relative">
         <div className="row rg-60">
           <div className="col-lg-6">
-            <div className="image-testimonials img-item">
+            <div className="image-testimonials img-item tf-animate-1">
               <Image
                 src={content.imagePath}
                 alt={personName}
@@ -33,7 +48,7 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
                 width={605}
                 height={605}
               />
-              <div className="content tf-fade-top fade-item-1">
+              <div className="content wow fadeInUp">
                 <h6>
                   <a href="#" className="name">
                     {personName}

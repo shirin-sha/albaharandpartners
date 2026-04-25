@@ -54,6 +54,34 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
   const activeQuickLinks = (data.quickLinks || [])
     .filter(col => col.isActive)
     .sort((a, b) => a.order - b.order);
+  const quickLinkColumnsForDisplay = (() => {
+    if (activeQuickLinks.length === 0) return [];
+
+    const normalizedColumns = activeQuickLinks
+      .map((column) => ({
+        ...column,
+        links: (column.links || [])
+          .filter((link) => link.isActive)
+          .sort((a, b) => a.order - b.order),
+      }))
+      .filter((column) => column.links.length > 0);
+
+    if (normalizedColumns.length === 0) return [];
+
+    // Keep previous visual behavior: if CMS has one column, render as two balanced columns.
+    if (normalizedColumns.length === 1) {
+      const links = normalizedColumns[0].links;
+      if (links.length <= 1) return normalizedColumns;
+
+      const splitIndex = Math.ceil(links.length / 2);
+      return [
+        { ...normalizedColumns[0], links: links.slice(0, splitIndex) },
+        { ...normalizedColumns[0], links: links.slice(splitIndex) },
+      ].filter((column) => column.links.length > 0);
+    }
+
+    return normalizedColumns;
+  })();
 
   const activeServiceItems = (data.serviceAssistance?.items || [])
     .filter(item => item.isActive)
@@ -154,7 +182,7 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
                   </div>
                 )}
                 <div className="footer-center">
-                  {activeQuickLinks.length > 0 && (
+                  {quickLinkColumnsForDisplay.length > 0 && (
                     <div className="footer-content our-services footer-col-block quick-links">
                       <div className="title-mobile label text-btn-uppercase">
                         {activeQuickLinks[0]?.title || 'Quick Links'}
@@ -162,14 +190,10 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
                       </div>
                       <div className="tf-collapse-content">
                         <div className="flex g-12">
-                          {activeQuickLinks.map((column, colIndex) => {
-                            const activeLinks = (column.links || [])
-                              .filter(link => link.isActive)
-                              .sort((a, b) => a.order - b.order);
-                            
+                          {quickLinkColumnsForDisplay.map((column, colIndex) => {
                             return (
                               <ul key={column._id || colIndex}>
-                                {activeLinks.map((link, linkIndex) => (
+                                {column.links.map((link, linkIndex) => (
                                   <li key={link._id || linkIndex} className="support-item-footer caption-1">
                                     <Link href={link.href}>{link.title}</Link>
                                   </li>

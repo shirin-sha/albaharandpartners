@@ -2345,6 +2345,17 @@
         padding-bottom: 32px;
       }
     }
+
+    // Keep secondary content from jumping up in RTL when paragraph is short.
+    &[dir="rtl"] {
+      .section-content {
+        .heading-section {
+          .sub-title {
+            min-height: clamp(160px, 18vw, 260px);
+          }
+        }
+      }
+    }
   }
 }
 
