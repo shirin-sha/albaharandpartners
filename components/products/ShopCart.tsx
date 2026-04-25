@@ -185,7 +185,7 @@ export default function ShopCart() {
                 <div className="py-4">
                   Your Cart is empty. Start adding favorite products to cart!{" "}
                   <Link
-                    className="tf-btn hover-white style-1 bg-on-suface-container mt-3 mb-5"
+                    className="tf-btn hover-white style-1 bg-color-primary mt-3 mb-5"
                     href="/products"
                   >
                     Explore Products
@@ -196,11 +196,11 @@ export default function ShopCart() {
             <div className="bottom-form-table">
               <div className="ip-discount-code">
                 <input type="text" placeholder="Add voucher discount" />
-                <button className="tf-btn bg-on-suface-container">
+                <button className="tf-btn bg-color-primary">
                   <span className="label text-btn-uppercase">Apply coupon</span>
                 </button>
               </div>
-              <a href="#" className="tf-btn style-4 bg-on-suface-container">
+              <a href="#" className="tf-btn style-4 bg-color-primary">
                 <span>Update Cart</span>
               </a>
             </div>
@@ -251,7 +251,7 @@ export default function ShopCart() {
                 <div className="box-progress-checkout">
                   <Link
                     href={`/check-out`}
-                    className="tf-btn style-1 bg-on-suface-container w-full text-center mb-12"
+                    className="tf-btn style-1 bg-color-primary w-full text-center mb-12"
                   >
                     <span>Process To Checkout</span>
                   </Link>

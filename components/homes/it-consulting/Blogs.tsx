@@ -30,7 +30,7 @@ export default function Blogs() {
               <div className="text-anime-wave-2">
                 <Link
                   href="/news-updates"
-                  className="tf-btn style-1 bg-on-suface-container"
+                  className="tf-btn style-1 bg-color-primary"
                 >
                   <span>View All Articles</span>
                 </Link>

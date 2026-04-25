@@ -22,7 +22,7 @@ export default function AboutBPCCMS({ data }: Props) {
 
   return (
     <section
-      className="section-contact-home h-4 bg-on-suface-container section-one-page"
+      className="section-contact-home h-4 bg-color-primary section-one-page"
       id="cta"
     >
       <div className="left">

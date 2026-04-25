@@ -3,7 +3,7 @@ import React from "react";
 
 export default function Services() {
   return (
-    <section className="section-industry h-5 tf-spacing-22 bg-on-suface-container">
+    <section className="section-industry h-5 tf-spacing-22 bg-color-primary">
       <div className="tf-container position-relative">
         <div className="row">
           <div className="col-12 text-center">

@@ -125,7 +125,7 @@ export default function LoginModal() {
                 </div>
                 <button
                   type="submit"
-                  className="tf-btn style-2 bg-on-suface-container"
+                  className="tf-btn style-2 bg-color-primary"
                 >
                   <span>Subscribe</span>
                 </button>{" "}

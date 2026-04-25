@@ -44,7 +44,7 @@ export default function Gallery() {
                 onClick={() => setIsLoadedMore(true)}
                 className="btn-load-more text-center view-more-button-1"
               >
-                <button className="tf-btn style-1 bg-on-suface-container btn-loadmore-1">
+                <button className="tf-btn style-1 bg-color-primary btn-loadmore-1">
                   <span>Load More</span>
                 </button>
               </div>

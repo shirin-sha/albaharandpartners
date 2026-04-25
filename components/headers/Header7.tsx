@@ -68,7 +68,7 @@ export default function Header7({ onepage = false }) {
                   <div className="nav-btn">
                     <Link
                       href={switchLocalePath}
-                      className="tf-btn bg-on-suface-container style-1"
+                      className="tf-btn bg-color-primary style-1"
                     >
                       <span className={!isArabic ? "font-noto-arabic" : ""}>
                         {isArabic ? "English" : "العربية"}
@@ -78,7 +78,7 @@ export default function Header7({ onepage = false }) {
                   <div className="nav-btn">
                     <Link
                       href={`#`}
-                      className="tf-btn bg-on-suface-container style-1"
+                      className="tf-btn bg-color-primary style-1"
                     >
                       <span>Profile</span>
                     </Link>

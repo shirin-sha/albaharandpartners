@@ -254,7 +254,7 @@ export default function Quickview() {
                       e.preventDefault();
                       addProductToCart(quickViewItem.id, value);
                     }}
-                    className="tf-btn style-2 w-full text-center bg-on-suface-container btn-add-to-cart"
+                    className="tf-btn style-2 w-full text-center bg-color-primary btn-add-to-cart"
                   >
                     <span>
                       {isAddedToCartProducts(quickViewItem.id)
@@ -282,7 +282,7 @@ export default function Quickview() {
                 </div>
                 <a
                   href="#"
-                  className="tf-btn w-full style-2 bg-color-primary text-center"
+                  className="tf-btn w-full style-2 bg-on-suface-container text-center"
                 >
                   <span>Buy It Now</span>
                 </a>

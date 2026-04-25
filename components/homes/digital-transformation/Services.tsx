@@ -8,7 +8,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 export default function Services() {
   return (
     <section
-      className="section-services h-4 bg-on-suface-container tf-spacing-2 section-one-page"
+      className="section-services h-4 bg-color-primary tf-spacing-2 section-one-page"
       id="services"
     >
       <div className="tf-container position-relative">

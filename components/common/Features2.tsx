@@ -91,7 +91,7 @@ export default function Features({
               </div>
               <Link
                 href={`/contact-us`}
-                className="tf-btn style-1 bg-on-suface-container wow fadeInUp"
+                className="tf-btn style-1 bg-color-primary wow fadeInUp"
               >
                 <span> Schedule A Consultation </span>
               </Link>

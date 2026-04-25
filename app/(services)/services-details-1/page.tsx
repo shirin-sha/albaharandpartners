@@ -32,7 +32,7 @@ export default async function ServiceDetailsPage({ searchParams }: PageProps) {
         <p className="body-2 mb-24">
           The requested solution could not be found. Please check the link or return to the solutions page.
         </p>
-        <Link href="/solutions" className="tf-btn style-1 bg-on-suface-container">
+        <Link href="/solutions" className="tf-btn style-1 bg-color-primary">
           <span>Back to Solutions</span>
         </Link>
       </div>

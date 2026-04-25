@@ -12,6 +12,14 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
     return null;
   }
 
+  // Backward-compatible fallback for older CMS documents.
+  const personName =
+    content.personName || (content as TestimonialSectionType & { name?: string }).name || '';
+  const personTitle =
+    content.personTitle ||
+    (content as TestimonialSectionType & { position?: string }).position ||
+    '';
+
   return (
     <section className="section-testimonials h-8 section-one-page" id="testimonials" dir={language}>
       <div className="tf-container position-relative">
@@ -20,7 +28,7 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
             <div className="image-testimonials img-item">
               <Image
                 src={content.imagePath}
-                alt={content.personName}
+                alt={personName}
                 className="lazyload"
                 width={605}
                 height={605}
@@ -28,10 +36,10 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
               <div className="content tf-fade-top fade-item-1">
                 <h6>
                   <a href="#" className="name">
-                    {content.personName}
+                    {personName}
                   </a>
                 </h6>
-                <div className="position">{content.personTitle}</div>
+                <div className="position">{personTitle}</div>
               </div>
             </div>
           </div>

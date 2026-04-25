@@ -80,7 +80,7 @@ export default function Pricing() {
                     <div
                       className={`pricing-card-items wow fadeInUp ${
                         plan.isBestValue
-                          ? "best-value bg-on-suface-container"
+                          ? "best-value bg-color-primary"
                           : ""
                       }`}
                       data-wow-delay={`.${index}s`}
@@ -138,7 +138,7 @@ export default function Pricing() {
                           className={`tf-btn style-1 w-full text-center wow fadeInUp ${
                             plan.isBestValue
                               ? "bg-white bg-white-style-2"
-                              : "bg-on-suface-container"
+                              : "bg-color-primary"
                           }`}
                           data-wow-delay={`.${index}s`}
                         >

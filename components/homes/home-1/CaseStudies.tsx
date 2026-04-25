@@ -68,7 +68,7 @@ export default function CaseStudies() {
 
   return (
     <section
-      className="section-project h-1 bg-on-suface-container section-one-page"
+      className="section-project h-1 bg-color-primary section-one-page"
       id="project"
     >
       <div className="tf-container">

@@ -119,7 +119,7 @@ export default function Header8({ onepage = false }) {
                 <div className="nav-btn">
                   <Link
                     href={`/pricing`}
-                    className="tf-btn bg-on-suface-container style-1"
+                    className="tf-btn bg-color-primary style-1"
                   >
                     <span>Get Your Consult!</span>
                   </Link>

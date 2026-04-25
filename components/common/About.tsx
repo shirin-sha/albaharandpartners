@@ -40,7 +40,7 @@ export default function About() {
                         <div className="text-anime-wave">
                           <Link
                             href={`/about-us`}
-                            className="tf-btn style-1 bg-on-suface-container"
+                            className="tf-btn style-1 bg-color-primary"
                           >
                             <span> About Us </span>
                           </Link>

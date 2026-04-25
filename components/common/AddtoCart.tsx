@@ -18,7 +18,7 @@ export default function AddtoCart({ product }: AddtoCartProps) {
           addProductToCart(product.id);
         }
       }}
-      className="tf-btn bg-on-suface-container style-3 text-center w-full"
+      className="tf-btn bg-color-primary style-3 text-center w-full"
     >
       <span>
         {isAddedToCartProducts(product.id) ? "Already Added" : "Add to Cart"}

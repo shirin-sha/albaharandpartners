@@ -28,7 +28,7 @@ export default function CommentForm() {
         </label>
       </fieldset>
       <div className="bottom-btn">
-        <button type="submit" className="tf-btn style-1 bg-on-suface-container">
+        <button type="submit" className="tf-btn style-1 bg-color-primary">
           <span>Submit Review </span>
           <i className="icon-arrow-right-2" />
         </button>

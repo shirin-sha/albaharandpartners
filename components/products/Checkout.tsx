@@ -242,7 +242,7 @@ export default function Checkout() {
                 <div className="check-out-btn">
                   <button
                     type="submit"
-                    className="tf-btn style-2 bg-on-suface-container w-full"
+                    className="tf-btn style-2 bg-color-primary w-full"
                   >
                     <span>Place Order</span>
                   </button>
@@ -289,7 +289,7 @@ export default function Checkout() {
                   <div className="py-4">
                     Your Cart is empty. Start adding favorite products to cart!{" "}
                     <Link
-                      className="tf-btn hover-white style-1 bg-on-suface-container mt-3 mb-5"
+                      className="tf-btn hover-white style-1 bg-color-primary mt-3 mb-5"
                       href="/products"
                     >
                       Explore Products
@@ -299,7 +299,7 @@ export default function Checkout() {
                 <div className="wg-discount mb-30">
                   <div className="ip-discount-code mb-12">
                     <input type="text" placeholder="Add voucher discount" />
-                    <button className="tf-btn bg-on-suface-container">
+                    <button className="tf-btn bg-color-primary">
                       <span className="label text-btn-uppercase">
                         Apply coupon
                       </span>

@@ -100,7 +100,7 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                         </div>
                         <Link
                           href="#"
-                          className="tf-btn style-1 bg-on-suface-container"
+                          className="tf-btn style-1 bg-color-primary"
                         >
                           <span>Learn More</span>
                         </Link>

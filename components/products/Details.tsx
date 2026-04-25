@@ -158,7 +158,7 @@ export default function Details({ product }: { product: Product }) {
                         e.preventDefault();
                         addProductToCart(product.id, value);
                       }}
-                      className="tf-btn style-2 w-full text-center bg-on-suface-container btn-add-to-cart"
+                      className="tf-btn style-2 w-full text-center bg-color-primary btn-add-to-cart"
                     >
                       <span>
                         {isAddedToCartProducts(product.id)
@@ -186,7 +186,7 @@ export default function Details({ product }: { product: Product }) {
                   </div>
                   <a
                     href="#"
-                    className="tf-btn w-full style-2 bg-color-primary text-center"
+                    className="tf-btn w-full style-2 bg-on-suface-container text-center"
                   >
                     <span>Buy It Now</span>
                   </a>
@@ -503,7 +503,7 @@ export default function Details({ product }: { product: Product }) {
                       <div>
                         <a
                           href="#write-review"
-                          className="tf-btn style-1 bg-on-suface-container btn-write-review"
+                          className="tf-btn style-1 bg-color-primary btn-write-review"
                         >
                           <span>Write A Review</span>
                         </a>
@@ -704,7 +704,7 @@ export default function Details({ product }: { product: Product }) {
                         <div className="bottom-btn">
                           <button
                             type="submit"
-                            className="tf-btn style-1 bg-on-suface-container"
+                            className="tf-btn style-1 bg-color-primary"
                           >
                             <span>Submit Review </span>
                             <i className="icon-arrow-right-2" />

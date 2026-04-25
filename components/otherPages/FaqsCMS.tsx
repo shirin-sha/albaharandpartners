@@ -37,7 +37,7 @@ export default function FaqsCMS({ data }: Props) {
                   <div className="text-anime-wave">
                     <Link
                       href={data.buttonLink}
-                      className="tf-btn style-1 bg-on-suface-container"
+                      className="tf-btn style-1 bg-color-primary"
                     >
                       <span>{data.buttonText}</span>
                     </Link>

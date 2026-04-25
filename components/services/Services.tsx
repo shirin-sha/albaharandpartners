@@ -57,7 +57,7 @@ export default function Services() {
                   <div className="wow fadeInUp">
                     <Link
                       href={`/services-details-1?id=${service.id}`}
-                      className="tf-btn style-1 bg-on-suface-container"
+                      className="tf-btn style-1 bg-color-primary"
                     >
                       <span> View Services </span>
                     </Link>

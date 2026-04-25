@@ -64,7 +64,7 @@ export default function Features() {
               <div className="text-anime-wave">
                 <Link
                   href={`/contact-us`}
-                  className="tf-btn style-1 bg-on-suface-container"
+                  className="tf-btn style-1 bg-color-primary"
                 >
                   <span> Schedule A Consultation</span>
                 </Link>

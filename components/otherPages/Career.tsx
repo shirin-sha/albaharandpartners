@@ -76,7 +76,7 @@ export default function Career() {
                         </div>
                         <a
                           href="#"
-                          className="tf-btn style-1 bg-on-suface-container"
+                          className="tf-btn style-1 bg-color-primary"
                         >
                           <span> Apply Job Now </span>
                         </a>
@@ -139,7 +139,7 @@ export default function Career() {
                         </div>
                         <a
                           href="#"
-                          className="tf-btn style-1 bg-on-suface-container"
+                          className="tf-btn style-1 bg-color-primary"
                         >
                           <span> Apply Job Now </span>
                         </a>
@@ -202,7 +202,7 @@ export default function Career() {
                         </div>
                         <a
                           href="#"
-                          className="tf-btn style-1 bg-on-suface-container"
+                          className="tf-btn style-1 bg-color-primary"
                         >
                           <span> Apply Job Now </span>
                         </a>
@@ -265,7 +265,7 @@ export default function Career() {
                         </div>
                         <a
                           href="#"
-                          className="tf-btn style-1 bg-on-suface-container"
+                          className="tf-btn style-1 bg-color-primary"
                         >
                           <span> Apply Job Now </span>
                         </a>

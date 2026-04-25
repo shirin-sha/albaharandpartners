@@ -246,7 +246,7 @@ export default function Products() {
                       <span>-</span>
                       <div id="skip-value-upper">${price[1].toFixed(2)}</div>
                     </div>
-                    <a href="" className="tf-btn bg-on-suface-container">
+                    <a href="" className="tf-btn bg-color-primary">
                       <span>Filter</span>
                     </a>
                   </div>

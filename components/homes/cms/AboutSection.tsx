@@ -44,7 +44,7 @@ export default function AboutSection({ content, language = 'ltr' }: AboutSection
           <div className="bottom g-40 text-anime-wave-2">
             <Link
               href={content.buttonLink || '/contact-us'}
-              className="tf-btn bg-on-suface-container style-1"
+              className="tf-btn bg-color-primary style-1"
             >
               <span>{content.buttonText}</span>
             </Link>

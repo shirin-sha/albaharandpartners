@@ -79,7 +79,7 @@ export default function CareerCMS({ data }: Props) {
                           </div>
                           <Link
                             href={job.applyLink || "#"}
-                            className="tf-btn style-1 bg-on-suface-container"
+                            className="tf-btn style-1 bg-color-primary"
                           >
                             <span> Apply Job Now </span>
                           </Link>

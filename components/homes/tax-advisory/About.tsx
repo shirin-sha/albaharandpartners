@@ -30,7 +30,7 @@ export default function About() {
             <div className="bottom g-40 text-anime-wave-2">
               <Link
                 href={`/contact-us`}
-                className="tf-btn bg-on-suface-container style-1"
+                className="tf-btn bg-color-primary style-1"
               >
                 <span>Schedule a Consultation</span>
               </Link>

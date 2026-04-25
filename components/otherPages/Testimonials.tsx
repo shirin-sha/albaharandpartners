@@ -30,7 +30,7 @@ export default function Testimonials() {
               <div className="text-anime-wave-2">
                 <Link
                   href={`/testimonials`}
-                  className="tf-btn style-1 bg-on-suface-container"
+                  className="tf-btn style-1 bg-color-primary"
                 >
                   <span> Read All Testimonials </span>
                 </Link>

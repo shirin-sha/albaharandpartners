@@ -115,7 +115,7 @@ export default function Blogs3() {
               <div className="btn-load-more text-center view-more-button wow fadeInUp">
                 <button
                   onClick={() => setIsLoadedMore(true)}
-                  className="tf-btn style-1 bg-on-suface-container btn-loadmore"
+                  className="tf-btn style-1 bg-color-primary btn-loadmore"
                 >
                   <span>Load More</span>
                 </button>

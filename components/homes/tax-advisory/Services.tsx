@@ -29,7 +29,7 @@ export default function Services() {
                 <div className="text-anime-wave-2">
                   <Link
                     href="/our-services-1"
-                    className="tf-btn style-1 bg-on-suface-container"
+                    className="tf-btn style-1 bg-color-primary"
                   >
                     <span> View All Services </span>
                   </Link>

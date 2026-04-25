@@ -77,7 +77,7 @@ export default function FeaturesSection({ content, language = 'ltr' }: FeaturesS
               <div className="wow fadeInUp">
                 <Link
                   href={content.buttonLink || '/contact-us'}
-                  className="tf-btn style-1 bg-on-suface-container"
+                  className="tf-btn style-1 bg-color-primary"
                 >
                   <span>{content.buttonText}</span>
                 </Link>

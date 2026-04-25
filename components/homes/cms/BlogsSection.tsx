@@ -45,7 +45,7 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
               <div className="text-anime-wave-2">
                 <Link
                   href={content.buttonLink || '/news-updates'}
-                  className="tf-btn style-1 bg-on-suface-container"
+                  className="tf-btn style-1 bg-color-primary"
                 >
                   <span>{content.buttonText}</span>
                 </Link>

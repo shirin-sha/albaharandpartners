@@ -238,7 +238,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="tf-btn style-1 bg-color-primary w-full text-center"
+            className="tf-btn style-1 bg-on-suface-container w-full text-center"
             style={{
               width: "100%",
               padding: "14px",

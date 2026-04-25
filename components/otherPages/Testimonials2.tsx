@@ -83,7 +83,7 @@ export default function Testimonials2() {
                 onClick={() => setIsLoadedMore(true)}
                 className="btn-load-more text-center view-more-button-5"
               >
-                <button className="tf-btn style-1 bg-on-suface-container btn-loadmore-5">
+                <button className="tf-btn style-1 bg-color-primary btn-loadmore-5">
                   <span>Load More</span>
                 </button>
               </div>

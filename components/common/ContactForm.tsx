@@ -6,7 +6,7 @@ import { useState } from "react";
 
 export default function ContactForm({
   parentClass = "form-contact-home style-border",
-  btnClass = "tf-btn style-2 bg-on-suface-container w-full text-center",
+  btnClass = "tf-btn style-2 bg-color-primary w-full text-center",
   isTitleCenter = true,
   title = "Get A Free Quote",
 }) {

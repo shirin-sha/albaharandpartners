@@ -135,7 +135,7 @@ export default function CaseStudies2() {
                       onClick={() => setIsLoadedMore(true)}
                       className="btn-load-more text-center view-more-button"
                     >
-                      <button className="tf-btn style-1 bg-on-suface-container btn-loadmore">
+                      <button className="tf-btn style-1 bg-color-primary btn-loadmore">
                         <span>Load More</span>
                       </button>
                     </div>

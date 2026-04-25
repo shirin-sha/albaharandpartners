@@ -62,7 +62,7 @@ export default function Hero() {
                   <div className="bottom g-40 text-anime-wave-2">
                     <Link
                       href={`/contact-us`}
-                      className="tf-btn bg-on-suface-container style-1"
+                      className="tf-btn bg-color-primary style-1"
                     >
                       <span>Schedule A Consultation</span>
                     </Link>

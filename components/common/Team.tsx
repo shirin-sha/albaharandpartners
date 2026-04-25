@@ -38,7 +38,7 @@ export default function TeamCircle() {
                   <div className="wow fadeInUp">
                     <Link
                       href={`/contact-us`}
-                      className="tf-btn style-1 bg-on-suface-container"
+                      className="tf-btn style-1 bg-color-primary"
                     >
                       <span>Apply Now!</span>
                     </Link>

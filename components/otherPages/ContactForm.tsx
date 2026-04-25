@@ -184,7 +184,7 @@ export default function ContactForm() {
       </div>
       <button
         type="submit"
-        className="tf-btn style-1 w-full bg-on-suface-container text-center"
+        className="tf-btn style-1 w-full bg-color-primary text-center"
       >
         <span>Send Message</span>
       </button>

@@ -3,7 +3,7 @@ import React from "react";
 export default function Services() {
   return (
     <section
-      className="section-industry h-6 tf-spacing-6 bg-on-suface-container mb-40 section-one-page"
+      className="section-industry h-6 tf-spacing-6 bg-color-primary mb-40 section-one-page"
       id="services"
     >
       <div className="heading-section style-color-white pl-80 pb-80">
