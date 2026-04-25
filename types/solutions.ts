@@ -16,8 +16,11 @@ export interface SolutionItem {
   detailDescription?: string;
   benefits: string[];
   imgSrc: string;
+  detailImgSrc?: string;
   imgWidth: number;
   imgHeight: number;
+  detailImgWidth?: number;
+  detailImgHeight?: number;
   isActive: boolean;
 }
 

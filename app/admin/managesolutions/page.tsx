@@ -28,8 +28,11 @@ export default function SolutionsManagePage() {
     benefits: string[];
     benefitsAr: string[];
     imgSrc: string;
+    detailImgSrc: string;
     imgWidth: number;
     imgHeight: number;
+    detailImgWidth: number;
+    detailImgHeight: number;
     isActive: boolean;
   }>({
     id: '',
@@ -44,8 +47,11 @@ export default function SolutionsManagePage() {
     benefits: [],
     benefitsAr: [],
     imgSrc: '',
+    detailImgSrc: '',
     imgWidth: 410,
     imgHeight: 546,
+    detailImgWidth: 850,
+    detailImgHeight: 512,
     isActive: true,
   });
 
@@ -113,8 +119,11 @@ export default function SolutionsManagePage() {
         detailDescription: formData.detailDescription,
         benefits: formData.benefits,
         imgSrc: formData.imgSrc,
+        detailImgSrc: formData.detailImgSrc,
         imgWidth: formData.imgWidth,
         imgHeight: formData.imgHeight,
+        detailImgWidth: formData.detailImgWidth,
+        detailImgHeight: formData.detailImgHeight,
         isActive: formData.isActive,
       };
 
@@ -126,8 +135,11 @@ export default function SolutionsManagePage() {
         detailDescription: formData.detailDescriptionAr || formData.detailDescription,
         benefits: formData.benefitsAr.length > 0 ? formData.benefitsAr : formData.benefits,
         imgSrc: formData.imgSrc,
+        detailImgSrc: formData.detailImgSrc,
         imgWidth: formData.imgWidth,
         imgHeight: formData.imgHeight,
+        detailImgWidth: formData.detailImgWidth,
+        detailImgHeight: formData.detailImgHeight,
         isActive: formData.isActive,
       };
 
@@ -188,8 +200,11 @@ export default function SolutionsManagePage() {
       benefits: solutionLtr.benefits || [],
       benefitsAr: solutionRtl.benefits || [],
       imgSrc: solutionLtr.imgSrc || '',
+      detailImgSrc: solutionLtr.detailImgSrc || '',
       imgWidth: solutionLtr.imgWidth || 410,
       imgHeight: solutionLtr.imgHeight || 546,
+      detailImgWidth: solutionLtr.detailImgWidth || 850,
+      detailImgHeight: solutionLtr.detailImgHeight || 512,
       isActive: solutionLtr.isActive !== undefined ? solutionLtr.isActive : true,
     });
     setShowForm(true);
@@ -236,8 +251,11 @@ export default function SolutionsManagePage() {
       benefits: [],
       benefitsAr: [],
       imgSrc: '',
+      detailImgSrc: '',
       imgWidth: 410,
       imgHeight: 546,
+      detailImgWidth: 850,
+      detailImgHeight: 512,
       isActive: true,
     });
     setEditingIndex(null);
@@ -441,6 +459,15 @@ export default function SolutionsManagePage() {
                       folder="solutions"
                     />
                   </div>
+                  <div className="form-group">
+                    <label>Detail Page Image</label>
+                    <ImageUpload
+                      value={formData.detailImgSrc}
+                      onChange={(value) => setFormData({ ...formData, detailImgSrc: value })}
+                      folder="solutions"
+                    />
+                    <small>This image is shown on the service details page.</small>
+                  </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     <div className="form-group">
                       <label>Width</label>
@@ -456,6 +483,24 @@ export default function SolutionsManagePage() {
                         type="number"
                         value={formData.imgHeight}
                         onChange={(e) => setFormData({ ...formData, imgHeight: Number(e.target.value) })}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div className="form-group">
+                      <label>Detail Width</label>
+                      <input
+                        type="number"
+                        value={formData.detailImgWidth}
+                        onChange={(e) => setFormData({ ...formData, detailImgWidth: Number(e.target.value) })}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Detail Height</label>
+                      <input
+                        type="number"
+                        value={formData.detailImgHeight}
+                        onChange={(e) => setFormData({ ...formData, detailImgHeight: Number(e.target.value) })}
                       />
                     </div>
                   </div>

@@ -60,6 +60,7 @@ export async function POST(
 
     revalidatePath('/solutions');
     revalidatePath('/');
+    revalidatePath('/services-details-1');
 
     return NextResponse.json({
       success: true,
@@ -124,6 +125,7 @@ export async function PUT(
 
     revalidatePath('/solutions');
     revalidatePath('/');
+    revalidatePath('/services-details-1');
 
     return NextResponse.json({
       success: true,
@@ -210,6 +212,7 @@ export async function DELETE(
 
     revalidatePath('/solutions');
     revalidatePath('/');
+    revalidatePath('/services-details-1');
 
     return NextResponse.json({
       success: true,

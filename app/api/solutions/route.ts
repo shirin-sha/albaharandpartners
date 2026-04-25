@@ -78,6 +78,7 @@ export async function POST(request: NextRequest) {
     // Revalidate pages that use solutions content
     revalidatePath('/');
     revalidatePath('/solutions');
+    revalidatePath('/services-details-1');
 
     return NextResponse.json({
       success: true,
@@ -149,6 +150,7 @@ export async function PUT(request: NextRequest) {
     // Revalidate pages that use solutions content
     revalidatePath('/');
     revalidatePath('/solutions');
+    revalidatePath('/services-details-1');
 
     return NextResponse.json({
       success: true,

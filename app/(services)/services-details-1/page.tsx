@@ -126,14 +126,14 @@ export default async function ServiceDetailsPage({ searchParams }: PageProps) {
           <div className="row rg-60">
             <div className="col-lg-8">
               <div className="service-details-content">
-                {service.imgSrc && (
+                {(service.detailImgSrc || service.imgSrc) && (
                   <div className="image-details image mb-60">
                     <Image
-                      src={service.imgSrc}
+                      src={service.detailImgSrc || service.imgSrc}
                       alt={service.title}
                       className="lazyload"
-                      width={service.imgWidth || 850}
-                      height={service.imgHeight || 512}
+                      width={service.detailImgWidth || service.imgWidth || 850}
+                      height={service.detailImgHeight || service.imgHeight || 512}
                     />
                   </div>
                 )}
