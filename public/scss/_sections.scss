@@ -1041,6 +1041,18 @@
     }
   }
 
+  &.h-6.bpc-half-split {
+    @media (min-width: 1200px) {
+      .section-about-inner {
+        .image,
+        .section-about-content {
+          flex: 0 0 50%;
+          max-width: 50%;
+        }
+      }
+    }
+  }
+
   &.h-7 {
     @include mixin.d-flex();
     flex-wrap: wrap;
