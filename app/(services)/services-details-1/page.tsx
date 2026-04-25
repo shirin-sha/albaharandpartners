@@ -41,7 +41,7 @@ export default async function ServiceDetailsPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <div className="page-title style-1 bg-img-6">
+      <div className="page-title style-1 bg-img-8">
         <div className="tf-container">
           <div className="page-title-content">
             <div className="breadkcum">
