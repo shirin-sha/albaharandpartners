@@ -60,18 +60,21 @@ export default function CareersManagePage() {
     }
   };
 
-  const loadRtlData = async () => {
-    if (rtlLoaded) return;
+  const loadRtlData = async (): Promise<Job[]> => {
+    if (rtlLoaded) return jobsRtl;
     try {
       const rtlRes = await fetch('/api/careers?language=rtl');
       const rtlResult = await rtlRes.json();
       if (rtlResult.success && rtlResult.data) {
-        setJobsRtl(rtlResult.data.jobs || []);
+        const rtlJobs = rtlResult.data.jobs || [];
+        setJobsRtl(rtlJobs);
         setRtlLoaded(true);
+        return rtlJobs;
       }
     } catch (error) {
       console.error('Error loading RTL jobs:', error);
     }
+    return jobsRtl;
   };
 
   const showMessage = (type: 'success' | 'error', text: string) => {
@@ -149,11 +152,11 @@ export default function CareersManagePage() {
   };
 
   const handleEdit = async (index: number) => {
-    // Load RTL data when editing (lazy load)
-    await loadRtlData();
-    
+    // Load RTL data when editing (lazy load) and use fresh data immediately.
+    const rtlJobs = await loadRtlData();
+
     const jobLtr = jobsLtr[index];
-    const jobRtl = jobsRtl[index] || jobLtr;
+    const jobRtl = rtlJobs[index] || jobLtr;
     setEditingIndex(index);
     setFormData({
       title: jobLtr.title || '',
@@ -335,40 +338,48 @@ export default function CareersManagePage() {
                       Active
                     </label>
                   </div>
-                  <div className="form-group">
-                    <label>Title (English) *</label>
-                    <input
-                      type="text"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      required
-                    />
+                  <div className="form-row-bilingual-header">
+                    <div className="form-label-header">English</div>
+                    <div className="form-label-header">Arabic</div>
                   </div>
-                  <div className="form-group">
-                    <label>Title (Arabic)</label>
-                    <input
-                      type="text"
-                      dir="rtl"
-                      value={formData.titleAr}
-                      onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
-                    />
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Title *</label>
+                      <input
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Title</label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={formData.titleAr}
+                        onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+                      />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label>Description (English)</label>
-                    <textarea
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      rows={4}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Description (Arabic)</label>
-                    <textarea
-                      dir="rtl"
-                      value={formData.descriptionAr}
-                      onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
-                      rows={4}
-                    />
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Description</label>
+                      <textarea
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        rows={4}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Description</label>
+                      <textarea
+                        dir="rtl"
+                        value={formData.descriptionAr}
+                        onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
+                        rows={4}
+                      />
+                    </div>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     <div className="form-group">
@@ -398,131 +409,125 @@ export default function CareersManagePage() {
                       />
                     </div>
                   </div>
-                  <div className="form-group">
-                    <label>Apply Link</label>
-                    <input
-                      type="text"
-                      value={formData.applyLink}
-                      onChange={(e) => setFormData({ ...formData, applyLink: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Responsibilities (English)</label>
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                      <input
-                        type="text"
-                        value={responsibilityInput}
-                        onChange={(e) => setResponsibilityInput(e.target.value)}
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            addResponsibility('en');
-                          }
-                        }}
-                        placeholder="Enter responsibility and press Enter"
-                        style={{ flex: 1 }}
-                      />
-                      <button type="button" onClick={() => addResponsibility('en')} className="button" style={{ fontSize: '12px', padding: '6px 12px' }}>
-                        Add
-                      </button>
-                    </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                      {formData.responsibilities.map((resp, idx) => (
-                        <span
-                          key={idx}
-                          style={{
-                            padding: '4px 8px',
-                            background: '#e0f2fe',
-                            color: '#0369a1',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Responsibilities</label>
+                      <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                        <input
+                          type="text"
+                          value={responsibilityInput}
+                          onChange={(e) => setResponsibilityInput(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              addResponsibility('en');
+                            }
                           }}
-                        >
-                          {resp}
-                          <button
-                            type="button"
-                            onClick={() => removeResponsibility(idx, 'en')}
+                          placeholder="Enter responsibility and press Enter"
+                          style={{ flex: 1 }}
+                        />
+                        <button type="button" onClick={() => addResponsibility('en')} className="button" style={{ fontSize: '12px', padding: '6px 12px' }}>
+                          Add
+                        </button>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {formData.responsibilities.map((resp, idx) => (
+                          <span
+                            key={idx}
                             style={{
-                              background: 'none',
-                              border: 'none',
+                              padding: '4px 8px',
+                              background: '#e0f2fe',
                               color: '#0369a1',
-                              cursor: 'pointer',
-                              fontSize: '14px',
-                              padding: 0,
-                              width: '16px',
-                              height: '16px',
+                              borderRadius: '4px',
+                              fontSize: '12px',
                               display: 'flex',
                               alignItems: 'center',
-                              justifyContent: 'center',
+                              gap: '4px',
                             }}
                           >
-                            ×
-                          </button>
-                        </span>
-                      ))}
+                            {resp}
+                            <button
+                              type="button"
+                              onClick={() => removeResponsibility(idx, 'en')}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: '#0369a1',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                                padding: 0,
+                                width: '16px',
+                                height: '16px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                  <div className="form-group">
-                    <label>Responsibilities (Arabic)</label>
-                    <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                      <input
-                        type="text"
-                        dir="rtl"
-                        value={responsibilityInputAr}
-                        onChange={(e) => setResponsibilityInputAr(e.target.value)}
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                            addResponsibility('ar');
-                          }
-                        }}
-                        placeholder="Enter responsibility and press Enter"
-                        style={{ flex: 1 }}
-                      />
-                      <button type="button" onClick={() => addResponsibility('ar')} className="button" style={{ fontSize: '12px', padding: '6px 12px' }}>
-                        Add
-                      </button>
-                    </div>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                      {formData.responsibilitiesAr.map((resp, idx) => (
-                        <span
-                          key={idx}
-                          style={{
-                            padding: '4px 8px',
-                            background: '#e0f2fe',
-                            color: '#0369a1',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
+                    <div className="form-group">
+                      <label>Responsibilities</label>
+                      <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                        <input
+                          type="text"
+                          dir="rtl"
+                          value={responsibilityInputAr}
+                          onChange={(e) => setResponsibilityInputAr(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              addResponsibility('ar');
+                            }
                           }}
-                        >
-                          {resp}
-                          <button
-                            type="button"
-                            onClick={() => removeResponsibility(idx, 'ar')}
+                          placeholder="Enter responsibility and press Enter"
+                          style={{ flex: 1 }}
+                        />
+                        <button type="button" onClick={() => addResponsibility('ar')} className="button" style={{ fontSize: '12px', padding: '6px 12px' }}>
+                          Add
+                        </button>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {formData.responsibilitiesAr.map((resp, idx) => (
+                          <span
+                            key={idx}
                             style={{
-                              background: 'none',
-                              border: 'none',
+                              padding: '4px 8px',
+                              background: '#e0f2fe',
                               color: '#0369a1',
-                              cursor: 'pointer',
-                              fontSize: '14px',
-                              padding: 0,
-                              width: '16px',
-                              height: '16px',
+                              borderRadius: '4px',
+                              fontSize: '12px',
                               display: 'flex',
                               alignItems: 'center',
-                              justifyContent: 'center',
+                              gap: '4px',
                             }}
                           >
-                            ×
-                          </button>
-                        </span>
-                      ))}
+                            {resp}
+                            <button
+                              type="button"
+                              onClick={() => removeResponsibility(idx, 'ar')}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: '#0369a1',
+                                cursor: 'pointer',
+                                fontSize: '14px',
+                                padding: 0,
+                                width: '16px',
+                                height: '16px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>

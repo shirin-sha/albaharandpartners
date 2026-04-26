@@ -76,18 +76,21 @@ export default function SolutionsManagePage() {
     }
   };
 
-  const loadRtlData = async () => {
-    if (rtlLoaded) return;
+  const loadRtlData = async (): Promise<SolutionItem[]> => {
+    if (rtlLoaded) return solutionsRtl;
     try {
       const rtlRes = await fetch('/api/solutions?language=rtl');
       const rtlResult = await rtlRes.json();
       if (rtlResult.success && rtlResult.data) {
-        setSolutionsRtl(rtlResult.data.solutions || []);
+        const rtlSolutions = rtlResult.data.solutions || [];
+        setSolutionsRtl(rtlSolutions);
         setRtlLoaded(true);
+        return rtlSolutions;
       }
     } catch (error) {
       console.error('Error loading RTL solutions:', error);
     }
+    return solutionsRtl;
   };
 
   const showMessage = (type: 'success' | 'error', text: string) => {
@@ -181,11 +184,11 @@ export default function SolutionsManagePage() {
   };
 
   const handleEdit = async (index: number) => {
-    // Load RTL data when editing (lazy load)
-    await loadRtlData();
-    
+    // Load RTL data when editing (lazy load) and use fresh data immediately.
+    const rtlSolutions = await loadRtlData();
+
     const solutionLtr = solutionsLtr[index];
-    const solutionRtl = solutionsRtl[index] || solutionLtr;
+    const solutionRtl = rtlSolutions[index] || solutionLtr;
     setEditingIndex(index);
     setFormData({
       id: solutionLtr.id || '',
@@ -358,98 +361,116 @@ export default function SolutionsManagePage() {
                       placeholder="solution-1"
                     />
                   </div>
-                  <div className="form-group">
-                    <label>Tab Title (English) *</label>
-                    <input
-                      type="text"
-                      value={formData.tabTitle}
-                      onChange={(e) => setFormData({ ...formData, tabTitle: e.target.value })}
-                      required
-                    />
+                  <div className="form-row-bilingual-header">
+                    <div className="form-label-header">English</div>
+                    <div className="form-label-header">Arabic</div>
                   </div>
-                  <div className="form-group">
-                    <label>Tab Title (Arabic)</label>
-                    <input
-                      type="text"
-                      dir="rtl"
-                      value={formData.tabTitleAr}
-                      onChange={(e) => setFormData({ ...formData, tabTitleAr: e.target.value })}
-                    />
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Tab Title *</label>
+                      <input
+                        type="text"
+                        value={formData.tabTitle}
+                        onChange={(e) => setFormData({ ...formData, tabTitle: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Tab Title</label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={formData.tabTitleAr}
+                        onChange={(e) => setFormData({ ...formData, tabTitleAr: e.target.value })}
+                      />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label>Title (English) *</label>
-                    <input
-                      type="text"
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      required
-                    />
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Title *</label>
+                      <input
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Title</label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={formData.titleAr}
+                        onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
+                      />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label>Title (Arabic)</label>
-                    <input
-                      type="text"
-                      dir="rtl"
-                      value={formData.titleAr}
-                      onChange={(e) => setFormData({ ...formData, titleAr: e.target.value })}
-                    />
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Short Description</label>
+                      <textarea
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        rows={3}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Short Description</label>
+                      <textarea
+                        dir="rtl"
+                        value={formData.descriptionAr}
+                        onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
+                        rows={3}
+                      />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label>Short Description (English)</label>
-                    <textarea
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      rows={3}
-                    />
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <RichTextEditor
+                        label="Detail Description"
+                        value={formData.detailDescription}
+                        onChange={(value) => setFormData({ ...formData, detailDescription: value })}
+                        placeholder="This will appear in the details content on the service details page."
+                      />
+                    </div>
+                    <div className="form-group">
+                      <RichTextEditor
+                        label="Detail Description"
+                        value={formData.detailDescriptionAr}
+                        onChange={(value) => setFormData({ ...formData, detailDescriptionAr: value })}
+                        placeholder="هذا الوصف سيظهر في محتوى تفاصيل الخدمة."
+                        className="rtl-editor"
+                      />
+                    </div>
                   </div>
-                  <div className="form-group">
-                    <label>Short Description (Arabic)</label>
-                    <textarea
-                      dir="rtl"
-                      value={formData.descriptionAr}
-                      onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
-                      rows={3}
-                    />
-                  </div>
-                  <RichTextEditor
-                    label="Detail Description (English)"
-                    value={formData.detailDescription}
-                    onChange={(value) => setFormData({ ...formData, detailDescription: value })}
-                    placeholder="This will appear in the details content on the service details page."
-                  />
-                  <RichTextEditor
-                    label="Detail Description (Arabic)"
-                    value={formData.detailDescriptionAr}
-                    onChange={(value) => setFormData({ ...formData, detailDescriptionAr: value })}
-                    placeholder="هذا الوصف سيظهر في محتوى تفاصيل الخدمة."
-                    className="rtl-editor"
-                  />
-                  <div className="form-group">
-                    <label>Benefits (English) - one per line</label>
-                    <textarea
-                      value={formData.benefits.join('\n')}
-                      onChange={(e) => {
-                        const benefits = e.target.value.split('\n').filter(f => f.trim());
-                        setFormData({ ...formData, benefits });
-                      }}
-                      rows={6}
-                      placeholder="Benefit 1&#10;Benefit 2&#10;Benefit 3"
-                    />
-                    <small>Enter each benefit on a new line</small>
-                  </div>
-                  <div className="form-group">
-                    <label>Benefits (Arabic) - one per line</label>
-                    <textarea
-                      dir="rtl"
-                      value={formData.benefitsAr.join('\n')}
-                      onChange={(e) => {
-                        const benefitsAr = e.target.value.split('\n').filter(f => f.trim());
-                        setFormData({ ...formData, benefitsAr });
-                      }}
-                      rows={6}
-                      placeholder="Benefit 1&#10;Benefit 2&#10;Benefit 3"
-                    />
-                    <small>Enter each benefit on a new line</small>
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Benefits - one per line</label>
+                      <textarea
+                        value={formData.benefits.join('\n')}
+                        onChange={(e) => {
+                          const benefits = e.target.value.split('\n').filter(f => f.trim());
+                          setFormData({ ...formData, benefits });
+                        }}
+                        rows={6}
+                        placeholder="Benefit 1&#10;Benefit 2&#10;Benefit 3"
+                      />
+                      <small>Enter each benefit on a new line</small>
+                    </div>
+                    <div className="form-group">
+                      <label>Benefits - one per line</label>
+                      <textarea
+                        dir="rtl"
+                        value={formData.benefitsAr.join('\n')}
+                        onChange={(e) => {
+                          const benefitsAr = e.target.value.split('\n').filter(f => f.trim());
+                          setFormData({ ...formData, benefitsAr });
+                        }}
+                        rows={6}
+                        placeholder="Benefit 1&#10;Benefit 2&#10;Benefit 3"
+                      />
+                      <small>Enter each benefit on a new line</small>
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>Image</label>
@@ -467,42 +488,6 @@ export default function SolutionsManagePage() {
                       folder="solutions"
                     />
                     <small>This image is shown on the service details page.</small>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    <div className="form-group">
-                      <label>Width</label>
-                      <input
-                        type="number"
-                        value={formData.imgWidth}
-                        onChange={(e) => setFormData({ ...formData, imgWidth: Number(e.target.value) })}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Height</label>
-                      <input
-                        type="number"
-                        value={formData.imgHeight}
-                        onChange={(e) => setFormData({ ...formData, imgHeight: Number(e.target.value) })}
-                      />
-                    </div>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    <div className="form-group">
-                      <label>Detail Width</label>
-                      <input
-                        type="number"
-                        value={formData.detailImgWidth}
-                        onChange={(e) => setFormData({ ...formData, detailImgWidth: Number(e.target.value) })}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Detail Height</label>
-                      <input
-                        type="number"
-                        value={formData.detailImgHeight}
-                        onChange={(e) => setFormData({ ...formData, detailImgHeight: Number(e.target.value) })}
-                      />
-                    </div>
                   </div>
                 </div>
               </div>

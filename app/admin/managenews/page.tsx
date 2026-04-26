@@ -59,18 +59,21 @@ export default function NewsManagePage() {
     }
   };
 
-  const loadRtlData = async () => {
-    if (rtlLoaded) return;
+  const loadRtlData = async (): Promise<NewsPost[]> => {
+    if (rtlLoaded) return postsRtl;
     try {
       const rtlRes = await fetch('/api/news-updates?language=rtl');
       const rtlResult = await rtlRes.json();
       if (rtlResult.success && rtlResult.data) {
-        setPostsRtl(rtlResult.data.posts || []);
+        const rtlPosts = rtlResult.data.posts || [];
+        setPostsRtl(rtlPosts);
         setRtlLoaded(true);
+        return rtlPosts;
       }
     } catch (error) {
       console.error('Error loading RTL posts:', error);
     }
+    return postsRtl;
   };
 
   const showMessage = (type: 'success' | 'error', text: string) => {
@@ -150,11 +153,11 @@ export default function NewsManagePage() {
   };
 
   const handleEdit = async (index: number) => {
-    // Load RTL data when editing (lazy load)
-    await loadRtlData();
-    
+    // Load RTL data when editing (lazy load) and use fresh data immediately.
+    const rtlPosts = await loadRtlData();
+
     const postLtr = postsLtr[index];
-    const postRtl = postsRtl[index] || postLtr;
+    const postRtl = rtlPosts[index] || postLtr;
     setEditingIndex(index);
     setFormData({
       title: postLtr.title || '',
@@ -325,12 +328,7 @@ export default function NewsManagePage() {
             </div>
 
             {/* Category Row */}
-            <div>
-              <div className="form-row-bilingual-header">
-                <div className="form-label-header">English</div>
-                <div className="form-label-header">العربية</div>
-              </div>
-              <div className="form-row-bilingual">
+            <div className="form-row-bilingual">
                   <div className="form-group">
                   <label>Category</label>
                     <input
@@ -349,7 +347,6 @@ export default function NewsManagePage() {
                     />
                   </div>
               </div>
-            </div>
             
                   <div className="form-group">
                     <label>Image</label>
@@ -360,7 +357,7 @@ export default function NewsManagePage() {
                     />
                   </div>
             
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     <div className="form-group">
                       <label>Day</label>
                       <input
@@ -385,22 +382,6 @@ export default function NewsManagePage() {
                             date: { ...formData.date, month: e.target.value },
                           })
                         }
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Width</label>
-                      <input
-                        type="number"
-                        value={formData.imgWidth}
-                        onChange={(e) => setFormData({ ...formData, imgWidth: Number(e.target.value) })}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Height</label>
-                      <input
-                        type="number"
-                        value={formData.imgHeight}
-                        onChange={(e) => setFormData({ ...formData, imgHeight: Number(e.target.value) })}
                       />
                     </div>
                   </div>

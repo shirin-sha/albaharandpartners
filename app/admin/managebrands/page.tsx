@@ -55,18 +55,21 @@ export default function BrandsManagePage() {
     }
   };
 
-  const loadRtlData = async () => {
-    if (rtlLoaded) return;
+  const loadRtlData = async (): Promise<Brand[]> => {
+    if (rtlLoaded) return brandsRtl;
     try {
       const rtlRes = await fetch('/api/brands?language=rtl');
       const rtlResult = await rtlRes.json();
       if (rtlResult.success && rtlResult.data) {
-        setBrandsRtl(rtlResult.data.brands || []);
+        const rtlBrands = rtlResult.data.brands || [];
+        setBrandsRtl(rtlBrands);
         setRtlLoaded(true);
+        return rtlBrands;
       }
     } catch (error) {
       console.error('Error loading RTL brands:', error);
     }
+    return brandsRtl;
   };
 
   const showMessage = (type: 'success' | 'error', text: string) => {
@@ -146,11 +149,11 @@ export default function BrandsManagePage() {
   };
 
   const handleEdit = async (index: number) => {
-    // Load RTL data when editing (lazy load)
-    await loadRtlData();
-    
+    // Load RTL data when editing (lazy load) and use fresh data immediately.
+    const rtlBrands = await loadRtlData();
+
     const brandLtr = brandsLtr[index];
-    const brandRtl = brandsRtl[index] || brandLtr;
+    const brandRtl = rtlBrands[index] || brandLtr;
     setEditingIndex(index);
     setFormData({
       name: brandLtr.name || '',
@@ -293,23 +296,29 @@ export default function BrandsManagePage() {
                       Active
                     </label>
                   </div>
-                  <div className="form-group">
-                    <label>Brand Name (English) *</label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                    />
+                  <div className="form-row-bilingual-header">
+                    <div className="form-label-header">English</div>
+                    <div className="form-label-header">Arabic</div>
                   </div>
-                  <div className="form-group">
-                    <label>Brand Name (Arabic)</label>
-                    <input
-                      type="text"
-                      dir="rtl"
-                      value={formData.nameAr}
-                      onChange={(e) => setFormData({ ...formData, nameAr: e.target.value })}
-                    />
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Brand Name *</label>
+                      <input
+                        type="text"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Brand Name</label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={formData.nameAr}
+                        onChange={(e) => setFormData({ ...formData, nameAr: e.target.value })}
+                      />
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>Brand Image *</label>
@@ -328,22 +337,24 @@ export default function BrandsManagePage() {
                       onChange={(e) => setFormData({ ...formData, link: e.target.value })}
                     />
                   </div>
-                  <div className="form-group">
-                    <label>Description (English)</label>
-                    <textarea
-                      value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      rows={4}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Description (Arabic)</label>
-                    <textarea
-                      dir="rtl"
-                      value={formData.descriptionAr}
-                      onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
-                      rows={4}
-                    />
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Description</label>
+                      <textarea
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        rows={4}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Description</label>
+                      <textarea
+                        dir="rtl"
+                        value={formData.descriptionAr}
+                        onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
+                        rows={4}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
