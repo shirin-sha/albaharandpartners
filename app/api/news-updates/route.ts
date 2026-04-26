@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongodb';
 import { NewsUpdatesContent } from '@/types/news-updates';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { extractImagePaths, deleteImageFiles } from '@/lib/image-utils';
 
 const DB_NAME = 'albaharpartners1';
@@ -78,6 +78,8 @@ export async function POST(request: NextRequest) {
     // Revalidate pages that use news-updates content
     revalidatePath('/');
     revalidatePath('/news-updates');
+    revalidatePath('/ar/news-updates');
+    revalidateTag(`cms-content-newsupdates-${body.language}`);
 
     return NextResponse.json({
       success: true,
@@ -149,6 +151,8 @@ export async function PUT(request: NextRequest) {
     // Revalidate pages that use news-updates content
     revalidatePath('/');
     revalidatePath('/news-updates');
+    revalidatePath('/ar/news-updates');
+    revalidateTag(`cms-content-newsupdates-${body.language}`);
 
     return NextResponse.json({
       success: true,

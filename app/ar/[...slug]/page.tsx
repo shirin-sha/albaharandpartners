@@ -295,7 +295,7 @@ export default async function ArabicPage({ params }: PageProps) {
               </div>
             </div>
           )}
-          <div className="main-content">
+          <div className="main-content tf-spacing-2">
             {content && <NewsUpdatesCMS data={content} />}
           </div>
         </>
