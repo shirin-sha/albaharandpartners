@@ -5,12 +5,14 @@ import { SolutionsContent } from "@/types/solutions";
 
 interface Props {
   data: SolutionsContent;
+  language?: 'ltr' | 'rtl';
 }
 
-export default function ServicesCMS({ data }: Props) {
+export default function ServicesCMS({ data, language = 'ltr' }: Props) {
   if (!data.isActive) return null;
 
   const solutions = data.solutions || [];
+  const detailsBasePath = language === 'rtl' ? '/ar/services-details-1' : '/services-details-1';
 
   return (
     <div className="tf-container">
@@ -24,7 +26,7 @@ export default function ServicesCMS({ data }: Props) {
                 <div className="section-services-item style-border" key={solution.id || index}>
                   <div className="image tf-animate-1">
                     <Link
-                      href={`/services-details-1?id=${solution.id}`}
+                      href={`${detailsBasePath}?id=${solution.id}`}
                       className="link"
                     />
                     <Image
@@ -39,7 +41,7 @@ export default function ServicesCMS({ data }: Props) {
                     <div className="heading">
                       <h3 className="wow fadeInUp">
                         <Link
-                          href={`/services-details-1?id=${solution.id}`}
+                          href={`${detailsBasePath}?id=${solution.id}`}
                           className="name-services"
                         >
                           {solution.title}
@@ -69,7 +71,7 @@ export default function ServicesCMS({ data }: Props) {
                     )}
                     <div className="wow fadeInUp">
                       <Link
-                        href={`/services-details-1?id=${solution.id}`}
+                        href={`${detailsBasePath}?id=${solution.id}`}
                         className="tf-btn style-1 bg-color-primary"
                       >
                         <span> View Services </span>
