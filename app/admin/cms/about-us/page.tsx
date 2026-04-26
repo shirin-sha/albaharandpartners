@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { AboutUsContent } from '@/types/aboutus';
 import ImageUpload from '@/components/admin/ui/ImageUpload';
+import Link from 'next/link';
 
 const ABOUT_SECTIONS = [
   { id: 'meta', label: 'Meta (SEO)' },
@@ -1227,184 +1228,6 @@ export default function AboutUsManager() {
                         </div>
                       </div>
               
-                      {/* Members (keep as before, but bilingual inside each card) */}
-                      <div className="form-group">
-                        <label>Team Members</label>
-                        <div className="hero-slides-container">
-                          {Array.from({
-                            length: Math.max(
-                              contentLtr.team.members?.length || 0,
-                              contentRtl.team.members?.length || 0
-                            ),
-                          }).map((_, index) => {
-                            const memberLtr =
-                              contentLtr.team.members?.[index] || { imgSrc: '', name: '', position: '' };
-                            const memberRtl =
-                              contentRtl.team.members?.[index] || { imgSrc: '', name: '', position: '' };
-              
-                            return (
-                              <div key={index} className="hero-slide-card">
-                                <div className="hero-slide-header">
-                                  <h4>Member {index + 1}</h4>
-                                  {(contentLtr.team.members?.length || 0) > 0 && (
-                                    <button
-                                      type="button"
-                                      className="hero-slide-remove"
-                                      onClick={() => {
-                                        const newMembersLtr =
-                                          contentLtr.team.members?.filter((_: any, i: number) => i !== index) || [];
-                                        const newMembersRtl =
-                                          contentRtl.team.members?.filter((_: any, i: number) => i !== index) || [];
-                                        setContentLtr({
-                                          ...contentLtr,
-                                          team: { ...contentLtr.team, members: newMembersLtr },
-                                        });
-                                        setContentRtl({
-                                          ...contentRtl,
-                                          team: { ...contentRtl.team, members: newMembersRtl },
-                                        });
-                                      }}
-                                    >
-                                      Remove
-                                    </button>
-                                  )}
-                                </div>
-                                <div className="hero-slide-fields">
-                                  {/* Image */}
-                                  <div className="form-group">
-                                    <label>Image</label>
-                                    <ImageUpload
-                                      value={memberLtr.imgSrc}
-                                      onChange={(value) => {
-                                        const newMembers = [...(contentLtr.team.members || [])];
-                                        newMembers[index] = { ...memberLtr, imgSrc: value };
-                                        setContentLtr({
-                                          ...contentLtr,
-                                          team: { ...contentLtr.team, members: newMembers },
-                                        });
-                                        const newMembersRtl = [...(contentRtl.team.members || [])];
-                                        newMembersRtl[index] = { ...memberRtl, imgSrc: value };
-                                        setContentRtl({
-                                          ...contentRtl,
-                                          team: { ...contentRtl.team, members: newMembersRtl },
-                                        });
-                                      }}
-                                      folder="team"
-                                    />
-                                  </div>
-              
-                                  {/* Name */}
-                                  <div>
-                                    <div className="form-row-bilingual-header">
-                                      <div className="form-label-header">English</div>
-                                      <div className="form-label-header">العربية</div>
-                                    </div>
-                                    <div className="form-row-bilingual">
-                                      <div className="form-group">
-                                        <label>Name</label>
-                                        <input
-                                          type="text"
-                                          value={memberLtr.name}
-                                          onChange={(e) => {
-                                            const newMembers = [...(contentLtr.team.members || [])];
-                                            newMembers[index] = { ...memberLtr, name: e.target.value };
-                                            setContentLtr({
-                                              ...contentLtr,
-                                              team: { ...contentLtr.team, members: newMembers },
-                                            });
-                                          }}
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label>Name</label>
-                                        <input
-                                          type="text"
-                                          dir="rtl"
-                                          value={memberRtl.name}
-                                          onChange={(e) => {
-                                            const newMembers = [...(contentRtl.team.members || [])];
-                                            newMembers[index] = { ...memberRtl, name: e.target.value };
-                                            setContentRtl({
-                                              ...contentRtl,
-                                              team: { ...contentRtl.team, members: newMembers },
-                                            });
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-              
-                                  {/* Position */}
-                                  <div>
-                                    <div className="form-row-bilingual-header">
-                                      <div className="form-label-header">English</div>
-                                      <div className="form-label-header">العربية</div>
-                                    </div>
-                                    <div className="form-row-bilingual">
-                                      <div className="form-group">
-                                        <label>Position</label>
-                                        <input
-                                          type="text"
-                                          value={memberLtr.position}
-                                          onChange={(e) => {
-                                            const newMembers = [...(contentLtr.team.members || [])];
-                                            newMembers[index] = { ...memberLtr, position: e.target.value };
-                                            setContentLtr({
-                                              ...contentLtr,
-                                              team: { ...contentLtr.team, members: newMembers },
-                                            });
-                                          }}
-                                        />
-                                      </div>
-                                      <div className="form-group">
-                                        <label>Position</label>
-                                        <input
-                                          type="text"
-                                          dir="rtl"
-                                          value={memberRtl.position}
-                                          onChange={(e) => {
-                                            const newMembers = [...(contentRtl.team.members || [])];
-                                            newMembers[index] = { ...memberRtl, position: e.target.value };
-                                            setContentRtl({
-                                              ...contentRtl,
-                                              team: { ...contentRtl.team, members: newMembers },
-                                            });
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        <button
-                          type="button"
-                          className="button"
-                          onClick={() => {
-                            const newMember = { imgSrc: '', name: '', position: '' };
-                            setContentLtr({
-                              ...contentLtr,
-                              team: {
-                                ...contentLtr.team,
-                                members: [...(contentLtr.team.members || []), newMember],
-                              },
-                            });
-                            setContentRtl({
-                              ...contentRtl,
-                              team: {
-                                ...contentRtl.team,
-                                members: [...(contentRtl.team.members || []), newMember],
-                              },
-                            });
-                          }}
-                          style={{ marginTop: '12px' }}
-                        >
-                          Add Member
-                        </button>
-                      </div>
-              
                       <div className="form-actions">
                         <button
                           className="button button-primary"
@@ -2399,6 +2222,20 @@ export default function AboutUsManager() {
         </div>
       )}
       {renderSelectedSectionForm()}
+
+      <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+        <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+          <div>
+            <h3 style={{ margin: 0 }}>Team Members Management</h3>
+            <div style={{ fontSize: 13, opacity: 0.8 }}>
+              Team members are managed separately.
+            </div>
+          </div>
+          <Link href="/admin/manageteam" className="button button-primary">
+            Go to Team Management →
+          </Link>
+        </div>
+      </div>
 
       {/* Sections overview table (similar to Home Page CMS) */}
       <div className="admin-cms-section-card" style={{ marginBottom: '20px' }}>

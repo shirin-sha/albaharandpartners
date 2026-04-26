@@ -209,6 +209,13 @@ export default function AdminSidebar() {
         >
           <span className="admin-sidebar-label"><span className="admin-sidebar-icon"><SidebarIcon name="careers" /></span><span>Careers Management</span></span>
         </Link>
+
+        <Link
+          href="/admin/manageteam"
+          className={`admin-sidebar-link ${pathname?.startsWith('/admin/manageteam') ? 'active' : ''}`}
+        >
+          <span className="admin-sidebar-label"><span className="admin-sidebar-icon"><SidebarIcon name="about" /></span><span>Team Management</span></span>
+        </Link>
         
         <Link
           href="/admin/managestories"
