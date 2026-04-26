@@ -1486,6 +1486,30 @@
     background-color: var(--on-suface-container);
     position: relative;
 
+    .sw-layout {
+      .swiper-wrapper {
+        align-items: stretch;
+      }
+
+      .swiper-slide {
+        height: auto;
+        display: flex;
+      }
+    }
+
+    .process-item {
+      &.bg-1-style-2 {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .process-content {
+          flex: 1;
+        }
+      }
+    }
+
     &::before {
       content: "";
       position: absolute;

@@ -20,7 +20,6 @@ import ContactCMS from "@/components/otherPages/ContactCMS";
 import MapCMS from "@/components/otherPages/MapCMS";
 import SupportServicesCMS from "@/components/otherPages/SupportServicesCMS";
 import SupportContactCMS from "@/components/otherPages/SupportContactCMS";
-import About from "@/components/otherPages/About";
 import CareerCMS from "@/components/otherPages/CareerCMS";
 import CustomerStoriesCMS from "@/components/case-studies/CustomerStoriesCMS";
 import NewsUpdatesCMS from "@/components/blogs/NewsUpdatesCMS";
@@ -231,7 +230,6 @@ export default async function ArabicPage({ params }: PageProps) {
             </div>
           )}
           <div className="main-content">
-            <About />
             {content && <CareerCMS data={content} />}
           </div>
         </>

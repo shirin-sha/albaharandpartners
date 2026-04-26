@@ -5,6 +5,7 @@
     overflow: hidden;
     display: block;
     width: max-content;
+    text-decoration: none;
 
     span {
         font-weight: 500;
@@ -38,6 +39,10 @@
         }
     }
 
+    &:focus-visible {
+        outline: none;
+    }
+
     &.bg-on-suface-container {
         background-color: var(--on-suface-container);
         color: var(--white);
@@ -60,23 +65,31 @@
 
         &::before {
             height: 100%;
-            background-color: var(--on-suface-container);
+            background-color: var(--primary);
         }
 
-        &:hover {
-            border-color: var(--on-suface-container);
-            background-color: var(--on-suface-container) !important;
+        &:hover,
+        &:focus-visible {
+            border-color: var(--primary) !important;
+            background-color: var(--primary) !important;
+            // Bootstrap link hover color would otherwise win on <a class="tf-btn">.
+            color: var(--white) !important;
 
             span {
-                color: var(--white);
+                color: var(--white) !important;
+            }
+
+            &::before {
+                background-color: var(--primary);
             }
         }
 
         &.bg-white-style-2 {
             border: 1px solid transparent;
 
-            &:hover {
-                border-color: var(--white);
+            &:hover,
+            &:focus-visible {
+                border-color: var(--primary) !important;
             }
         }
     }
