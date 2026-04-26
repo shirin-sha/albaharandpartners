@@ -74,8 +74,8 @@ export default function CareerCMS({ data }: Props) {
                         <div className="item-content item-content-2">
                           <h6 className="title-item">Salary</h6>
                           <div className="price-according mb-20">
-                            <h5>{job.salary.amount}</h5>
-                            <span>{job.salary.period}</span>
+                            <h5 className="salary-amount">{job.salary.amount}</h5>
+                            <span className="salary-period">{job.salary.period}</span>
                           </div>
                           <Link
                             href={job.applyLink || "#"}

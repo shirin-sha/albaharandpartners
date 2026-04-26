@@ -71,7 +71,7 @@ export default function Career() {
                       <div className="item-content item-content-2">
                         <h6 className="title-item">Salary</h6>
                         <div className="price-according mb-20">
-                          <h5>$10 - $15</h5>
+                          <p>$10 - $15</p>
                           <span>/Month</span>
                         </div>
                         <a

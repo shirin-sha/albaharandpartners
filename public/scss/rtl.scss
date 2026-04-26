@@ -856,6 +856,26 @@
     }
   }
 
+  .section-new {
+    &.page-career {
+      .according-item {
+        .item-content {
+          ul {
+            direction: rtl;
+            padding-right: 18px;
+            padding-left: 0;
+
+            li {
+              margin-right: 27px;
+              margin-left: 0;
+              text-align: right;
+            }
+          }
+        }
+      }
+    }
+  }
+
   .tf-post-list {
     direction: ltr;
     flex-direction: row-reverse;

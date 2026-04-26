@@ -2711,6 +2711,20 @@
       }
     }
   }
+
+  &.page-career {
+    .price-according {
+      .salary-amount {
+        font-size: 15px;
+        line-height: 20px;
+      }
+
+      .salary-period {
+        font-size: 14px;
+        line-height: 22px;
+      }
+    }
+  }
 }
 
 .section-one-page {
