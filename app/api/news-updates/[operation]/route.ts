@@ -6,6 +6,12 @@ import { revalidatePath } from 'next/cache';
 const DB_NAME = 'albaharpartners1';
 const COLLECTION_NAME = 'newsupdates';
 
+const normalizePost = (post: NewsPost): NewsPost => ({
+  ...post,
+  titleAr: post.titleAr || post.title,
+  categoryAr: post.categoryAr || post.category,
+});
+
 // POST - Add a new post to the posts array
 export async function POST(
   request: NextRequest,
@@ -14,7 +20,7 @@ export async function POST(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', post } = body;
+    const { post } = body;
 
     if (operation !== 'add') {
       return NextResponse.json({
@@ -36,11 +42,11 @@ export async function POST(
 
     // Add post to the beginning of the array
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $push: {
           posts: {
-            $each: [post],
+            $each: [normalizePost(post)],
             $position: 0,
           } as any,
         },
@@ -83,7 +89,7 @@ export async function PUT(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', postIndex, post } = body;
+    const { postIndex, post } = body;
 
     if (operation !== 'update') {
       return NextResponse.json({
@@ -105,10 +111,10 @@ export async function PUT(
 
     // Update the specific post at the given index
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $set: {
-          [`posts.${postIndex}`]: post,
+          [`posts.${postIndex}`]: normalizePost(post),
           updatedAt: new Date(),
         },
       },
@@ -147,7 +153,6 @@ export async function DELETE(
   try {
     const { operation } = await params;
     const searchParams = request.nextUrl.searchParams;
-    const language = searchParams.get('language') || 'ltr';
     const postIndex = searchParams.get('index');
 
     if (operation !== 'delete') {
@@ -177,7 +182,7 @@ export async function DELETE(
     }
 
     // Get the post to delete (to verify it exists)
-    const content = await collection.findOne({ language });
+    const content = await collection.findOne({ language: 'ltr' });
     if (!content) {
       return NextResponse.json({
         success: false,
@@ -196,7 +201,7 @@ export async function DELETE(
     // Remove the post at the specific index using $pull
     const postToDelete = postsArray[index];
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $pull: {
           posts: postToDelete,

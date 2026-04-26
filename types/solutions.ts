@@ -11,10 +11,15 @@ export interface SolutionsHeader {
 export interface SolutionItem {
   id: string;
   tabTitle: string;
+  tabTitleAr?: string;
   title: string;
+  titleAr?: string;
   description: string;
+  descriptionAr?: string;
   detailDescription?: string;
+  detailDescriptionAr?: string;
   benefits: string[];
+  benefitsAr?: string[];
   imgSrc: string;
   detailImgSrc?: string;
   imgWidth: number;

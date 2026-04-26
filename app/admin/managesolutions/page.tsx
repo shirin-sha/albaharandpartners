@@ -10,8 +10,6 @@ export default function SolutionsManagePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [solutionsLtr, setSolutionsLtr] = useState<SolutionItem[]>([]);
-  const [solutionsRtl, setSolutionsRtl] = useState<SolutionItem[]>([]);
-  const [rtlLoaded, setRtlLoaded] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -76,23 +74,6 @@ export default function SolutionsManagePage() {
     }
   };
 
-  const loadRtlData = async (): Promise<SolutionItem[]> => {
-    if (rtlLoaded) return solutionsRtl;
-    try {
-      const rtlRes = await fetch('/api/solutions?language=rtl');
-      const rtlResult = await rtlRes.json();
-      if (rtlResult.success && rtlResult.data) {
-        const rtlSolutions = rtlResult.data.solutions || [];
-        setSolutionsRtl(rtlSolutions);
-        setRtlLoaded(true);
-        return rtlSolutions;
-      }
-    } catch (error) {
-      console.error('Error loading RTL solutions:', error);
-    }
-    return solutionsRtl;
-  };
-
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 5000);
@@ -114,13 +95,18 @@ export default function SolutionsManagePage() {
       const isNew = editingIndex === null;
       const index = isNew ? solutionsLtr.length : editingIndex!;
 
-      const solutionLtr: SolutionItem = {
+      const solution: SolutionItem = {
         id: formData.id,
         tabTitle: formData.tabTitle,
+        tabTitleAr: formData.tabTitleAr || formData.tabTitle,
         title: formData.title,
+        titleAr: formData.titleAr || formData.title,
         description: formData.description,
+        descriptionAr: formData.descriptionAr || formData.description,
         detailDescription: formData.detailDescription,
+        detailDescriptionAr: formData.detailDescriptionAr || formData.detailDescription,
         benefits: formData.benefits,
+        benefitsAr: formData.benefitsAr.length > 0 ? formData.benefitsAr : formData.benefits,
         imgSrc: formData.imgSrc,
         detailImgSrc: formData.detailImgSrc,
         imgWidth: formData.imgWidth,
@@ -130,50 +116,22 @@ export default function SolutionsManagePage() {
         isActive: formData.isActive,
       };
 
-      const solutionRtl: SolutionItem = {
-        id: formData.id,
-        tabTitle: formData.tabTitleAr || formData.tabTitle,
-        title: formData.titleAr || formData.title,
-        description: formData.descriptionAr || formData.description,
-        detailDescription: formData.detailDescriptionAr || formData.detailDescription,
-        benefits: formData.benefitsAr.length > 0 ? formData.benefitsAr : formData.benefits,
-        imgSrc: formData.imgSrc,
-        detailImgSrc: formData.detailImgSrc,
-        imgWidth: formData.imgWidth,
-        imgHeight: formData.imgHeight,
-        detailImgWidth: formData.detailImgWidth,
-        detailImgHeight: formData.detailImgHeight,
-        isActive: formData.isActive,
-      };
-
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(isNew ? '/api/solutions/add' : '/api/solutions/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'ltr',
-            solutionIndex: index,
-            solution: solutionLtr,
-          }),
+      const res = await fetch(isNew ? '/api/solutions/add' : '/api/solutions/update', {
+        method: isNew ? 'POST' : 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: 'ltr',
+          solutionIndex: index,
+          solution,
         }),
-        fetch(isNew ? '/api/solutions/add' : '/api/solutions/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'rtl',
-            solutionIndex: index,
-            solution: solutionRtl,
-          }),
-        }),
-      ]);
-
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      });
+      const result = await res.json();
+      if (result.success) {
         showMessage('success', isNew ? 'Solution added successfully!' : 'Solution updated successfully!');
         await loadSolutions();
         resetForm();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to save');
+        showMessage('error', result.message || 'Failed to save');
       }
     } catch (error) {
       console.error('Error saving:', error);
@@ -184,24 +142,20 @@ export default function SolutionsManagePage() {
   };
 
   const handleEdit = async (index: number) => {
-    // Load RTL data when editing (lazy load) and use fresh data immediately.
-    const rtlSolutions = await loadRtlData();
-
     const solutionLtr = solutionsLtr[index];
-    const solutionRtl = rtlSolutions[index] || solutionLtr;
     setEditingIndex(index);
     setFormData({
       id: solutionLtr.id || '',
       tabTitle: solutionLtr.tabTitle || '',
-      tabTitleAr: solutionRtl.tabTitle || '',
+      tabTitleAr: solutionLtr.tabTitleAr || solutionLtr.tabTitle || '',
       title: solutionLtr.title || '',
-      titleAr: solutionRtl.title || '',
+      titleAr: solutionLtr.titleAr || solutionLtr.title || '',
       description: solutionLtr.description || '',
-      descriptionAr: solutionRtl.description || '',
+      descriptionAr: solutionLtr.descriptionAr || solutionLtr.description || '',
       detailDescription: (solutionLtr as any).detailDescription || '',
-      detailDescriptionAr: (solutionRtl as any).detailDescription || '',
+      detailDescriptionAr: solutionLtr.detailDescriptionAr || (solutionLtr as any).detailDescription || '',
       benefits: solutionLtr.benefits || [],
-      benefitsAr: solutionRtl.benefits || [],
+      benefitsAr: solutionLtr.benefitsAr || solutionLtr.benefits || [],
       imgSrc: solutionLtr.imgSrc || '',
       detailImgSrc: solutionLtr.detailImgSrc || '',
       imgWidth: solutionLtr.imgWidth || 410,
@@ -222,17 +176,13 @@ export default function SolutionsManagePage() {
     if (!confirm('Are you sure you want to delete this solution?')) return;
 
     try {
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(`/api/solutions/delete?language=ltr&index=${index}`, { method: 'DELETE' }),
-        fetch(`/api/solutions/delete?language=rtl&index=${index}`, { method: 'DELETE' }),
-      ]);
-
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      const res = await fetch(`/api/solutions/delete?language=ltr&index=${index}`, { method: 'DELETE' });
+      const result = await res.json();
+      if (result.success) {
         showMessage('success', 'Solution deleted successfully!');
         await loadSolutions();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to delete');
+        showMessage('error', result.message || 'Failed to delete');
       }
     } catch (error) {
       console.error('Error deleting:', error);
@@ -279,7 +229,6 @@ export default function SolutionsManagePage() {
           <button
             className="button button-primary"
             onClick={async () => {
-              await loadRtlData(); // Load RTL data when adding new
               resetForm();
               setShowForm(true);
               // Scroll to form after state update

@@ -44,13 +44,14 @@ export const metadata: Metadata = {
 export default async function Page() {
   const language: "ltr" | "rtl" = "rtl";
 
-  const [content, headerContent, footerContent, newsUpdatesContent, customerStoriesContent, solutionsContent] =
+  const [content, headerContent, footerContent, newsUpdatesContent, customerStoriesContent, customerStoriesContentLtr, solutionsContent] =
     await Promise.all([
       getHomepageContent(language),
       getHeaderContent(language),
       getFooterContent(language),
       getNewsUpdatesContent(language),
       getCustomerStoriesContent(language),
+      getCustomerStoriesContent('ltr'),
       getSolutionsContent(language),
     ]);
 
@@ -120,19 +121,35 @@ export default async function Page() {
         {content?.caseStudiesSection &&
           (() => {
             const baseSection: CaseStudiesSectionType = content.caseStudiesSection;
+            const rtlStories = customerStoriesContent?.stories || [];
+            const ltrStories = customerStoriesContentLtr?.stories || [];
+            const maxStories = Math.max(rtlStories.length, ltrStories.length);
+
+            const mergedStories = Array.from({ length: maxStories })
+              .map((_, index) => {
+                const rtlStory = rtlStories[index];
+                const ltrStory = ltrStories[index];
+                const sourceStory = rtlStory || ltrStory;
+
+                if (!sourceStory) {
+                  return null;
+                }
+
+                return {
+                  _id: sourceStory._id,
+                  title: rtlStory?.title || ltrStory?.title || '',
+                  description: rtlStory?.description || ltrStory?.description || '',
+                  imagePath: rtlStory?.imagePath || ltrStory?.imagePath || '',
+                  link: rtlStory?.link || ltrStory?.link || '#',
+                  language: baseSection.language,
+                  isActive: rtlStory?.isActive ?? ltrStory?.isActive ?? true,
+                };
+              })
+              .filter((story): story is NonNullable<typeof story> => Boolean(story));
 
             const mappedCaseStudies =
-              customerStoriesContent?.stories
-                ?.filter((s) => s.isActive)
-                .map((s) => ({
-                  _id: s._id,
-                  title: s.title,
-                  description: s.description,
-                  imagePath: s.imagePath,
-                  link: s.link,
-                  language: baseSection.language,
-                  isActive: s.isActive,
-                })) || [];
+              mergedStories
+                .filter((s) => s.isActive);
 
             const caseStudiesSectionForHome: CaseStudiesSectionType = {
               ...baseSection,

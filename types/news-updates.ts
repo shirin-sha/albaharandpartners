@@ -3,7 +3,9 @@
 export interface NewsPost {
   _id?: string;
   title: string;
+  titleAr?: string;
   category: string;
+  categoryAr?: string;
   imagePath: string;
   imgWidth?: number;
   imgHeight?: number;

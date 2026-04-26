@@ -8,8 +8,6 @@ export default function CareersManagePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [jobsLtr, setJobsLtr] = useState<Job[]>([]);
-  const [jobsRtl, setJobsRtl] = useState<Job[]>([]);
-  const [rtlLoaded, setRtlLoaded] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -60,23 +58,6 @@ export default function CareersManagePage() {
     }
   };
 
-  const loadRtlData = async (): Promise<Job[]> => {
-    if (rtlLoaded) return jobsRtl;
-    try {
-      const rtlRes = await fetch('/api/careers?language=rtl');
-      const rtlResult = await rtlRes.json();
-      if (rtlResult.success && rtlResult.data) {
-        const rtlJobs = rtlResult.data.jobs || [];
-        setJobsRtl(rtlJobs);
-        setRtlLoaded(true);
-        return rtlJobs;
-      }
-    } catch (error) {
-      console.error('Error loading RTL jobs:', error);
-    }
-    return jobsRtl;
-  };
-
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 5000);
@@ -94,54 +75,35 @@ export default function CareersManagePage() {
       const isNew = editingIndex === null;
       const index = isNew ? jobsLtr.length : editingIndex!;
 
-      const jobLtr: Job = {
+      const job: Job = {
         title: formData.title,
+        titleAr: formData.titleAr || formData.title,
         description: formData.description,
+        descriptionAr: formData.descriptionAr || formData.description,
         responsibilities: formData.responsibilities,
+        responsibilitiesAr: formData.responsibilitiesAr.length > 0 ? formData.responsibilitiesAr : formData.responsibilities,
         salary: formData.salary,
         applyLink: formData.applyLink,
         order: formData.order,
         isActive: formData.isActive,
       };
 
-      const jobRtl: Job = {
-        title: formData.titleAr || formData.title,
-        description: formData.descriptionAr || formData.description,
-        responsibilities: formData.responsibilitiesAr || formData.responsibilities,
-        salary: formData.salary,
-        applyLink: formData.applyLink,
-        order: formData.order,
-        isActive: formData.isActive,
-      };
-
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(isNew ? '/api/careers/add' : '/api/careers/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'ltr',
-            jobIndex: index,
-            job: jobLtr,
-          }),
+      const res = await fetch(isNew ? '/api/careers/add' : '/api/careers/update', {
+        method: isNew ? 'POST' : 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: 'ltr',
+          jobIndex: index,
+          job,
         }),
-        fetch(isNew ? '/api/careers/add' : '/api/careers/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'rtl',
-            jobIndex: index,
-            job: jobRtl,
-          }),
-        }),
-      ]);
-
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      });
+      const result = await res.json();
+      if (result.success) {
         showMessage('success', isNew ? 'Job added successfully!' : 'Job updated successfully!');
         await loadJobs();
         resetForm();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to save');
+        showMessage('error', result.message || 'Failed to save');
       }
     } catch (error) {
       console.error('Error saving:', error);
@@ -152,19 +114,15 @@ export default function CareersManagePage() {
   };
 
   const handleEdit = async (index: number) => {
-    // Load RTL data when editing (lazy load) and use fresh data immediately.
-    const rtlJobs = await loadRtlData();
-
     const jobLtr = jobsLtr[index];
-    const jobRtl = rtlJobs[index] || jobLtr;
     setEditingIndex(index);
     setFormData({
       title: jobLtr.title || '',
-      titleAr: jobRtl.title || '',
+      titleAr: jobLtr.titleAr || jobLtr.title || '',
       description: jobLtr.description || '',
-      descriptionAr: jobRtl.description || '',
+      descriptionAr: jobLtr.descriptionAr || jobLtr.description || '',
       responsibilities: jobLtr.responsibilities || [],
-      responsibilitiesAr: jobRtl.responsibilities || [],
+      responsibilitiesAr: jobLtr.responsibilitiesAr || jobLtr.responsibilities || [],
       salary: jobLtr.salary || { amount: '', period: '' },
       applyLink: jobLtr.applyLink || '#',
       order: jobLtr.order || 0,
@@ -182,17 +140,13 @@ export default function CareersManagePage() {
     if (!confirm('Are you sure you want to delete this job?')) return;
 
     try {
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(`/api/careers/delete?language=ltr&index=${index}`, { method: 'DELETE' }),
-        fetch(`/api/careers/delete?language=rtl&index=${index}`, { method: 'DELETE' }),
-      ]);
-
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      const res = await fetch(`/api/careers/delete?language=ltr&index=${index}`, { method: 'DELETE' });
+      const result = await res.json();
+      if (result.success) {
         showMessage('success', 'Job deleted successfully!');
         await loadJobs();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to delete');
+        showMessage('error', result.message || 'Failed to delete');
       }
     } catch (error) {
       console.error('Error deleting:', error);
@@ -266,7 +220,6 @@ export default function CareersManagePage() {
           <button
             className="button button-primary"
             onClick={async () => {
-              await loadRtlData(); // Load RTL data when adding new
               resetForm();
               setShowForm(true);
               // Scroll to form after state update

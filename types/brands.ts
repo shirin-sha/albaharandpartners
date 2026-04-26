@@ -10,9 +10,11 @@ export interface BrandProduct {
 export interface Brand {
   _id?: string;
   name: string;
+  nameAr?: string;
   imagePath: string;
   link: string;
   description?: string;
+  descriptionAr?: string;
   products?: BrandProduct[];
   isActive: boolean;
 }

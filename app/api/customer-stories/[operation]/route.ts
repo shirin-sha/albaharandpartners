@@ -6,6 +6,12 @@ import { revalidatePath } from 'next/cache';
 const DB_NAME = 'albaharpartners1';
 const COLLECTION_NAME = 'customerstories';
 
+const normalizeStory = (story: CustomerStory): CustomerStory => ({
+  ...story,
+  titleAr: story.titleAr || story.title,
+  descriptionAr: story.descriptionAr || story.description,
+});
+
 // POST - Add a new story to the stories array
 export async function POST(
   request: NextRequest,
@@ -14,7 +20,7 @@ export async function POST(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', story } = body;
+    const { story } = body;
 
     if (operation !== 'add') {
       return NextResponse.json({
@@ -36,11 +42,11 @@ export async function POST(
 
     // Add story to the beginning of the array
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $push: {
           stories: {
-            $each: [story],
+            $each: [normalizeStory(story)],
             $position: 0,
           } as any,
         },
@@ -83,7 +89,7 @@ export async function PUT(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', storyIndex, story } = body;
+    const { storyIndex, story } = body;
 
     if (operation !== 'update') {
       return NextResponse.json({
@@ -105,10 +111,10 @@ export async function PUT(
 
     // Update the specific story at the given index
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $set: {
-          [`stories.${storyIndex}`]: story,
+          [`stories.${storyIndex}`]: normalizeStory(story),
           updatedAt: new Date(),
         },
       },
@@ -147,7 +153,6 @@ export async function DELETE(
   try {
     const { operation } = await params;
     const searchParams = request.nextUrl.searchParams;
-    const language = searchParams.get('language') || 'ltr';
     const storyIndex = searchParams.get('index');
 
     if (operation !== 'delete') {
@@ -177,7 +182,7 @@ export async function DELETE(
     }
 
     // Get the story to delete (to verify it exists)
-    const content = await collection.findOne({ language });
+    const content = await collection.findOne({ language: 'ltr' });
     if (!content) {
       return NextResponse.json({
         success: false,
@@ -196,7 +201,7 @@ export async function DELETE(
     // Remove the story at the specific index using $pull
     const storyToDelete = storiesArray[index];
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $pull: {
           stories: storyToDelete,

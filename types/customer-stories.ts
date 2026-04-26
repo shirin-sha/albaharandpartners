@@ -3,7 +3,9 @@
 export interface CustomerStory {
   _id?: string;
   title: string;
+  titleAr?: string;
   description: string;
+  descriptionAr?: string;
   imagePath: string;
   link: string;
   order: number;

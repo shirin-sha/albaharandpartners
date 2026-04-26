@@ -9,8 +9,6 @@ export default function NewsManagePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [postsLtr, setPostsLtr] = useState<NewsPost[]>([]);
-  const [postsRtl, setPostsRtl] = useState<NewsPost[]>([]);
-  const [rtlLoaded, setRtlLoaded] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -59,23 +57,6 @@ export default function NewsManagePage() {
     }
   };
 
-  const loadRtlData = async (): Promise<NewsPost[]> => {
-    if (rtlLoaded) return postsRtl;
-    try {
-      const rtlRes = await fetch('/api/news-updates?language=rtl');
-      const rtlResult = await rtlRes.json();
-      if (rtlResult.success && rtlResult.data) {
-        const rtlPosts = rtlResult.data.posts || [];
-        setPostsRtl(rtlPosts);
-        setRtlLoaded(true);
-        return rtlPosts;
-      }
-    } catch (error) {
-      console.error('Error loading RTL posts:', error);
-    }
-    return postsRtl;
-  };
-
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 5000);
@@ -93,9 +74,11 @@ export default function NewsManagePage() {
       const isNew = editingIndex === null;
       const index = isNew ? postsLtr.length : editingIndex!;
 
-      const postLtr: NewsPost = {
+      const post: NewsPost = {
         title: formData.title,
+        titleAr: formData.titleAr || formData.title,
         category: formData.category,
+        categoryAr: formData.categoryAr || formData.category,
         imagePath: formData.imagePath,
         imgWidth: formData.imgWidth,
         imgHeight: formData.imgHeight,
@@ -104,45 +87,22 @@ export default function NewsManagePage() {
         isActive: formData.isActive,
       };
 
-      const postRtl: NewsPost = {
-        title: formData.titleAr || formData.title,
-        category: formData.categoryAr || formData.category,
-        imagePath: formData.imagePath,
-        imgWidth: formData.imgWidth,
-        imgHeight: formData.imgHeight,
-        date: formData.date,
-        link: formData.link,
-        isActive: formData.isActive,
-      };
-
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(isNew ? '/api/news-updates/add' : '/api/news-updates/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'ltr',
-            postIndex: index,
-            post: postLtr,
-          }),
+      const res = await fetch(isNew ? '/api/news-updates/add' : '/api/news-updates/update', {
+        method: isNew ? 'POST' : 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: 'ltr',
+          postIndex: index,
+          post,
         }),
-        fetch(isNew ? '/api/news-updates/add' : '/api/news-updates/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'rtl',
-            postIndex: index,
-            post: postRtl,
-          }),
-        }),
-      ]);
-
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      });
+      const result = await res.json();
+      if (result.success) {
         showMessage('success', isNew ? 'Post added successfully!' : 'Post updated successfully!');
         await loadPosts();
         resetForm();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to save');
+        showMessage('error', result.message || 'Failed to save');
       }
     } catch (error) {
       console.error('Error saving:', error);
@@ -153,17 +113,13 @@ export default function NewsManagePage() {
   };
 
   const handleEdit = async (index: number) => {
-    // Load RTL data when editing (lazy load) and use fresh data immediately.
-    const rtlPosts = await loadRtlData();
-
     const postLtr = postsLtr[index];
-    const postRtl = rtlPosts[index] || postLtr;
     setEditingIndex(index);
     setFormData({
       title: postLtr.title || '',
-      titleAr: postRtl.title || '',
+      titleAr: postLtr.titleAr || postLtr.title || '',
       category: postLtr.category || '',
-      categoryAr: postRtl.category || '',
+      categoryAr: postLtr.categoryAr || postLtr.category || '',
       imagePath: postLtr.imagePath || '',
       imgWidth: postLtr.imgWidth || 410,
       imgHeight: postLtr.imgHeight || 546,
@@ -183,17 +139,13 @@ export default function NewsManagePage() {
     if (!confirm('Are you sure you want to delete this post?')) return;
 
     try {
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(`/api/news-updates/delete?language=ltr&index=${index}`, { method: 'DELETE' }),
-        fetch(`/api/news-updates/delete?language=rtl&index=${index}`, { method: 'DELETE' }),
-      ]);
-
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      const res = await fetch(`/api/news-updates/delete?language=ltr&index=${index}`, { method: 'DELETE' });
+      const result = await res.json();
+      if (result.success) {
         showMessage('success', 'Post deleted successfully!');
         await loadPosts();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to delete');
+        showMessage('error', result.message || 'Failed to delete');
       }
     } catch (error) {
       console.error('Error deleting:', error);
@@ -232,7 +184,6 @@ export default function NewsManagePage() {
           <button
             className="button button-primary"
             onClick={async () => {
-              await loadRtlData(); // Load RTL data when adding new
               resetForm();
               setShowForm(true);
               // Scroll to form after state update

@@ -7,6 +7,12 @@ import { ObjectId } from 'mongodb';
 const DB_NAME = 'albaharpartners1';
 const COLLECTION_NAME = 'brands';
 
+const normalizeBrand = (brand: Brand): Brand => ({
+  ...brand,
+  nameAr: brand.nameAr || brand.name,
+  descriptionAr: brand.descriptionAr || brand.description,
+});
+
 // POST - Add a new brand to the brands array
 export async function POST(
   request: NextRequest,
@@ -15,7 +21,7 @@ export async function POST(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', brand } = body;
+    const { brand } = body;
 
     if (operation !== 'add') {
       return NextResponse.json({
@@ -45,11 +51,11 @@ export async function POST(
 
     // Add brand to the beginning of the array
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $push: {
           brands: {
-            $each: [brand],
+            $each: [normalizeBrand(brand)],
             $position: 0,
           } as any,
         },
@@ -92,7 +98,7 @@ export async function PUT(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', brandIndex, brand } = body;
+    const { brandIndex, brand } = body;
 
     if (operation !== 'update') {
       return NextResponse.json({
@@ -122,10 +128,10 @@ export async function PUT(
 
     // Update the specific brand at the given index
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $set: {
-          [`brands.${brandIndex}`]: brand,
+          [`brands.${brandIndex}`]: normalizeBrand(brand),
           updatedAt: new Date(),
         },
       },
@@ -164,7 +170,6 @@ export async function DELETE(
   try {
     const { operation } = await params;
     const searchParams = request.nextUrl.searchParams;
-    const language = searchParams.get('language') || 'ltr';
     const brandIndex = searchParams.get('index');
 
     if (operation !== 'delete') {
@@ -194,7 +199,7 @@ export async function DELETE(
     }
 
     // Get the brand to delete (to verify it exists)
-    const content = await collection.findOne({ language });
+    const content = await collection.findOne({ language: 'ltr' });
     if (!content) {
       return NextResponse.json({
         success: false,
@@ -213,7 +218,7 @@ export async function DELETE(
     // Remove the brand at the specific index using $pull with the brand object
     const brandToDelete = brandsArray[index];
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $pull: {
           brands: brandToDelete,

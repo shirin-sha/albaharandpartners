@@ -6,6 +6,15 @@ import { revalidatePath } from 'next/cache';
 const DB_NAME = 'albaharpartners1';
 const COLLECTION_NAME = 'solutions';
 
+const normalizeSolution = (solution: SolutionItem): SolutionItem => ({
+  ...solution,
+  tabTitleAr: solution.tabTitleAr || solution.tabTitle,
+  titleAr: solution.titleAr || solution.title,
+  descriptionAr: solution.descriptionAr || solution.description,
+  detailDescriptionAr: solution.detailDescriptionAr || solution.detailDescription,
+  benefitsAr: solution.benefitsAr?.length ? solution.benefitsAr : solution.benefits,
+});
+
 // POST - Add a new solution to the solutions array
 export async function POST(
   request: NextRequest,
@@ -14,7 +23,7 @@ export async function POST(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', solution } = body;
+    const { solution } = body;
 
     if (operation !== 'add') {
       return NextResponse.json({
@@ -36,11 +45,11 @@ export async function POST(
 
     // Add solution to the beginning of the array
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $push: {
           solutions: {
-            $each: [solution],
+            $each: [normalizeSolution(solution)],
             $position: 0,
           } as any,
         },
@@ -84,7 +93,7 @@ export async function PUT(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', solutionIndex, solution } = body;
+    const { solutionIndex, solution } = body;
 
     if (operation !== 'update') {
       return NextResponse.json({
@@ -106,10 +115,10 @@ export async function PUT(
 
     // Update the specific solution at the given index
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $set: {
-          [`solutions.${solutionIndex}`]: solution,
+          [`solutions.${solutionIndex}`]: normalizeSolution(solution),
           updatedAt: new Date(),
         },
       },
@@ -149,7 +158,6 @@ export async function DELETE(
   try {
     const { operation } = await params;
     const searchParams = request.nextUrl.searchParams;
-    const language = searchParams.get('language') || 'ltr';
     const solutionIndex = searchParams.get('index');
 
     if (operation !== 'delete') {
@@ -179,7 +187,7 @@ export async function DELETE(
     }
 
     // Get the solution to delete (to verify it exists)
-    const content = await collection.findOne({ language });
+    const content = await collection.findOne({ language: 'ltr' });
     if (!content) {
       return NextResponse.json({
         success: false,
@@ -198,7 +206,7 @@ export async function DELETE(
     // Remove the solution at the specific index using $pull
     const solutionToDelete = solutionsArray[index];
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $pull: {
           solutions: solutionToDelete,

@@ -9,8 +9,6 @@ export default function StoriesManagePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [storiesLtr, setStoriesLtr] = useState<CustomerStory[]>([]);
-  const [storiesRtl, setStoriesRtl] = useState<CustomerStory[]>([]);
-  const [rtlLoaded, setRtlLoaded] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -55,23 +53,6 @@ export default function StoriesManagePage() {
     }
   };
 
-  const loadRtlData = async (): Promise<CustomerStory[]> => {
-    if (rtlLoaded) return storiesRtl;
-    try {
-      const rtlRes = await fetch('/api/customer-stories?language=rtl');
-      const rtlResult = await rtlRes.json();
-      if (rtlResult.success && rtlResult.data) {
-        const rtlStories = rtlResult.data.stories || [];
-        setStoriesRtl(rtlStories);
-        setRtlLoaded(true);
-        return rtlStories;
-      }
-    } catch (error) {
-      console.error('Error loading RTL stories:', error);
-    }
-    return storiesRtl;
-  };
-
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 5000);
@@ -89,52 +70,34 @@ export default function StoriesManagePage() {
       const isNew = editingIndex === null;
       const index = isNew ? storiesLtr.length : editingIndex!;
 
-      const storyLtr: CustomerStory = {
+      const story: CustomerStory = {
         title: formData.title,
+        titleAr: formData.titleAr || formData.title,
         description: formData.description,
+        descriptionAr: formData.descriptionAr || formData.description,
         imagePath: formData.imagePath,
         link: formData.link,
         order: formData.order,
         isActive: formData.isActive,
       };
 
-      const storyRtl: CustomerStory = {
-        title: formData.titleAr || formData.title,
-        description: formData.descriptionAr || formData.description,
-        imagePath: formData.imagePath,
-        link: formData.link,
-        order: formData.order,
-        isActive: formData.isActive,
-      };
-
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(isNew ? '/api/customer-stories/add' : '/api/customer-stories/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'ltr',
-            storyIndex: index,
-            story: storyLtr,
-          }),
+      const response = await fetch(isNew ? '/api/customer-stories/add' : '/api/customer-stories/update', {
+        method: isNew ? 'POST' : 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: 'ltr',
+          storyIndex: index,
+          story,
         }),
-        fetch(isNew ? '/api/customer-stories/add' : '/api/customer-stories/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'rtl',
-            storyIndex: index,
-            story: storyRtl,
-          }),
-        }),
-      ]);
+      });
+      const result = await response.json();
 
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      if (result.success) {
         showMessage('success', isNew ? 'Story added successfully!' : 'Story updated successfully!');
         await loadStories();
         resetForm();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to save');
+        showMessage('error', result.message || 'Failed to save');
       }
     } catch (error) {
       console.error('Error saving:', error);
@@ -145,17 +108,13 @@ export default function StoriesManagePage() {
   };
 
   const handleEdit = async (index: number) => {
-    // Load RTL data when editing (lazy load) and use fresh data immediately.
-    const rtlStories = await loadRtlData();
-
     const storyLtr = storiesLtr[index];
-    const storyRtl = rtlStories[index] || storyLtr;
     setEditingIndex(index);
     setFormData({
       title: storyLtr.title || '',
-      titleAr: storyRtl.title || '',
+      titleAr: storyLtr.titleAr || storyLtr.title || '',
       description: storyLtr.description || '',
-      descriptionAr: storyRtl.description || '',
+      descriptionAr: storyLtr.descriptionAr || storyLtr.description || '',
       imagePath: storyLtr.imagePath || '',
       link: storyLtr.link || '#',
       order: storyLtr.order || 0,
@@ -173,17 +132,13 @@ export default function StoriesManagePage() {
     if (!confirm('Are you sure you want to delete this story?')) return;
 
     try {
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(`/api/customer-stories/delete?language=ltr&index=${index}`, { method: 'DELETE' }),
-        fetch(`/api/customer-stories/delete?language=rtl&index=${index}`, { method: 'DELETE' }),
-      ]);
-
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      const res = await fetch(`/api/customer-stories/delete?language=ltr&index=${index}`, { method: 'DELETE' });
+      const result = await res.json();
+      if (result.success) {
         showMessage('success', 'Story deleted successfully!');
         await loadStories();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to delete');
+        showMessage('error', result.message || 'Failed to delete');
       }
     } catch (error) {
       console.error('Error deleting:', error);
@@ -220,7 +175,6 @@ export default function StoriesManagePage() {
           <button
             className="button button-primary"
             onClick={async () => {
-              await loadRtlData(); // Load RTL data when adding new
               resetForm();
               setShowForm(true);
               // Scroll to form after state update

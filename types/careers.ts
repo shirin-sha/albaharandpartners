@@ -3,8 +3,11 @@
 export interface Job {
   _id?: string;
   title: string;
+  titleAr?: string;
   description: string;
+  descriptionAr?: string;
   responsibilities: string[];
+  responsibilitiesAr?: string[];
   salary: {
     amount: string;
     period: string;

@@ -144,13 +144,22 @@ export async function getNewsUpdatesContent(language: 'ltr' | 'rtl' = 'ltr'): Pr
         const collection = db.collection<NewsUpdatesContent>('newsupdates');
         
         const content = await collection.findOne({ language });
+        const sharedPostsSource = await collection.findOne({ language: 'ltr' });
         
         if (!content) {
           return null;
         }
         
+        const sourcePosts = sharedPostsSource?.posts || content.posts || [];
+        const localizedPosts = sourcePosts.map((post) => ({
+          ...post,
+          title: language === 'rtl' ? (post.titleAr || post.title) : post.title,
+          category: language === 'rtl' ? (post.categoryAr || post.category) : post.category,
+        }));
+        
         return {
           ...content,
+          posts: localizedPosts,
           _id: content._id?.toString(),
         } as NewsUpdatesContent;
       } catch (error) {
@@ -177,13 +186,22 @@ export async function getCustomerStoriesContent(language: 'ltr' | 'rtl' = 'ltr')
         const collection = db.collection<CustomerStoriesContent>('customerstories');
         
         const content = await collection.findOne({ language });
+        const sharedStoriesSource = await collection.findOne({ language: 'ltr' });
         
         if (!content) {
           return null;
         }
+
+        const sourceStories = sharedStoriesSource?.stories || content.stories || [];
+        const localizedStories = sourceStories.map((story) => ({
+          ...story,
+          title: language === 'rtl' ? (story.titleAr || story.title) : story.title,
+          description: language === 'rtl' ? (story.descriptionAr || story.description) : story.description,
+        }));
         
         return {
           ...content,
+          stories: localizedStories,
           _id: content._id?.toString(),
         } as CustomerStoriesContent;
       } catch (error) {
@@ -210,13 +228,27 @@ export async function getSolutionsContent(language: 'ltr' | 'rtl' = 'ltr'): Prom
         const collection = db.collection<SolutionsContent>('solutions');
         
         const content = await collection.findOne({ language });
+        const sharedSolutionsSource = await collection.findOne({ language: 'ltr' });
         
         if (!content) {
           return null;
         }
         
+        const sourceSolutions = sharedSolutionsSource?.solutions || content.solutions || [];
+        const localizedSolutions = sourceSolutions.map((solution) => ({
+          ...solution,
+          tabTitle: language === 'rtl' ? (solution.tabTitleAr || solution.tabTitle) : solution.tabTitle,
+          title: language === 'rtl' ? (solution.titleAr || solution.title) : solution.title,
+          description: language === 'rtl' ? (solution.descriptionAr || solution.description) : solution.description,
+          detailDescription: language === 'rtl' ? (solution.detailDescriptionAr || solution.detailDescription) : solution.detailDescription,
+          benefits: language === 'rtl'
+            ? ((solution.benefitsAr && solution.benefitsAr.length > 0) ? solution.benefitsAr : solution.benefits)
+            : solution.benefits,
+        }));
+        
         return {
           ...content,
+          solutions: localizedSolutions,
           _id: content._id?.toString(),
         } as SolutionsContent;
       } catch (error) {
@@ -342,13 +374,25 @@ export async function getCareersContent(language: 'ltr' | 'rtl' = 'ltr'): Promis
         const collection = db.collection<CareersContent>('careers');
         
         const content = await collection.findOne({ language });
+        const sharedJobsSource = await collection.findOne({ language: 'ltr' });
         
         if (!content) {
           return null;
         }
         
+        const sourceJobs = sharedJobsSource?.jobs || content.jobs || [];
+        const localizedJobs = sourceJobs.map((job) => ({
+          ...job,
+          title: language === 'rtl' ? (job.titleAr || job.title) : job.title,
+          description: language === 'rtl' ? (job.descriptionAr || job.description) : job.description,
+          responsibilities: language === 'rtl'
+            ? ((job.responsibilitiesAr && job.responsibilitiesAr.length > 0) ? job.responsibilitiesAr : job.responsibilities)
+            : job.responsibilities,
+        }));
+        
         return {
           ...content,
+          jobs: localizedJobs,
           _id: content._id?.toString(),
         } as CareersContent;
       } catch (error) {
@@ -375,15 +419,23 @@ export async function getBrandsContent(language: 'ltr' | 'rtl' = 'ltr'): Promise
         const collection = db.collection<BrandsContent>('brands');
         
         const content = await collection.findOne({ language });
+        const sharedBrandsSource = await collection.findOne({ language: 'ltr' });
         
         if (!content) {
           return null;
         }
         
+        const sourceBrands = sharedBrandsSource?.brands || content.brands || [];
+        const localizedBrands = sourceBrands.map((brand) => ({
+          ...brand,
+          name: language === 'rtl' ? (brand.nameAr || brand.name) : brand.name,
+          description: language === 'rtl' ? (brand.descriptionAr || brand.description) : brand.description,
+        }));
+        
         return {
           ...content,
           _id: content._id?.toString(),
-          brands: content.brands?.map((brand) => ({
+          brands: localizedBrands?.map((brand) => ({
             ...brand,
             _id: brand._id?.toString(),
             products: brand.products?.map((product) => ({

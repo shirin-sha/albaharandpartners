@@ -9,8 +9,6 @@ export default function BrandsManagePage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [brandsLtr, setBrandsLtr] = useState<Brand[]>([]);
-  const [brandsRtl, setBrandsRtl] = useState<Brand[]>([]);
-  const [rtlLoaded, setRtlLoaded] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
@@ -55,23 +53,6 @@ export default function BrandsManagePage() {
     }
   };
 
-  const loadRtlData = async (): Promise<Brand[]> => {
-    if (rtlLoaded) return brandsRtl;
-    try {
-      const rtlRes = await fetch('/api/brands?language=rtl');
-      const rtlResult = await rtlRes.json();
-      if (rtlResult.success && rtlResult.data) {
-        const rtlBrands = rtlResult.data.brands || [];
-        setBrandsRtl(rtlBrands);
-        setRtlLoaded(true);
-        return rtlBrands;
-      }
-    } catch (error) {
-      console.error('Error loading RTL brands:', error);
-    }
-    return brandsRtl;
-  };
-
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 5000);
@@ -93,52 +74,33 @@ export default function BrandsManagePage() {
       const isNew = editingIndex === null;
       const index = isNew ? brandsLtr.length : editingIndex!;
 
-      const brandLtr: Brand = {
+      const brand: Brand = {
         name: formData.name,
+        nameAr: formData.nameAr || formData.name,
         imagePath: formData.imagePath,
         link: formData.link,
         description: formData.description,
+        descriptionAr: formData.descriptionAr || formData.description,
         products: formData.products,
         isActive: formData.isActive,
       };
 
-      const brandRtl: Brand = {
-        name: formData.nameAr || formData.name,
-        imagePath: formData.imagePath,
-        link: formData.link,
-        description: formData.descriptionAr || formData.description,
-        products: formData.products,
-        isActive: formData.isActive,
-      };
-
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(isNew ? '/api/brands/add' : '/api/brands/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'ltr',
-            brandIndex: index,
-            brand: brandLtr,
-          }),
+      const res = await fetch(isNew ? '/api/brands/add' : '/api/brands/update', {
+        method: isNew ? 'POST' : 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: 'ltr',
+          brandIndex: index,
+          brand,
         }),
-        fetch(isNew ? '/api/brands/add' : '/api/brands/update', {
-          method: isNew ? 'POST' : 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            language: 'rtl',
-            brandIndex: index,
-            brand: brandRtl,
-          }),
-        }),
-      ]);
-
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      });
+      const result = await res.json();
+      if (result.success) {
         showMessage('success', isNew ? 'Brand added successfully!' : 'Brand updated successfully!');
         await loadBrands();
         resetForm();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to save');
+        showMessage('error', result.message || 'Failed to save');
       }
     } catch (error) {
       console.error('Error saving:', error);
@@ -149,19 +111,15 @@ export default function BrandsManagePage() {
   };
 
   const handleEdit = async (index: number) => {
-    // Load RTL data when editing (lazy load) and use fresh data immediately.
-    const rtlBrands = await loadRtlData();
-
     const brandLtr = brandsLtr[index];
-    const brandRtl = rtlBrands[index] || brandLtr;
     setEditingIndex(index);
     setFormData({
       name: brandLtr.name || '',
-      nameAr: brandRtl.name || '',
+      nameAr: brandLtr.nameAr || brandLtr.name || '',
       imagePath: brandLtr.imagePath || '',
       link: brandLtr.link || '#',
       description: brandLtr.description || '',
-      descriptionAr: brandRtl.description || '',
+      descriptionAr: brandLtr.descriptionAr || brandLtr.description || '',
       products: brandLtr.products || [],
       isActive: brandLtr.isActive !== undefined ? brandLtr.isActive : true,
     });
@@ -177,17 +135,13 @@ export default function BrandsManagePage() {
     if (!confirm('Are you sure you want to delete this brand?')) return;
 
     try {
-      const [ltrRes, rtlRes] = await Promise.all([
-        fetch(`/api/brands/delete?language=ltr&index=${index}`, { method: 'DELETE' }),
-        fetch(`/api/brands/delete?language=rtl&index=${index}`, { method: 'DELETE' }),
-      ]);
-
-      const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
-      if (ltrResult.success && rtlResult.success) {
+      const res = await fetch(`/api/brands/delete?language=ltr&index=${index}`, { method: 'DELETE' });
+      const result = await res.json();
+      if (result.success) {
         showMessage('success', 'Brand deleted successfully!');
         await loadBrands();
       } else {
-        showMessage('error', ltrResult.message || rtlResult.message || 'Failed to delete');
+        showMessage('error', result.message || 'Failed to delete');
       }
     } catch (error) {
       console.error('Error deleting:', error);
@@ -224,7 +178,6 @@ export default function BrandsManagePage() {
           <button
             className="button button-primary"
             onClick={async () => {
-              await loadRtlData(); // Load RTL data when adding new
               resetForm();
               setShowForm(true);
               // Scroll to form after state update

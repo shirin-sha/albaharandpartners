@@ -6,6 +6,13 @@ import { revalidatePath } from 'next/cache';
 const DB_NAME = 'albaharpartners1';
 const COLLECTION_NAME = 'careers';
 
+const normalizeJob = (job: Job): Job => ({
+  ...job,
+  titleAr: job.titleAr || job.title,
+  descriptionAr: job.descriptionAr || job.description,
+  responsibilitiesAr: job.responsibilitiesAr?.length ? job.responsibilitiesAr : job.responsibilities,
+});
+
 // POST - Add a new job to the jobs array
 export async function POST(
   request: NextRequest,
@@ -14,7 +21,7 @@ export async function POST(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', job } = body;
+    const { job } = body;
 
     if (operation !== 'add') {
       return NextResponse.json({
@@ -36,11 +43,11 @@ export async function POST(
 
     // Add job to the beginning of the array
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $push: {
           jobs: {
-            $each: [job],
+            $each: [normalizeJob(job)],
             $position: 0,
           } as any,
         },
@@ -82,7 +89,7 @@ export async function PUT(
   try {
     const { operation } = await params;
     const body = await request.json();
-    const { language = 'ltr', jobIndex, job } = body;
+    const { jobIndex, job } = body;
 
     if (operation !== 'update') {
       return NextResponse.json({
@@ -104,10 +111,10 @@ export async function PUT(
 
     // Update the specific job at the given index
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $set: {
-          [`jobs.${jobIndex}`]: job,
+          [`jobs.${jobIndex}`]: normalizeJob(job),
           updatedAt: new Date(),
         },
       },
@@ -145,7 +152,6 @@ export async function DELETE(
   try {
     const { operation } = await params;
     const searchParams = request.nextUrl.searchParams;
-    const language = searchParams.get('language') || 'ltr';
     const jobIndex = searchParams.get('index');
 
     if (operation !== 'delete') {
@@ -175,7 +181,7 @@ export async function DELETE(
     }
 
     // Get the job to delete (to verify it exists)
-    const content = await collection.findOne({ language });
+    const content = await collection.findOne({ language: 'ltr' });
     if (!content) {
       return NextResponse.json({
         success: false,
@@ -194,7 +200,7 @@ export async function DELETE(
     // Remove the job at the specific index using $pull
     const jobToDelete = jobsArray[index];
     const result = await collection.findOneAndUpdate(
-      { language },
+      { language: 'ltr' },
       {
         $pull: {
           jobs: jobToDelete,
