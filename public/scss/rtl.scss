@@ -27,6 +27,42 @@
     font-family: "Noto Sans Arabic", sans-serif !important;
   }
 
+  // Global Arabic alignment: default all textual content to the right in RTL mode.
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  a,
+  span,
+  li,
+  label,
+  input,
+  textarea,
+  select,
+  button,
+  small,
+  strong,
+  em,
+  blockquote,
+  th,
+  td,
+  .title,
+  .title-section,
+  .sub-title,
+  .desc,
+  .text {
+    text-align: right;
+  }
+
+  // Keep explicit center utilities/components centered.
+  .text-center,
+  .text-center * {
+    text-align: center !important;
+  }
+
   #toggle-rtl {
     left: 15px;
     right: auto;
@@ -616,9 +652,9 @@
 
       .about-left {
         padding: 99px 15px 82px 111px;
-        align-items: flex-start;
+       
         @media (max-width: 991px) {
-          align-items: flex-end;
+        
         }
       }
 
@@ -628,6 +664,12 @@
         .section-content {
           margin-left: auto;
           margin-right: 0;
+          text-align: right;
+          direction: rtl;
+        }
+
+        .text {
+          text-align: right;
         }
 
         .bottom {
@@ -742,6 +784,31 @@
         left: auto;
         right: -22%;
         transform: rotateY(180deg);
+      }
+    }
+  }
+
+  .section-process {
+    &.h-8 {
+      .process-item {
+        &.bg-1-style-2 {
+          .process-top {
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+
+            .label {
+              text-align: right;
+              direction: rtl;
+            }
+          }
+
+          .process-content {
+            .desc {
+              text-align: right;
+              direction: rtl;
+            }
+          }
+        }
       }
     }
   }
