@@ -755,6 +755,48 @@
         gap: 32px;
       }
     }
+
+    &.page-contact {
+      .list-box-contact {
+        .box-contact-item {
+          direction: rtl;
+          flex-direction: row;
+          text-align: right;
+
+          .content {
+            flex: 1 1 auto;
+            max-width: calc(100% - 72px);
+          }
+
+          .address-text {
+            direction: rtl;
+            unicode-bidi: plaintext;
+            text-align: right;
+            display: block;
+            width: 100%;
+          }
+        }
+
+        @media (min-width: 992px) {
+          .box-contact-item {
+            max-width: none;
+          }
+
+          // DOM order: 1 Address, 2 Telephone, 3 Email.
+          .box-contact-item:nth-child(1) {
+            flex: 1.35 1 0;
+          }
+
+          .box-contact-item:nth-child(2) {
+            flex: 0.65 1 0;
+          }
+
+          .box-contact-item:nth-child(3) {
+            flex: 1 1 0;
+          }
+        }
+      }
+    }
   }
 
   @keyframes infiniteScroll-rtl {

@@ -24,6 +24,25 @@ export default function ContactUsManager() {
     loadContent();
   }, []);
 
+  const withDefaultContactLabels = (content: ContactUsContent): ContactUsContent => {
+    const defaults =
+      content.language === 'rtl'
+        ? { address: 'العنوان', phone: 'الهاتف', email: 'البريد الإلكتروني' }
+        : { address: 'Address', phone: 'Telephone', email: 'Email' };
+
+    return {
+      ...content,
+      contactSection: {
+        ...content.contactSection,
+        contactInfoLabels: {
+          address: content.contactSection.contactInfoLabels?.address || defaults.address,
+          phone: content.contactSection.contactInfoLabels?.phone || defaults.phone,
+          email: content.contactSection.contactInfoLabels?.email || defaults.email,
+        },
+      },
+    };
+  };
+
   const loadContent = async () => {
     setLoading(true);
     try {
@@ -36,13 +55,13 @@ export default function ContactUsManager() {
       const [ltrResult, rtlResult] = await Promise.all([ltrRes.json(), rtlRes.json()]);
       
       if (ltrResult.success && ltrResult.data) {
-        setContentLtr(ltrResult.data);
+        setContentLtr(withDefaultContactLabels(ltrResult.data));
       } else {
         setContentLtr(getEmptyContent('ltr'));
       }
       
       if (rtlResult.success && rtlResult.data) {
-        setContentRtl(rtlResult.data);
+        setContentRtl(withDefaultContactLabels(rtlResult.data));
       } else {
         setContentRtl(getEmptyContent('rtl'));
       }
@@ -76,6 +95,9 @@ export default function ContactUsManager() {
       heading: 'Get in Touch with Us',
       subheading: 'Reach out today to discuss how we can support your business goals. Our team is ready to provide answers, offer solutions, and start your journey toward success.',
       benefits: [],
+      contactInfoLabels: lang === 'rtl'
+        ? { address: 'العنوان', phone: 'الهاتف', email: 'البريد الإلكتروني' }
+        : { address: 'Address', phone: 'Telephone', email: 'Email' },
       contactInfo: {
         address: 'P.O. Box 148 Safat 13002-Kuwait, Block 1, Street 3, Shuwaikh Industrial 1',
         phone: '+965 184 8848',
@@ -380,96 +402,258 @@ export default function ContactUsManager() {
                 />
               </div>
             </div>
+
+            <div className="form-row-bilingual">
+              <div className="form-group">
+                <label>Address Label</label>
+                <input
+                  type="text"
+                  value={contentLtr.contactSection.contactInfoLabels?.address || ''}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      contactSection: {
+                        ...contentLtr.contactSection,
+                        contactInfoLabels: {
+                          ...(contentLtr.contactSection.contactInfoLabels || { address: '', phone: '', email: '' }),
+                          address: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Address Label</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.contactSection.contactInfoLabels?.address || ''}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      contactSection: {
+                        ...contentRtl.contactSection,
+                        contactInfoLabels: {
+                          ...(contentRtl.contactSection.contactInfoLabels || { address: '', phone: '', email: '' }),
+                          address: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="form-row-bilingual">
+              <div className="form-group">
+                <label>Phone Label</label>
+                <input
+                  type="text"
+                  value={contentLtr.contactSection.contactInfoLabels?.phone || ''}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      contactSection: {
+                        ...contentLtr.contactSection,
+                        contactInfoLabels: {
+                          ...(contentLtr.contactSection.contactInfoLabels || { address: '', phone: '', email: '' }),
+                          phone: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Phone Label</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.contactSection.contactInfoLabels?.phone || ''}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      contactSection: {
+                        ...contentRtl.contactSection,
+                        contactInfoLabels: {
+                          ...(contentRtl.contactSection.contactInfoLabels || { address: '', phone: '', email: '' }),
+                          phone: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="form-row-bilingual">
+              <div className="form-group">
+                <label>Email Label</label>
+                <input
+                  type="text"
+                  value={contentLtr.contactSection.contactInfoLabels?.email || ''}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      contactSection: {
+                        ...contentLtr.contactSection,
+                        contactInfoLabels: {
+                          ...(contentLtr.contactSection.contactInfoLabels || { address: '', phone: '', email: '' }),
+                          email: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Email Label</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.contactSection.contactInfoLabels?.email || ''}
+                  onChange={(e) =>
+                    setContentRtl({
+                      ...contentRtl,
+                      contactSection: {
+                        ...contentRtl.contactSection,
+                        contactInfoLabels: {
+                          ...(contentRtl.contactSection.contactInfoLabels || { address: '', phone: '', email: '' }),
+                          email: e.target.value,
+                        },
+                      },
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="form-row-bilingual">
               <div className="form-group">
                 <label>Address</label>
                 <input
                   type="text"
                   value={contentLtr.contactSection.contactInfo.address}
-                  onChange={(e) => {
-                    const address = e.target.value;
+                  onChange={(e) =>
                     setContentLtr({
                       ...contentLtr,
                       contactSection: {
                         ...contentLtr.contactSection,
                         contactInfo: {
                           ...contentLtr.contactSection.contactInfo,
-                          address,
+                          address: e.target.value,
                         },
                       },
-                    });
+                    })
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <label>Address</label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={contentRtl.contactSection.contactInfo.address}
+                  onChange={(e) =>
                     setContentRtl({
                       ...contentRtl,
                       contactSection: {
                         ...contentRtl.contactSection,
                         contactInfo: {
                           ...contentRtl.contactSection.contactInfo,
-                          address,
+                          address: e.target.value,
                         },
                       },
-                    });
-                  }}
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="form-row-bilingual">
+              <div className="form-group">
+                <label>Phone</label>
+                <input
+                  type="text"
+                  value={contentLtr.contactSection.contactInfo.phone}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      contactSection: {
+                        ...contentLtr.contactSection,
+                        contactInfo: {
+                          ...contentLtr.contactSection.contactInfo,
+                          phone: e.target.value,
+                        },
+                      },
+                    })
+                  }
                 />
               </div>
               <div className="form-group">
                 <label>Phone</label>
                 <input
                   type="text"
-                  value={contentLtr.contactSection.contactInfo.phone}
-                  onChange={(e) => {
-                    const phone = e.target.value;
-                    setContentLtr({
-                      ...contentLtr,
-                      contactSection: {
-                        ...contentLtr.contactSection,
-                        contactInfo: {
-                          ...contentLtr.contactSection.contactInfo,
-                          phone,
-                        },
-                      },
-                    });
+                  dir="rtl"
+                  value={contentRtl.contactSection.contactInfo.phone}
+                  onChange={(e) =>
                     setContentRtl({
                       ...contentRtl,
                       contactSection: {
                         ...contentRtl.contactSection,
                         contactInfo: {
                           ...contentRtl.contactSection.contactInfo,
-                          phone,
+                          phone: e.target.value,
                         },
                       },
-                    });
-                  }}
+                    })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="form-row-bilingual">
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={contentLtr.contactSection.contactInfo.email}
+                  onChange={(e) =>
+                    setContentLtr({
+                      ...contentLtr,
+                      contactSection: {
+                        ...contentLtr.contactSection,
+                        contactInfo: {
+                          ...contentLtr.contactSection.contactInfo,
+                          email: e.target.value,
+                        },
+                      },
+                    })
+                  }
                 />
               </div>
               <div className="form-group">
                 <label>Email</label>
                 <input
                   type="email"
-                  value={contentLtr.contactSection.contactInfo.email}
-                  onChange={(e) => {
-                    const email = e.target.value;
-                    setContentLtr({
-                      ...contentLtr,
-                      contactSection: {
-                        ...contentLtr.contactSection,
-                        contactInfo: {
-                          ...contentLtr.contactSection.contactInfo,
-                          email,
-                        },
-                      },
-                    });
+                  dir="rtl"
+                  value={contentRtl.contactSection.contactInfo.email}
+                  onChange={(e) =>
                     setContentRtl({
                       ...contentRtl,
                       contactSection: {
                         ...contentRtl.contactSection,
                         contactInfo: {
                           ...contentRtl.contactSection.contactInfo,
-                          email,
+                          email: e.target.value,
                         },
                       },
-                    });
-                  }}
+                    })
+                  }
                 />
               </div>
+            </div>
               <div className="form-actions">
                 <button
                   className="button button-primary"

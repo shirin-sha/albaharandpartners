@@ -10,6 +10,15 @@ interface Props {
 
 export default function ContactCMS({ data }: Props) {
   if (!data.contactSection.isActive) return null;
+  const isRtl = data.language === "rtl";
+  const fallbackLabels = isRtl
+    ? { address: "العنوان", phone: "الهاتف", email: "البريد الإلكتروني" }
+    : { address: "Address", phone: "Telephone", email: "Email" };
+  const labels = {
+    address: data.contactSection.contactInfoLabels?.address || fallbackLabels.address,
+    phone: data.contactSection.contactInfoLabels?.phone || fallbackLabels.phone,
+    email: data.contactSection.contactInfoLabels?.email || fallbackLabels.email,
+  };
 
   return (
     <section className="section-contact-home page-contact tf-spacing-2">
@@ -79,9 +88,15 @@ export default function ContactCMS({ data }: Props) {
                     </div>
                     <div className="content wow fadeInUp" data-wow-delay=".1s">
                       <div className="caption-1 title-section-contact">
-                        Address
+                        {labels.address}
                       </div>
-                      <a href="#" className="caption-1 text" dangerouslySetInnerHTML={{ __html: data.contactSection.contactInfo.address.replace(/\n/g, '<br />') }} />
+                      <div
+                        className="caption-1 text address-text"
+                        dir={isRtl ? "rtl" : "ltr"}
+                        dangerouslySetInnerHTML={{
+                          __html: data.contactSection.contactInfo.address.replace(/\n/g, "<br />"),
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="box-contact-item style-bg-white">
@@ -90,7 +105,7 @@ export default function ContactCMS({ data }: Props) {
                     </div>
                     <div className="content wow fadeInUp" data-wow-delay=".3s">
                       <div className="caption-1 title-section-contact">
-                        Telephone
+                        {labels.phone}
                       </div>
                       <a href={`tel:${data.contactSection.contactInfo.phone}`} className="caption-1 text">
                         {data.contactSection.contactInfo.phone}
@@ -103,7 +118,7 @@ export default function ContactCMS({ data }: Props) {
                     </div>
                     <div className="content wow fadeInUp" data-wow-delay=".5s">
                       <div className="caption-1 title-section-contact">
-                        Email
+                        {labels.email}
                       </div>
                       <div className="caption-1 text">
                         <a href={`mailto:${data.contactSection.contactInfo.email}`} className="caption-1 text">

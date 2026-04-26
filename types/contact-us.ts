@@ -10,6 +10,12 @@ export interface ContactInfo {
   email: string;
 }
 
+export interface ContactInfoLabels {
+  address: string;
+  phone: string;
+  email: string;
+}
+
 export interface ContactUsHeader {
   breadcrumb: string;
   title: string;
@@ -33,6 +39,7 @@ export interface ContactUsContent {
     subheading?: string;
     benefits: ContactBenefit[];
     contactInfo: ContactInfo;
+    contactInfoLabels?: ContactInfoLabels;
     isActive: boolean;
   };
   mapSection: {
