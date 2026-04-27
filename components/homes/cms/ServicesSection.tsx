@@ -23,6 +23,8 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
     return null;
   }
 
+  const learnMoreLabel = language === "rtl" ? "اعرف المزيد" : "Learn More";
+
   return (
     <section
       className="section-services h-8 tf-spacing-18 section-one-page"
@@ -102,7 +104,7 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                           href="#"
                           className="tf-btn style-1 bg-color-primary"
                         >
-                          <span>Learn More</span>
+                          <span>{learnMoreLabel}</span>
                         </Link>
                       </div>
                       <div className="image" style={{ width: '100%', height: '100%', minHeight: '500px', position: 'relative', overflow: 'hidden' }}>
