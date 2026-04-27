@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation';
-import Footer2 from "@/components/footers/Footer2";
 import FooterCMS from "@/components/footers/FooterCMS";
 import HeaderCMS from "@/components/headers/HeaderCMS";
 import Header7 from "@/components/headers/Header7";
@@ -467,7 +466,7 @@ export default async function ArabicPage({ params, searchParams }: PageProps) {
       <div className="mb-20" />
       {headerContent ? <HeaderCMS data={headerContent} /> : <Header7 />}
       {pageContent}
-      {footerContent ? <FooterCMS data={footerContent} /> : <Footer2 />}
+      {footerContent && <FooterCMS data={footerContent} />}
     </>
   );
 }
