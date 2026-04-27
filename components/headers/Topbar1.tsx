@@ -33,7 +33,7 @@ export default function Topbar1() {
                     dir="ltr"
                     style={{ unicodeBidi: "plaintext" }}
                   >
-                    +965 XXXXXXXX
+                    +965 184 8848
                   </p>
                 </div>
                 <div className="tf-tb-social">
