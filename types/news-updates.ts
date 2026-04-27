@@ -6,6 +6,7 @@ export interface NewsPost {
   titleAr?: string;
   category: string;
   categoryAr?: string;
+  isFeatured?: boolean;
   imagePath: string;
   imgWidth?: number;
   imgHeight?: number;

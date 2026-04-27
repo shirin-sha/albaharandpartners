@@ -10,6 +10,7 @@ const normalizePost = (post: NewsPost): NewsPost => ({
   ...post,
   titleAr: post.titleAr || post.title,
   categoryAr: post.categoryAr || post.category,
+  isFeatured: post.isFeatured === true,
 });
 
 // POST - Add a new post to the posts array
@@ -40,13 +41,27 @@ export async function POST(
     const db = client.db(DB_NAME);
     const collection = db.collection(COLLECTION_NAME);
 
+    const normalizedPost = normalizePost(post);
+    const isFeaturedPost = normalizedPost.isFeatured === true;
+
+    if (isFeaturedPost) {
+      await collection.updateOne(
+        { language: 'ltr' },
+        {
+          $set: {
+            'posts.$[].isFeatured': false,
+          } as any,
+        }
+      );
+    }
+
     // Add post to the beginning of the array
     const result = await collection.findOneAndUpdate(
       { language: 'ltr' },
       {
         $push: {
           posts: {
-            $each: [normalizePost(post)],
+            $each: [normalizedPost],
             $position: 0,
           } as any,
         },
@@ -109,12 +124,26 @@ export async function PUT(
     const db = client.db(DB_NAME);
     const collection = db.collection(COLLECTION_NAME);
 
+    const normalizedPost = normalizePost(post);
+    const isFeaturedPost = normalizedPost.isFeatured === true;
+
+    if (isFeaturedPost) {
+      await collection.updateOne(
+        { language: 'ltr' },
+        {
+          $set: {
+            'posts.$[].isFeatured': false,
+          } as any,
+        }
+      );
+    }
+
     // Update the specific post at the given index
     const result = await collection.findOneAndUpdate(
       { language: 'ltr' },
       {
         $set: {
-          [`posts.${postIndex}`]: normalizePost(post),
+          [`posts.${postIndex}`]: normalizedPost,
           updatedAt: new Date(),
         },
       },

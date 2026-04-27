@@ -23,6 +23,7 @@ export default function NewsManagePage() {
     date: { day: string; month: string };
     link: string;
     isActive: boolean;
+    isFeatured: boolean;
   }>({
     title: '',
     titleAr: '',
@@ -34,6 +35,7 @@ export default function NewsManagePage() {
     date: { day: '18', month: 'DEC' },
     link: '#',
     isActive: true,
+    isFeatured: false,
   });
 
   useEffect(() => {
@@ -85,6 +87,7 @@ export default function NewsManagePage() {
         date: formData.date,
         link: formData.link,
         isActive: formData.isActive,
+        isFeatured: formData.isFeatured,
       };
 
       const res = await fetch(isNew ? '/api/news-updates/add' : '/api/news-updates/update', {
@@ -126,6 +129,7 @@ export default function NewsManagePage() {
       date: postLtr.date || { day: '18', month: 'DEC' },
       link: postLtr.link || '#',
       isActive: postLtr.isActive !== undefined ? postLtr.isActive : true,
+      isFeatured: postLtr.isFeatured === true,
     });
     setShowForm(true);
     
@@ -165,6 +169,7 @@ export default function NewsManagePage() {
       date: { day: '18', month: 'DEC' },
       link: '#',
       isActive: true,
+      isFeatured: false,
     });
     setEditingIndex(null);
     setShowForm(false);
@@ -247,6 +252,17 @@ export default function NewsManagePage() {
                         style={{ marginRight: '8px' }}
                       />
                       Active
+                    </label>
+                  </div>
+                  <div className="form-group">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={formData.isFeatured}
+                        onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
+                        style={{ marginRight: '8px' }}
+                      />
+                      Featured Post (shows as top big card)
                     </label>
                   </div>
             
@@ -369,13 +385,14 @@ export default function NewsManagePage() {
               <th>Category</th>
               <th>Date</th>
               <th>Status</th>
+              <th>Featured</th>
               <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {posts.length === 0 ? (
                 <tr>
-                <td colSpan={6} className="admin-table-empty">
+                <td colSpan={7} className="admin-table-empty">
                   No posts added yet. Click &ldquo;Add New Post&rdquo; to get started.
                   </td>
                 </tr>
@@ -408,6 +425,13 @@ export default function NewsManagePage() {
                       <span className={`admin-badge ${post.isActive !== false ? 'published' : 'draft'}`}>
                         {post.isActive !== false ? 'Published' : 'Draft'}
                       </span>
+                    </td>
+                    <td>
+                      {post.isFeatured ? (
+                        <span className="admin-badge published">Featured</span>
+                      ) : (
+                        <span className="admin-badge draft">-</span>
+                      )}
                     </td>
                     <td>
                       <div className="admin-table-actions">
