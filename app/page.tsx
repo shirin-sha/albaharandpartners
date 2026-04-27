@@ -212,8 +212,14 @@ export default async function Page() {
           const baseSection: BlogsSectionType = content.blogsSection;
 
           // Build posts array from News & Updates CMS (single source of truth)
-          const mappedPosts = newsUpdatesContent?.posts
-            ?.filter((p) => p.isActive)
+          const nonFeaturedPosts = newsUpdatesContent?.posts
+            ?.filter((p) => p.isActive && p.isFeatured !== true);
+          const sourcePosts =
+            nonFeaturedPosts && nonFeaturedPosts.length > 0
+              ? nonFeaturedPosts
+              : newsUpdatesContent?.posts?.filter((p) => p.isActive) || [];
+
+          const mappedPosts = sourcePosts
             .slice(0, 3)
             .map((p) => ({
               _id: p._id,

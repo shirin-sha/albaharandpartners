@@ -170,9 +170,16 @@ export default async function Page() {
           (() => {
             const baseSection: BlogsSectionType = content.blogsSection;
 
-            const mappedPosts =
+            const nonFeaturedPosts =
               newsUpdatesContent?.posts
-                ?.filter((p) => p.isActive)
+                ?.filter((p) => p.isActive && p.isFeatured !== true);
+            const sourcePosts =
+              nonFeaturedPosts && nonFeaturedPosts.length > 0
+                ? nonFeaturedPosts
+                : newsUpdatesContent?.posts?.filter((p) => p.isActive) || [];
+
+            const mappedPosts =
+              sourcePosts
                 .sort((a, b) => {
                   // Sort by date if available (latest first)
                   if (a.date && b.date) {
