@@ -28,7 +28,13 @@ export default function Topbar1() {
                   <div className="icon">
                     <i className="icon-PhoneCall" />
                   </div>
-                  <p className="text-btn">+965 XXXXXXXX</p>
+                  <p
+                    className="text-btn"
+                    dir="ltr"
+                    style={{ unicodeBidi: "plaintext" }}
+                  >
+                    +965 XXXXXXXX
+                  </p>
                 </div>
                 <div className="tf-tb-social">
                   <ul className="tf-social">
