@@ -208,6 +208,67 @@ export default function AboutUsManager() {
     }
   };
 
+  const addVisionMissionItem = () => {
+    if (!contentLtr || !contentRtl) return;
+
+    const existingIds = [
+      ...(contentLtr.visionMissionValues.items || []).map((item) => item.id || 0),
+      ...(contentRtl.visionMissionValues.items || []).map((item) => item.id || 0),
+    ];
+    const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
+
+    const newLtrItem = {
+      id: nextId,
+      imagePath: '',
+      label: 'Vision',
+      title: 'New item title',
+      description: 'New item description',
+      points: [],
+    };
+    const newRtlItem = {
+      id: nextId,
+      imagePath: '',
+      label: 'الرؤية',
+      title: 'عنوان جديد',
+      description: 'وصف جديد',
+      points: [],
+    };
+
+    setContentLtr({
+      ...contentLtr,
+      visionMissionValues: {
+        ...contentLtr.visionMissionValues,
+        items: [...(contentLtr.visionMissionValues.items || []), newLtrItem],
+      },
+    });
+    setContentRtl({
+      ...contentRtl,
+      visionMissionValues: {
+        ...contentRtl.visionMissionValues,
+        items: [...(contentRtl.visionMissionValues.items || []), newRtlItem],
+      },
+    });
+  };
+
+  const removeVisionMissionItem = (index: number) => {
+    if (!contentLtr || !contentRtl) return;
+
+    setContentLtr({
+      ...contentLtr,
+      visionMissionValues: {
+        ...contentLtr.visionMissionValues,
+        items: (contentLtr.visionMissionValues.items || []).filter((_, i) => i !== index),
+      },
+    });
+    setContentRtl({
+      ...contentRtl,
+      visionMissionValues: {
+        ...contentRtl.visionMissionValues,
+        items: (contentRtl.visionMissionValues.items || []).filter((_, i) => i !== index),
+      },
+    });
+  };
+
   const renderSelectedSectionForm = () => {
     if (!selectedSection || !contentLtr || !contentRtl) return null;
 
@@ -2171,6 +2232,208 @@ export default function AboutUsManager() {
                   </div>
                 </div>
               </div>
+
+              <div className="form-actions" style={{ marginBottom: 16 }}>
+                <button
+                  type="button"
+                  className="button button-secondary"
+                  onClick={addVisionMissionItem}
+                >
+                  Add Vision/Mission/Value Item
+                </button>
+              </div>
+
+              {(contentLtr.visionMissionValues.items || []).map((item, itemIndex) => (
+                <div
+                  key={item.id || itemIndex}
+                  style={{
+                    border: '1px dashed #d1d5db',
+                    borderRadius: 8,
+                    padding: 12,
+                    marginBottom: 16,
+                  }}
+                >
+                  <div className="form-group">
+                    <label>Item Image (shared for both languages)</label>
+                    <ImageUpload
+                      value={contentLtr.visionMissionValues.items[itemIndex]?.imagePath || ''}
+                      onChange={(value) => {
+                        const ltrItems = [...(contentLtr.visionMissionValues.items || [])];
+                        const rtlItems = [...(contentRtl.visionMissionValues.items || [])];
+                        ltrItems[itemIndex] = { ...ltrItems[itemIndex], imagePath: value };
+                        rtlItems[itemIndex] = { ...rtlItems[itemIndex], imagePath: value };
+                        setContentLtr({
+                          ...contentLtr,
+                          visionMissionValues: { ...contentLtr.visionMissionValues, items: ltrItems },
+                        });
+                        setContentRtl({
+                          ...contentRtl,
+                          visionMissionValues: { ...contentRtl.visionMissionValues, items: rtlItems },
+                        });
+                      }}
+                      folder="aboutus/vision-mission-values"
+                    />
+                  </div>
+
+                  <div className="form-row-bilingual-header">
+                    <div className="form-label-header">English</div>
+                    <div className="form-label-header">العربية</div>
+                  </div>
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        value={contentLtr.visionMissionValues.items[itemIndex]?.label || ''}
+                        onChange={(e) => {
+                          const items = [...(contentLtr.visionMissionValues.items || [])];
+                          items[itemIndex] = { ...items[itemIndex], label: e.target.value };
+                          setContentLtr({
+                            ...contentLtr,
+                            visionMissionValues: { ...contentLtr.visionMissionValues, items },
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={contentRtl.visionMissionValues.items[itemIndex]?.label || ''}
+                        onChange={(e) => {
+                          const items = [...(contentRtl.visionMissionValues.items || [])];
+                          items[itemIndex] = { ...items[itemIndex], label: e.target.value };
+                          setContentRtl({
+                            ...contentRtl,
+                            visionMissionValues: { ...contentRtl.visionMissionValues, items },
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Title</label>
+                      <input
+                        type="text"
+                        value={contentLtr.visionMissionValues.items[itemIndex]?.title || ''}
+                        onChange={(e) => {
+                          const items = [...(contentLtr.visionMissionValues.items || [])];
+                          items[itemIndex] = { ...items[itemIndex], title: e.target.value };
+                          setContentLtr({
+                            ...contentLtr,
+                            visionMissionValues: { ...contentLtr.visionMissionValues, items },
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Title</label>
+                      <input
+                        type="text"
+                        dir="rtl"
+                        value={contentRtl.visionMissionValues.items[itemIndex]?.title || ''}
+                        onChange={(e) => {
+                          const items = [...(contentRtl.visionMissionValues.items || [])];
+                          items[itemIndex] = { ...items[itemIndex], title: e.target.value };
+                          setContentRtl({
+                            ...contentRtl,
+                            visionMissionValues: { ...contentRtl.visionMissionValues, items },
+                          });
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Description</label>
+                      <textarea
+                        value={contentLtr.visionMissionValues.items[itemIndex]?.description || ''}
+                        onChange={(e) => {
+                          const items = [...(contentLtr.visionMissionValues.items || [])];
+                          items[itemIndex] = { ...items[itemIndex], description: e.target.value };
+                          setContentLtr({
+                            ...contentLtr,
+                            visionMissionValues: { ...contentLtr.visionMissionValues, items },
+                          });
+                        }}
+                        rows={3}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Description</label>
+                      <textarea
+                        dir="rtl"
+                        value={contentRtl.visionMissionValues.items[itemIndex]?.description || ''}
+                        onChange={(e) => {
+                          const items = [...(contentRtl.visionMissionValues.items || [])];
+                          items[itemIndex] = { ...items[itemIndex], description: e.target.value };
+                          setContentRtl({
+                            ...contentRtl,
+                            visionMissionValues: { ...contentRtl.visionMissionValues, items },
+                          });
+                        }}
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row-bilingual">
+                    <div className="form-group">
+                      <label>Points (one per line)</label>
+                      <textarea
+                        value={(contentLtr.visionMissionValues.items[itemIndex]?.points || []).join('\n')}
+                        onChange={(e) => {
+                          const points = e.target.value
+                            .split('\n')
+                            .map((p) => p.trim())
+                            .filter(Boolean);
+                          const items = [...(contentLtr.visionMissionValues.items || [])];
+                          items[itemIndex] = { ...items[itemIndex], points };
+                          setContentLtr({
+                            ...contentLtr,
+                            visionMissionValues: { ...contentLtr.visionMissionValues, items },
+                          });
+                        }}
+                        rows={4}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Points (one per line)</label>
+                      <textarea
+                        dir="rtl"
+                        value={(contentRtl.visionMissionValues.items[itemIndex]?.points || []).join('\n')}
+                        onChange={(e) => {
+                          const points = e.target.value
+                            .split('\n')
+                            .map((p) => p.trim())
+                            .filter(Boolean);
+                          const items = [...(contentRtl.visionMissionValues.items || [])];
+                          items[itemIndex] = { ...items[itemIndex], points };
+                          setContentRtl({
+                            ...contentRtl,
+                            visionMissionValues: { ...contentRtl.visionMissionValues, items },
+                          });
+                        }}
+                        rows={4}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-actions">
+                    <button
+                      type="button"
+                      className="button button-danger"
+                      onClick={() => removeVisionMissionItem(itemIndex)}
+                    >
+                      Remove Item
+                    </button>
+                  </div>
+                </div>
+              ))}
 
               <div className="form-actions">
                 <button

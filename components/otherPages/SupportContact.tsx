@@ -117,13 +117,13 @@ export default function SupportContact() {
                           className="caption-1 text wow fadeInUp"
                           data-wow-delay=".3s"
                         >
-                          +965 XXXXXXXX
+                          +965XXXXXXXX
                         </p>
                         <p
                           className="caption-1 text wow fadeInUp"
                           data-wow-delay=".3s"
                         >
-                          +965 XXXXXXXX
+                          +965XXXXXXXX
                         </p>
                       </a>
                     </div>

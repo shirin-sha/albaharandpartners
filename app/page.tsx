@@ -1,4 +1,3 @@
-import Footer2 from "@/components/footers/Footer2";
 import FooterCMS from "@/components/footers/FooterCMS";
 import { FooterContent } from "@/types/footer";
 import HeaderCMS from "@/components/headers/HeaderCMS";
@@ -248,7 +247,7 @@ export default async function Page() {
         )}
       </div>
       
-      {footerContent ? <FooterCMS data={footerContent} /> : <Footer2 />}
+      {footerContent && <FooterCMS data={footerContent} />}
     </>
   );
 }

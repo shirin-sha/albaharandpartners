@@ -85,7 +85,7 @@ export default function SupportManager() {
       benefits: [],
       contactInfo: {
         location: 'Kuwait City, Kuwait',
-        phoneNumbers: ['+965 XXXXXXXX', '+965 XXXXXXXX'],
+        phoneNumbers: ['+965XXXXXXXX', '+965XXXXXXXX'],
         email: 'support@albahargroup.com',
       },
       formTitle: 'Schedule a free consultation',
