@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
-import { blogThumbnails } from "@/data/blogs";
 
 export default function SideOffcanvas() {
   return (
@@ -10,6 +9,14 @@ export default function SideOffcanvas() {
       id="canvnasMegamenu"
     >
       <div className="heading">
+        <Link href="/" className="logo">
+          <Image
+            src="/image/logo/logo-2.png"
+            alt="Al Bahar & Partners"
+            width={169}
+            height={41}
+          />
+        </Link>
         <button
           className="btn-close"
           data-bs-dismiss="offcanvas"
@@ -24,38 +31,38 @@ export default function SideOffcanvas() {
           support.
         </p>
       </div>
+      <div className="menu-separator" />
       <div className="contact-mega-menu meag-menu-item">
         <h4 className="title-content fw-7">Reach Us</h4>
         <ul className="contact-list-mega-menu">
           <li>
-            <p>
-              Email:
-              <a href="mailto:enquiries@albaharandpartners.com">
-                {" "}
-                enquiries@albaharandpartners.com{" "}
-              </a>
-            </p>
+            <span className="contact-icon">📧</span>
+            <a href="mailto:enquiries@albaharandpartners.com">
+              enquiries@albaharandpartners.com
+            </a>
           </li>
           <li>
-            <p>
-              Call: <a href="tel:+965XXXXXXXX"> +965 XXXXXXXX</a>
-            </p>
+            <span className="contact-icon">📞</span>
+            <a href="tel:+965XXXXXXXX">+965 XXXXXXXX</a>
           </li>
           <li>
-            <p>
-              Service Requests:
-              <a href="mailto:support@albaharandpartners.com">
-                {" "}
-                support@albaharandpartners.com{" "}
-              </a>
-            </p>
+            <span className="contact-icon">🛠</span>
+            <a href="mailto:support@albaharandpartners.com">
+              support@albaharandpartners.com
+            </a>
           </li>
           <li>
-            <p>
-              Location: <span>Kuwait</span>
-            </p>
+            <span className="contact-icon">📍</span>
+            <span>Kuwait</span>
           </li>
         </ul>
+      </div>
+      <div className="menu-separator" />
+      <div className="meag-menu-item">
+        <Link href="/contact-us" className="tf-btn style-1 bg-color-primary offcanvas-cta-btn">
+          <span>Start Consultation</span>
+          <i className="icon-arrowRight" />
+        </Link>
       </div>
       {/* <div className="list-img">
         {blogThumbnails.map((item, index) => (

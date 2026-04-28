@@ -187,8 +187,21 @@ body.no-scroll {
   }
 
   .heading {
+    @include mixin.d-flex();
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 30px;
-    text-align: end;
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      max-width: 170px;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
   }
 
   .title-content {
@@ -199,14 +212,42 @@ body.no-scroll {
   .meag-menu-item {
     margin-bottom: 30px;
   }
+
+  .menu-separator {
+    height: 1px;
+    width: 100%;
+    background: var(--outline);
+    margin: 18px 0 24px;
+  }
+
   .contact-list-mega-menu {
     li {
-      padding-top: 3px;
-      padding-bottom: 3px;
-      p {
-        color: var(--on-suface-variant-1);
+      @include mixin.d-flex();
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      color: var(--on-suface-variant-1);
+
+      .contact-icon {
+        width: 22px;
+        text-align: center;
+        flex: 0 0 22px;
+      }
+
+      a {
+        color: var(--on-suface-container);
       }
     }
+  }
+
+  .offcanvas-cta-btn {
+    width: 100%;
+    max-width: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    white-space: nowrap;
   }
 }
 
