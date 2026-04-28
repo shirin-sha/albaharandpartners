@@ -136,6 +136,13 @@
   right: 0;
 }
 
+/* Keep news detail sidebar thumbnails consistent and small */
+.news-details-sidebar .sidebar-recent-posts .tf-post-list.style-small .image {
+  width: 80px;
+  min-width: 80px;
+  height: 80px;
+}
+
 /* Light Scrollbar Styles */
 /* For Webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {

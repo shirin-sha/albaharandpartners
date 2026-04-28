@@ -248,7 +248,7 @@ export default async function NewsDetailsPage({ params }: PageProps) {
               </div>
             </div>
             <div className="col-xl-3">
-              <div className="tf-sidebar style-position-sticky top-140">
+              <div className="tf-sidebar style-position-sticky top-140 news-details-sidebar">
                 <div className="sidebar-item sidebar-content sidebar-recent-posts">
                   <h6 className="title-content">Recent posts</h6>
                   {activePosts
@@ -261,8 +261,8 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                           <Image
                             src={recentPost.imagePath}
                             alt={recentPost.title}
-                            width={300}
-                            height={225}
+                            width={120}
+                            height={90}
                             className="lazyload"
                           />
                         </div>
