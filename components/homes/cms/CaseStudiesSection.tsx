@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Link from "next/link";
 import { Pagination } from "swiper/modules";
@@ -12,6 +12,12 @@ interface CaseStudiesSectionProps {
 }
 
 export default function CaseStudiesSection({ content, language = 'ltr' }: CaseStudiesSectionProps) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   if (!content.isActive) {
     return null;
   }
@@ -49,7 +55,8 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
         </div>
       </div>
       <div className="bg-white">
-        <Swiper
+        {isMounted && (
+          <Swiper
           className="sw-project-list swiper sw-layout"
           spaceBetween={10}
           breakpoints={{
@@ -67,13 +74,17 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
           {activeCaseStudies.map((caseStudy, index) => (
             <SwiperSlide className="swiper-slide" key={index}>
               <div className="case-studies-item style-bg-content hover-img style-2">
-                <Link href={caseStudy.link || "#"} className="image d-block">
+                <Link
+                  href={caseStudy.link || "#"}
+                  className="image d-block"
+                  style={{ aspectRatio: "473 / 630" }}
+                >
                   <Image
                     src={caseStudy.imagePath}
                     alt={caseStudy.title}
-                    className="lazyload"
-                    width={473}
-                    height={630}
+                    fill
+                    sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    style={{ objectFit: "cover" }}
                   />
                 </Link>
                 <Link href={caseStudy.link || "#"} className="btn-arrow-item">
@@ -98,6 +109,7 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
           ))}
           <div className="sw-pagination-layout flex justify-content-center spe8"></div>
         </Swiper>
+        )}
       </div>
     </section>
   );

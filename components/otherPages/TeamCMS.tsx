@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { teamMembers } from "@/data/team";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useContextElement } from "@/context/Context";
 import { Pagination } from "swiper/modules";
@@ -14,6 +14,11 @@ interface Props {
 
 export default function TeamCMS({ data }: Props) {
   const { setCurrentTeamMember } = useContextElement();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   
   if (!data.isActive) return null;
 
@@ -40,7 +45,7 @@ export default function TeamCMS({ data }: Props) {
                 {data.subheading}
               </div>
             </div>
-            <Swiper
+            {isMounted && <Swiper
               dir="ltr"
               className="sw-team-list swiper sw-layout"
               spaceBetween={10}
@@ -65,7 +70,8 @@ export default function TeamCMS({ data }: Props) {
                         alt={member.name}
                         width={300}
                         height={300}
-                        className="lazyload"
+                        sizes="(max-width: 575px) 100vw, (max-width: 992px) 50vw, 25vw"
+                        style={{ width: "100%", height: "auto" }}
                       />
                     </div>
                     <div className="content">
@@ -76,6 +82,7 @@ export default function TeamCMS({ data }: Props) {
                 </SwiperSlide>
               ))}
             </Swiper>
+            }
           </div>
         </div>
       </div>
