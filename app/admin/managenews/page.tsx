@@ -3,8 +3,48 @@
 import { useState, useEffect, useRef } from 'react';
 import { NewsPost } from '@/types/news-updates';
 import ImageUpload from '@/components/admin/ui/ImageUpload';
+import RichTextEditor from '@/components/admin/ui/RichTextEditor';
 
 export default function NewsManagePage() {
+  const monthToNumber: Record<string, number> = {
+    JAN: 0,
+    FEB: 1,
+    MAR: 2,
+    APR: 3,
+    MAY: 4,
+    JUN: 5,
+    JUL: 6,
+    AUG: 7,
+    SEP: 8,
+    OCT: 9,
+    NOV: 10,
+    DEC: 11,
+  };
+
+  const parseDateValueToParts = (dateValue: string) => {
+    if (!dateValue) return null;
+    const parsed = new Date(dateValue);
+    if (Number.isNaN(parsed.getTime())) return null;
+    const day = String(parsed.getDate()).padStart(2, '0');
+    const month = parsed
+      .toLocaleString('en-US', { month: 'short' })
+      .toUpperCase();
+    return { day, month };
+  };
+
+  const partsToDateValue = (date?: { day: string; month: string }) => {
+    if (!date?.day || !date?.month) return '';
+    const monthIdx = monthToNumber[(date.month || '').toUpperCase()];
+    const dayNum = Number(date.day);
+    if (monthIdx === undefined || Number.isNaN(dayNum)) return '';
+    const currentYear = new Date().getFullYear();
+    const value = new Date(currentYear, monthIdx, dayNum);
+    if (Number.isNaN(value.getTime())) return '';
+    return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}-${String(
+      value.getDate()
+    ).padStart(2, '0')}`;
+  };
+
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -17,11 +57,15 @@ export default function NewsManagePage() {
     titleAr: string;
     category: string;
     categoryAr: string;
+    shortDescription: string;
+    shortDescriptionAr: string;
+    longDescription: string;
+    longDescriptionAr: string;
     imagePath: string;
+    detailImagePath: string;
     imgWidth: number;
     imgHeight: number;
-    date: { day: string; month: string };
-    link: string;
+    dateValue: string;
     isActive: boolean;
     isFeatured: boolean;
   }>({
@@ -29,11 +73,15 @@ export default function NewsManagePage() {
     titleAr: '',
     category: '',
     categoryAr: '',
+    shortDescription: '',
+    shortDescriptionAr: '',
+    longDescription: '',
+    longDescriptionAr: '',
     imagePath: '',
+    detailImagePath: '',
     imgWidth: 410,
     imgHeight: 546,
-    date: { day: '18', month: 'DEC' },
-    link: '#',
+    dateValue: '',
     isActive: true,
     isFeatured: false,
   });
@@ -70,6 +118,11 @@ export default function NewsManagePage() {
       showMessage('error', 'Title (English) is required');
       return;
     }
+      const dateParts = parseDateValueToParts(formData.dateValue);
+      if (!dateParts) {
+        showMessage('error', 'Valid date is required');
+        return;
+      }
 
     setSaving(true);
     try {
@@ -81,11 +134,17 @@ export default function NewsManagePage() {
         titleAr: formData.titleAr || formData.title,
         category: formData.category,
         categoryAr: formData.categoryAr || formData.category,
+        shortDescription: formData.shortDescription,
+        shortDescriptionAr: formData.shortDescriptionAr || formData.shortDescription,
+        longDescription: formData.longDescription,
+        longDescriptionAr: formData.longDescriptionAr || formData.longDescription,
         imagePath: formData.imagePath,
+        detailImagePath: formData.detailImagePath,
+        dateIso: formData.dateValue,
         imgWidth: formData.imgWidth,
         imgHeight: formData.imgHeight,
-        date: formData.date,
-        link: formData.link,
+        date: dateParts,
+        link: '#',
         isActive: formData.isActive,
         isFeatured: formData.isFeatured,
       };
@@ -123,11 +182,15 @@ export default function NewsManagePage() {
       titleAr: postLtr.titleAr || postLtr.title || '',
       category: postLtr.category || '',
       categoryAr: postLtr.categoryAr || postLtr.category || '',
+      shortDescription: postLtr.shortDescription || '',
+      shortDescriptionAr: postLtr.shortDescriptionAr || postLtr.shortDescription || '',
+      longDescription: postLtr.longDescription || '',
+      longDescriptionAr: postLtr.longDescriptionAr || postLtr.longDescription || '',
       imagePath: postLtr.imagePath || '',
+      detailImagePath: postLtr.detailImagePath || '',
+      dateValue: postLtr.dateIso || partsToDateValue(postLtr.date),
       imgWidth: postLtr.imgWidth || 410,
       imgHeight: postLtr.imgHeight || 546,
-      date: postLtr.date || { day: '18', month: 'DEC' },
-      link: postLtr.link || '#',
       isActive: postLtr.isActive !== undefined ? postLtr.isActive : true,
       isFeatured: postLtr.isFeatured === true,
     });
@@ -163,11 +226,15 @@ export default function NewsManagePage() {
       titleAr: '',
       category: '',
       categoryAr: '',
+      shortDescription: '',
+      shortDescriptionAr: '',
+      longDescription: '',
+      longDescriptionAr: '',
       imagePath: '',
+      detailImagePath: '',
       imgWidth: 410,
       imgHeight: 546,
-      date: { day: '18', month: 'DEC' },
-      link: '#',
+      dateValue: '',
       isActive: true,
       isFeatured: false,
     });
@@ -314,6 +381,51 @@ export default function NewsManagePage() {
                     />
                   </div>
               </div>
+
+            <div>
+              <div className="form-row-bilingual-header">
+                <div className="form-label-header">English</div>
+                <div className="form-label-header">العربية</div>
+              </div>
+              <div className="form-row-bilingual">
+                <div className="form-group">
+                  <label>Short Description</label>
+                  <textarea
+                    rows={3}
+                    value={formData.shortDescription}
+                    onChange={(e) => setFormData({ ...formData, shortDescription: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Short Description</label>
+                  <textarea
+                    rows={3}
+                    dir="rtl"
+                    value={formData.shortDescriptionAr}
+                    onChange={(e) => setFormData({ ...formData, shortDescriptionAr: e.target.value })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="form-row-bilingual-header">
+              <div className="form-label-header">English</div>
+              <div className="form-label-header">العربية</div>
+            </div>
+            <div className="form-row-bilingual">
+              <RichTextEditor
+                label="Long Description"
+                value={formData.longDescription}
+                onChange={(value) => setFormData({ ...formData, longDescription: value })}
+                placeholder="Write full news content..."
+              />
+              <RichTextEditor
+                label="Long Description"
+                value={formData.longDescriptionAr}
+                onChange={(value) => setFormData({ ...formData, longDescriptionAr: value })}
+                placeholder="اكتب المحتوى التفصيلي..."
+              />
+            </div>
             
                   <div className="form-group">
                     <label>Image</label>
@@ -323,44 +435,25 @@ export default function NewsManagePage() {
                       folder="news"
                     />
                   </div>
-            
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    <div className="form-group">
-                      <label>Day</label>
-                      <input
-                        type="text"
-                        value={formData.date.day}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            date: { ...formData.date, day: e.target.value },
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Month</label>
-                      <input
-                        type="text"
-                        value={formData.date.month}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            date: { ...formData.date, month: e.target.value },
-                          })
-                        }
-                      />
-                    </div>
+                  <div className="form-group">
+                    <label>Detail Page Image</label>
+                    <ImageUpload
+                      value={formData.detailImagePath}
+                      onChange={(value) => setFormData({ ...formData, detailImagePath: value })}
+                      folder="news"
+                    />
                   </div>
             
                   <div className="form-group">
-                    <label>Link</label>
+                    <label>Date</label>
                     <input
-                      type="text"
-                      value={formData.link}
-                      onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                      type="date"
+                      value={formData.dateValue}
+                      onChange={(e) => setFormData({ ...formData, dateValue: e.target.value })}
+                      required
+                      style={{ maxWidth: '260px' }}
                     />
-            </div>
+                  </div>
             <div className="form-actions">
               <button type="submit" className="button button-primary" disabled={saving}>
                 {saving ? 'Saving...' : editingIndex !== null ? 'Update Post' : 'Add Post'}

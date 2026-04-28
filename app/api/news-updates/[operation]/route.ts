@@ -10,6 +10,8 @@ const normalizePost = (post: NewsPost): NewsPost => ({
   ...post,
   titleAr: post.titleAr || post.title,
   categoryAr: post.categoryAr || post.category,
+  shortDescriptionAr: post.shortDescriptionAr || post.shortDescription || '',
+  longDescriptionAr: post.longDescriptionAr || post.longDescription || '',
   isFeatured: post.isFeatured === true,
 });
 

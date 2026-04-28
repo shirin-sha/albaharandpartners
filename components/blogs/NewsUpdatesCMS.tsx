@@ -32,15 +32,51 @@ export default function NewsUpdatesCMS({ data }: Props) {
   const featuredPost = featuredIndex >= 0 ? activePosts[featuredIndex] : activePosts[0];
   const remainingPosts = activePosts.filter((p) => p !== featuredPost);
 
+  const getPostHref = (post: (typeof activePosts)[number], index: number) => {
+    const fallbackId = post._id || String(index + 1);
+    return `/news-updates/${fallbackId}`;
+  };
+
+  const featuredPostHref = getPostHref(featuredPost, featuredIndex >= 0 ? featuredIndex : 0);
+
+  const formatDate = (post: (typeof activePosts)[number]) => {
+    if (post.dateIso) {
+      const d = new Date(post.dateIso);
+      if (!Number.isNaN(d.getTime())) {
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const yy = String(d.getFullYear()).slice(-2);
+        return `${dd}/${mm}/${yy}`;
+      }
+    }
+    const monthMap: Record<string, string> = {
+      JAN: "01",
+      FEB: "02",
+      MAR: "03",
+      APR: "04",
+      MAY: "05",
+      JUN: "06",
+      JUL: "07",
+      AUG: "08",
+      SEP: "09",
+      OCT: "10",
+      NOV: "11",
+      DEC: "12",
+    };
+    const dd = String(post.date?.day || "").padStart(2, "0");
+    const mm = monthMap[(post.date?.month || "").toUpperCase()] || "01";
+    return `${dd}/${mm}/${String(new Date().getFullYear()).slice(-2)}`;
+  };
+
   return (
     <div className="tf-container">
       <div className="row">
         <div className="col-12">
           <div className="blog-content blog-no-sidebar-content">
             <div className="blog-no-sidebar-slide">
-              <div className="tf-post-grid style-absolute">
+              <div className="tf-post-grid style-absolute news-featured-post">
                 <div className="image">
-                  <Link href={featuredPost.link || "#"} className="link" />
+                  <Link href={featuredPostHref} className="link" />
                   <Image
                     src={featuredPost.imagePath}
                     alt={featuredPost.title}
@@ -48,29 +84,34 @@ export default function NewsUpdatesCMS({ data }: Props) {
                     height={featuredPost.imgHeight || 600}
                     className="lazyload"
                   />
-                  <a href={featuredPost.link || "#"} className="date">
-                    <span className="day">{featuredPost.date.day}</span>
-                    <span>{featuredPost.date.month}</span>
-                  </a>
+                  <Link href={featuredPostHref} className="date">
+                    <span className="day">{formatDate(featuredPost)}</span>
+                  </Link>
                 </div>
                 <div className="tf-post-grid-content">
                   <div className="position">{featuredPost.category}</div>
                   <h4 className="title-post">
-                    <Link href={featuredPost.link || "#"}>{featuredPost.title}</Link>
+                    <Link href={featuredPostHref}>{featuredPost.title}</Link>
                   </h4>
+                  {featuredPost.shortDescription && (
+                    <div className="sub-title body-2">{featuredPost.shortDescription}</div>
+                  )}
                 </div>
               </div>
             </div>
 
             <div className="layout-grid-3 loadmore-item">
-              {filteredPosts.map((post, index) => (
+              {filteredPosts.map((post, index) => {
+                const absoluteIndex = remainingPosts.findIndex((p) => p === post);
+                const href = getPostHref(post, absoluteIndex >= 0 ? absoluteIndex + 1 : index + 1);
+                return (
                 <div
                   className="tf-post-grid style-small fl-item d-block"
                   key={post._id || index}
                 >
                   <div className="image">
                     <Link
-                      href={post.link || "#"}
+                      href={href}
                       className="link"
                     />
                     <Image
@@ -80,10 +121,9 @@ export default function NewsUpdatesCMS({ data }: Props) {
                       height={post.imgHeight || 546}
                       className="lazyload"
                     />
-                    <a href={post.link || "#"} className="date">
-                      <span className="day"> {post.date.day} </span>
-                      <span>{post.date.month}</span>
-                    </a>
+                    <Link href={href} className="date">
+                      <span className="day">{formatDate(post)}</span>
+                    </Link>
                   </div>
                   <div className="tf-grid-post-content">
                     <div
@@ -94,13 +134,16 @@ export default function NewsUpdatesCMS({ data }: Props) {
                     <h5
                       className="title-post wow fadeInUp"
                     >
-                      <Link href={post.link || "#"}>
+                      <Link href={href}>
                         {post.title}
                       </Link>
                     </h5>
+                    {post.shortDescription && (
+                      <div className="sub-title body-2">{post.shortDescription}</div>
+                    )}
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
             {!isLoadedMore && remainingPosts.length > 5 && (
               <div className="btn-load-more text-center view-more-button wow fadeInUp">

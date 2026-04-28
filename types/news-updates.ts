@@ -6,8 +6,14 @@ export interface NewsPost {
   titleAr?: string;
   category: string;
   categoryAr?: string;
+  shortDescription?: string;
+  shortDescriptionAr?: string;
+  longDescription?: string;
+  longDescriptionAr?: string;
   isFeatured?: boolean;
   imagePath: string;
+  detailImagePath?: string;
+  dateIso?: string;
   imgWidth?: number;
   imgHeight?: number;
   date: {

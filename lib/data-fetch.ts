@@ -155,6 +155,14 @@ export async function getNewsUpdatesContent(language: 'ltr' | 'rtl' = 'ltr'): Pr
           ...post,
           title: language === 'rtl' ? (post.titleAr || post.title) : post.title,
           category: language === 'rtl' ? (post.categoryAr || post.category) : post.category,
+          shortDescription:
+            language === 'rtl'
+              ? (post.shortDescriptionAr || post.shortDescription || '')
+              : (post.shortDescription || ''),
+          longDescription:
+            language === 'rtl'
+              ? (post.longDescriptionAr || post.longDescription || '')
+              : (post.longDescription || ''),
         }));
         
         return {

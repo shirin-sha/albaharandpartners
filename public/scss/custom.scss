@@ -131,6 +131,11 @@
   right: 20px;
 }
 
+/* Keep featured news gradient full-width like original template */
+.blog-no-sidebar-content .tf-post-grid.news-featured-post.style-absolute .tf-post-grid-content {
+  right: 0;
+}
+
 /* Light Scrollbar Styles */
 /* For Webkit browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
