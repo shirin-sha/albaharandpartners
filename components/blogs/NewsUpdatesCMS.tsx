@@ -90,8 +90,8 @@ export default function NewsUpdatesCMS({ data }: Props) {
 
             <div className="layout-grid-3 loadmore-item">
               {filteredPosts.map((post, index) => {
-                const absoluteIndex = remainingPosts.findIndex((p) => p === post);
-                const href = getPostHref(post, absoluteIndex >= 0 ? absoluteIndex + 1 : index + 1);
+                const absoluteIndex = activePosts.findIndex((p) => p === post);
+                const href = getPostHref(post, absoluteIndex >= 0 ? absoluteIndex : index);
                 return (
                 <div
                   className="tf-post-grid style-small fl-item d-block"

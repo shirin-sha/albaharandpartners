@@ -255,9 +255,13 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                     .filter((p) => p !== post)
                     .slice(0, 4)
                     .map((recentPost, index) => (
+                      (() => {
+                        const absoluteIndex = activePosts.findIndex((p) => p === recentPost);
+                        const href = getPostHref(recentPost, absoluteIndex >= 0 ? absoluteIndex : index);
+                        return (
                       <div className="tf-post-list style-small hover-img" key={recentPost._id || index}>
                         <div className="image">
-                          <Link href={getPostHref(recentPost, index)} className="link" />
+                          <Link href={href} className="link" />
                           <Image
                             src={recentPost.imagePath}
                             alt={recentPost.title}
@@ -268,11 +272,13 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                         </div>
                         <div className="post-content">
                           <div className="post-date caption-1">{formatDate(recentPost)}</div>
-                          <Link href={getPostHref(recentPost, index)} className="name-post">
+                          <Link href={href} className="name-post">
                             {recentPost.title}
                           </Link>
                         </div>
                       </div>
+                        );
+                      })()
                     ))}
                 </div>
               </div>
