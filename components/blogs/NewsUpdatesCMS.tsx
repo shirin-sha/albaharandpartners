@@ -14,7 +14,9 @@ export default function NewsUpdatesCMS({ data }: Props) {
 
   useEffect(() => {
     const activePosts = data.posts.filter((p) => p.isActive);
-    const remainingPosts = activePosts.slice(1);
+    const featuredIndex = activePosts.findIndex((p) => p.isFeatured === true);
+    const featuredPost = featuredIndex >= 0 ? activePosts[featuredIndex] : activePosts[0];
+    const remainingPosts = activePosts.filter((p) => p !== featuredPost);
 
     if (isLoadedMore) {
       setFilteredPosts(remainingPosts);
