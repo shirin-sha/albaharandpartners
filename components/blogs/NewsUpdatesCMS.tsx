@@ -41,33 +41,18 @@ export default function NewsUpdatesCMS({ data }: Props) {
 
   const featuredPostHref = getPostHref(featuredPost, featuredIndex >= 0 ? featuredIndex : 0);
 
-  const formatDate = (post: (typeof activePosts)[number]) => {
+  const getDateBadgeParts = (post: (typeof activePosts)[number]) => {
     if (post.dateIso) {
       const d = new Date(post.dateIso);
       if (!Number.isNaN(d.getTime())) {
         const dd = String(d.getDate()).padStart(2, "0");
-        const mm = String(d.getMonth() + 1).padStart(2, "0");
-        const yy = String(d.getFullYear()).slice(-2);
-        return `${dd}/${mm}/${yy}`;
+        const month = d.toLocaleString("en-US", { month: "short" }).toUpperCase();
+        return { day: dd, month };
       }
     }
-    const monthMap: Record<string, string> = {
-      JAN: "01",
-      FEB: "02",
-      MAR: "03",
-      APR: "04",
-      MAY: "05",
-      JUN: "06",
-      JUL: "07",
-      AUG: "08",
-      SEP: "09",
-      OCT: "10",
-      NOV: "11",
-      DEC: "12",
-    };
     const dd = String(post.date?.day || "").padStart(2, "0");
-    const mm = monthMap[(post.date?.month || "").toUpperCase()] || "01";
-    return `${dd}/${mm}/${String(new Date().getFullYear()).slice(-2)}`;
+    const month = (post.date?.month || "JAN").toUpperCase();
+    return { day: dd, month };
   };
 
   return (
@@ -87,7 +72,8 @@ export default function NewsUpdatesCMS({ data }: Props) {
                     className="lazyload"
                   />
                   <Link href={featuredPostHref} className="date">
-                    <span className="day">{formatDate(featuredPost)}</span>
+                    <span className="day">{getDateBadgeParts(featuredPost).day}</span>
+                    <span>{getDateBadgeParts(featuredPost).month}</span>
                   </Link>
                 </div>
                 <div className="tf-post-grid-content">
@@ -124,7 +110,8 @@ export default function NewsUpdatesCMS({ data }: Props) {
                       className="lazyload"
                     />
                     <Link href={href} className="date">
-                      <span className="day">{formatDate(post)}</span>
+                      <span className="day">{getDateBadgeParts(post).day}</span>
+                      <span>{getDateBadgeParts(post).month}</span>
                     </Link>
                   </div>
                   <div className="tf-grid-post-content">
