@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { NewsPost } from '@/types/news-updates';
+import { newsMainImageSrc } from '@/lib/news-post-images';
 import ImageUpload from '@/components/admin/ui/ImageUpload';
 import RichTextEditor from '@/components/admin/ui/RichTextEditor';
 
@@ -65,8 +66,9 @@ export default function NewsManagePage() {
     detailImagePath: string;
     imgWidth: number;
     imgHeight: number;
+    featuredImgWidth: number;
+    featuredImgHeight: number;
     dateValue: string;
-    isActive: boolean;
     isFeatured: boolean;
   }>({
     title: '',
@@ -81,8 +83,9 @@ export default function NewsManagePage() {
     detailImagePath: '',
     imgWidth: 410,
     imgHeight: 546,
+    featuredImgWidth: 1290,
+    featuredImgHeight: 600,
     dateValue: '',
-    isActive: true,
     isFeatured: false,
   });
 
@@ -143,9 +146,11 @@ export default function NewsManagePage() {
         dateIso: formData.dateValue,
         imgWidth: formData.imgWidth,
         imgHeight: formData.imgHeight,
+        featuredImgWidth: formData.featuredImgWidth,
+        featuredImgHeight: formData.featuredImgHeight,
         date: dateParts,
         link: '#',
-        isActive: formData.isActive,
+        isActive: true,
         isFeatured: formData.isFeatured,
       };
 
@@ -191,7 +196,8 @@ export default function NewsManagePage() {
       dateValue: postLtr.dateIso || partsToDateValue(postLtr.date),
       imgWidth: postLtr.imgWidth || 410,
       imgHeight: postLtr.imgHeight || 546,
-      isActive: postLtr.isActive !== undefined ? postLtr.isActive : true,
+      featuredImgWidth: postLtr.featuredImgWidth || 1290,
+      featuredImgHeight: postLtr.featuredImgHeight || 600,
       isFeatured: postLtr.isFeatured === true,
     });
     setShowForm(true);
@@ -234,8 +240,9 @@ export default function NewsManagePage() {
       detailImagePath: '',
       imgWidth: 410,
       imgHeight: 546,
+      featuredImgWidth: 1290,
+      featuredImgHeight: 600,
       dateValue: '',
-      isActive: true,
       isFeatured: false,
     });
     setEditingIndex(null);
@@ -310,29 +317,6 @@ export default function NewsManagePage() {
             </button>
           </div>
           <form onSubmit={handleSubmit} className="admin-cms-form">
-                  <div className="form-group">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={formData.isActive}
-                        onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                        style={{ marginRight: '8px' }}
-                      />
-                      Active
-                    </label>
-                  </div>
-                  <div className="form-group">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={formData.isFeatured}
-                        onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
-                        style={{ marginRight: '8px' }}
-                      />
-                      Featured Post (shows as top big card)
-                    </label>
-                  </div>
-            
             {/* Title Row */}
             <div>
               <div className="form-row-bilingual-header">
@@ -426,24 +410,81 @@ export default function NewsManagePage() {
                 placeholder="اكتب المحتوى التفصيلي..."
               />
             </div>
-            
+
+            <div className="form-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={formData.isFeatured}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      isFeatured: e.target.checked,
+                      ...(e.target.checked
+                        ? {}
+                        : {
+                            imagePath: '',
+                            featuredImgWidth: 1290,
+                            featuredImgHeight: 600,
+                          }),
+                    })
+                  }
+                  style={{ marginRight: '8px' }}
+                />
+                Add Featured Post
+              </label>
+            </div>
+            {formData.isFeatured && (
+              <>
+                <div className="form-group">
+                  <label>Featured Image</label>
+                  <ImageUpload
+                    value={formData.imagePath}
+                    onChange={(value) => setFormData({ ...formData, imagePath: value })}
+                    folder="news"
+                  />
+                </div>
+                <div className="form-row-bilingual">
                   <div className="form-group">
-                    <label>Image</label>
-                    <ImageUpload
-                      value={formData.imagePath}
-                      onChange={(value) => setFormData({ ...formData, imagePath: value })}
-                      folder="news"
+                    <label>Featured Image Width</label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={formData.featuredImgWidth}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          featuredImgWidth: Number(e.target.value) || 1290,
+                        })
+                      }
                     />
                   </div>
                   <div className="form-group">
-                    <label>Detail Page Image</label>
+                    <label>Featured Image Height</label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={formData.featuredImgHeight}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          featuredImgHeight: Number(e.target.value) || 600,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+            
+                  <div className="form-group">
+                    <label>Main Image</label>
                     <ImageUpload
                       value={formData.detailImagePath}
                       onChange={(value) => setFormData({ ...formData, detailImagePath: value })}
                       folder="news"
                     />
                   </div>
-            
                   <div className="form-group">
                     <label>Date</label>
                     <input
@@ -473,11 +514,10 @@ export default function NewsManagePage() {
         <table className="admin-table">
             <thead>
             <tr>
-              <th>Image</th>
+              <th>Main</th>
               <th>Title</th>
               <th>Category</th>
               <th>Date</th>
-              <th>Status</th>
               <th>Featured</th>
               <th>Actions</th>
               </tr>
@@ -485,20 +525,21 @@ export default function NewsManagePage() {
             <tbody>
               {posts.length === 0 ? (
                 <tr>
-                <td colSpan={7} className="admin-table-empty">
+                <td colSpan={6} className="admin-table-empty">
                   No posts added yet. Click &ldquo;Add New Post&rdquo; to get started.
                   </td>
                 </tr>
               ) : (
               posts.map((post, index) => {
                 const isEditing = editingIndex === index;
+                const thumbSrc = newsMainImageSrc(post);
                 return (
                   <tr key={index} className={isEditing ? 'admin-table-row-active' : ''}>
                     <td>
                       <div className="admin-section-thumb">
-                      {post.imagePath ? (
+                      {thumbSrc ? (
                         <img
-                          src={post.imagePath}
+                          src={thumbSrc}
                           alt={post.title || 'Post'}
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
@@ -514,11 +555,6 @@ export default function NewsManagePage() {
                     <td><strong>{post.title || 'Untitled Post'}</strong></td>
                     <td>{post.category || '-'}</td>
                     <td>{post.date?.day} {post.date?.month}</td>
-                    <td>
-                      <span className={`admin-badge ${post.isActive !== false ? 'published' : 'draft'}`}>
-                        {post.isActive !== false ? 'Published' : 'Draft'}
-                      </span>
-                    </td>
                     <td>
                       {post.isFeatured ? (
                         <span className="admin-badge published">Featured</span>

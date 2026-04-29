@@ -29,6 +29,7 @@ import {
   getSolutionsContent,
   getBrandsContent,
 } from "@/lib/data-fetch";
+import { newsMainImageSrc } from "@/lib/news-post-images";
 import Topbar1 from "@/components/headers/Topbar1";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -225,7 +226,7 @@ export default async function Page() {
               _id: p._id,
               title: p.title,
               category: p.category,
-              imagePath: p.imagePath,
+              imagePath: newsMainImageSrc(p),
               date: p.date,
               link: p.link,
               order: 0,

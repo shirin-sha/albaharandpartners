@@ -11,7 +11,12 @@ export interface NewsPost {
   longDescription?: string;
   longDescriptionAr?: string;
   isFeatured?: boolean;
+  /** Featured image — used for large hero/detail header when set; otherwise falls back to main. */
   imagePath: string;
+  /** Optional dimensions for featured hero rendering. */
+  featuredImgWidth?: number;
+  featuredImgHeight?: number;
+  /** Main image — used for list/grid thumbnails (preferred over featured when both exist). */
   detailImagePath?: string;
   dateIso?: string;
   imgWidth?: number;

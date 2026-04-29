@@ -1,45 +1,52 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { NewsUpdatesContent } from "@/types/news-updates";
+import { newsLargeDisplayImageSrc, newsMainImageSrc } from "@/lib/news-post-images";
 
 interface Props {
   data: NewsUpdatesContent;
 }
 
 export default function NewsUpdatesCMS({ data }: Props) {
-  const [filteredPosts, setFilteredPosts] = useState<typeof data.posts>([]);
   const [isLoadedMore, setIsLoadedMore] = useState(false);
 
-  useEffect(() => {
-    const activePosts = data.posts.filter((p) => p.isActive);
-    const featuredIndex = activePosts.findIndex((p) => p.isFeatured === true);
-    const featuredPost = featuredIndex >= 0 ? activePosts[featuredIndex] : activePosts[0];
-    const remainingPosts = activePosts.filter((p) => p !== featuredPost);
-
-    if (isLoadedMore) {
-      setFilteredPosts(remainingPosts);
-    } else {
-      // Keep first post as featured hero card, then show 5 cards below initially.
-      setFilteredPosts(remainingPosts.slice(0, 5));
+  const { activePosts, featuredPost, remainingPosts, filteredPosts } = useMemo(() => {
+    const active = data.posts.filter((p) => p.isActive);
+    if (active.length === 0) {
+      return {
+        activePosts: active,
+        featuredPost: null as (typeof active)[number] | null,
+        remainingPosts: [] as typeof active,
+        filteredPosts: [] as typeof active,
+      };
     }
-  }, [isLoadedMore, data.posts]);
+    const featuredIndex = active.findIndex((p) => p.isFeatured === true);
+    const featured = featuredIndex >= 0 ? active[featuredIndex] : active[0];
+    const remaining = active.filter((p) => p !== featured);
+    const filtered = isLoadedMore ? remaining : remaining.slice(0, 5);
+    return {
+      activePosts: active,
+      featuredPost: featured,
+      remainingPosts: remaining,
+      filteredPosts: filtered,
+    };
+  }, [data.posts, isLoadedMore]);
 
   if (!data.isActive) return null;
+  if (activePosts.length === 0 || !featuredPost) return null;
 
-  const activePosts = data.posts.filter((p) => p.isActive);
-  if (activePosts.length === 0) return null;
   const featuredIndex = activePosts.findIndex((p) => p.isFeatured === true);
-  const featuredPost = featuredIndex >= 0 ? activePosts[featuredIndex] : activePosts[0];
-  const remainingPosts = activePosts.filter((p) => p !== featuredPost);
-
-  const getPostHref = (post: (typeof activePosts)[number], index: number) => {
-    const fallbackId = post._id || String(index + 1);
-    return `/news-updates/${fallbackId}`;
-  };
-
   const featuredPostHref = getPostHref(featuredPost, featuredIndex >= 0 ? featuredIndex : 0);
+  const heroSrc = newsLargeDisplayImageSrc(featuredPost);
+  const usesFeaturedHeroImage = !!featuredPost.imagePath?.trim();
+  const heroWidth = usesFeaturedHeroImage
+    ? featuredPost.featuredImgWidth || 1290
+    : featuredPost.imgWidth || 1290;
+  const heroHeight = usesFeaturedHeroImage
+    ? featuredPost.featuredImgHeight || 600
+    : featuredPost.imgHeight || 600;
 
   const getDateBadgeParts = (post: (typeof activePosts)[number]) => {
     if (post.dateIso) {
@@ -64,13 +71,15 @@ export default function NewsUpdatesCMS({ data }: Props) {
               <div className="tf-post-grid style-absolute news-featured-post">
                 <div className="image">
                   <Link href={featuredPostHref} className="link" />
-                  <Image
-                    src={featuredPost.imagePath}
-                    alt={featuredPost.title}
-                    width={featuredPost.imgWidth || 1290}
-                    height={featuredPost.imgHeight || 600}
-                    className="lazyload"
-                  />
+                  {heroSrc && (
+                    <Image
+                      src={heroSrc}
+                      alt={featuredPost.title}
+                      width={heroWidth}
+                      height={heroHeight}
+                      className="lazyload"
+                    />
+                  )}
                   <Link href={featuredPostHref} className="date">
                     <span className="day">{getDateBadgeParts(featuredPost).day}</span>
                     <span>{getDateBadgeParts(featuredPost).month}</span>
@@ -92,47 +101,37 @@ export default function NewsUpdatesCMS({ data }: Props) {
               {filteredPosts.map((post, index) => {
                 const absoluteIndex = activePosts.findIndex((p) => p === post);
                 const href = getPostHref(post, absoluteIndex >= 0 ? absoluteIndex : index);
+                const listSrc = newsMainImageSrc(post);
                 return (
-                <div
-                  className="tf-post-grid style-small fl-item d-block"
-                  key={post._id || index}
-                >
-                  <div className="image">
-                    <Link
-                      href={href}
-                      className="link"
-                    />
-                    <Image
-                      src={post.imagePath}
-                      alt={post.title}
-                      width={post.imgWidth || 410}
-                      height={post.imgHeight || 546}
-                      className="lazyload"
-                    />
-                    <Link href={href} className="date">
-                      <span className="day">{getDateBadgeParts(post).day}</span>
-                      <span>{getDateBadgeParts(post).month}</span>
-                    </Link>
-                  </div>
-                  <div className="tf-grid-post-content">
-                    <div
-                      className="position caption-1 wow fadeInUp"
-                    >
-                      {post.category}
-                    </div>
-                    <h5
-                      className="title-post wow fadeInUp"
-                    >
-                      <Link href={href}>
-                        {post.title}
+                  <div className="tf-post-grid style-small fl-item d-block" key={post._id || index}>
+                    <div className="image">
+                      <Link href={href} className="link" />
+                      {listSrc && (
+                        <Image
+                          src={listSrc}
+                          alt={post.title}
+                          width={post.imgWidth || 410}
+                          height={post.imgHeight || 546}
+                          className="lazyload"
+                        />
+                      )}
+                      <Link href={href} className="date">
+                        <span className="day">{getDateBadgeParts(post).day}</span>
+                        <span>{getDateBadgeParts(post).month}</span>
                       </Link>
-                    </h5>
-                    {post.shortDescription && (
-                      <div className="sub-title body-2">{post.shortDescription}</div>
-                    )}
+                    </div>
+                    <div className="tf-grid-post-content">
+                      <div className="position caption-1 wow fadeInUp">{post.category}</div>
+                      <h5 className="title-post wow fadeInUp">
+                        <Link href={href}>{post.title}</Link>
+                      </h5>
+                      {post.shortDescription && (
+                        <div className="sub-title body-2">{post.shortDescription}</div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )})}
+                );
+              })}
             </div>
             {!isLoadedMore && remainingPosts.length > 5 && (
               <div className="btn-load-more text-center view-more-button wow fadeInUp">
@@ -149,4 +148,9 @@ export default function NewsUpdatesCMS({ data }: Props) {
       </div>
     </div>
   );
+}
+
+function getPostHref(post: { _id?: string }, index: number) {
+  const fallbackId = post._id || String(index + 1);
+  return `/news-updates/${fallbackId}`;
 }

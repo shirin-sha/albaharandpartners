@@ -3,6 +3,7 @@ import Image from "next/image";
 import React from "react";
 import { Metadata } from "next";
 import { getNewsUpdatesContent } from "@/lib/data-fetch";
+import { newsLargeDisplayImageSrc, newsMainImageSrc } from "@/lib/news-post-images";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -121,6 +122,8 @@ export default async function NewsDetailsPage({ params }: PageProps) {
     );
   }
 
+  const detailHeroSrc = newsLargeDisplayImageSrc(post);
+
   return (
     <>
       <div className="page-title style-2 bg-img-3">
@@ -227,15 +230,17 @@ export default async function NewsDetailsPage({ params }: PageProps) {
           <div className="row rg-60">
             <div className="col-xl-9">
               <div className="blog-content blog-details-content mr-50">
-                <div className="image-blog">
-                  <Image
-                    src={post.detailImagePath || post.imagePath}
-                    alt={post.title}
-                    width={910}
-                    height={512}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                </div>
+                {detailHeroSrc && (
+                  <div className="image-blog">
+                    <Image
+                      src={detailHeroSrc}
+                      alt={post.title}
+                      width={910}
+                      height={512}
+                      style={{ width: "100%", height: "auto" }}
+                    />
+                  </div>
+                )}
                 <div className="desc-blog">
                   <h4 className="title-desc mb-20">{post.title}</h4>
                   {post.longDescription && (
@@ -258,17 +263,20 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                       (() => {
                         const absoluteIndex = activePosts.findIndex((p) => p === recentPost);
                         const href = getPostHref(recentPost, absoluteIndex >= 0 ? absoluteIndex : index);
+                        const thumbSrc = newsMainImageSrc(recentPost);
                         return (
                       <div className="tf-post-list style-small hover-img" key={recentPost._id || index}>
                         <div className="image">
                           <Link href={href} className="link" />
-                          <Image
-                            src={recentPost.imagePath}
-                            alt={recentPost.title}
-                            width={120}
-                            height={90}
-                            className="lazyload"
-                          />
+                          {thumbSrc && (
+                            <Image
+                              src={thumbSrc}
+                              alt={recentPost.title}
+                              width={120}
+                              height={90}
+                              className="lazyload"
+                            />
+                          )}
                         </div>
                         <div className="post-content">
                           <div className="post-date caption-1">{formatDate(recentPost)}</div>

@@ -297,7 +297,7 @@
   color: #374151;
 }
 
-.form-group input,
+.form-group input:not([type='checkbox']):not([type='radio']),
 .form-group textarea,
 .form-group select {
   padding: 10px 12px;
@@ -311,6 +311,15 @@
   transition: border-color 0.15s ease;
   background-color: #ffffff;
   width: 100%;
+}
+
+.form-group input[type='checkbox'],
+.form-group input[type='radio'] {
+  width: auto;
+  margin: 0 8px 0 0;
+  padding: 0;
+  vertical-align: middle;
+  accent-color: #111827;
 }
 
 .form-group input:focus,

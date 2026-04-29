@@ -32,6 +32,7 @@ import {
   getCustomerStoriesContent,
   getSolutionsContent,
 } from "@/lib/data-fetch";
+import { newsMainImageSrc } from "@/lib/news-post-images";
 import Topbar1 from "@/components/headers/Topbar1";
 
 export const metadata: Metadata = {
@@ -196,7 +197,7 @@ export default async function Page() {
                   _id: p._id,
                   title: p.title,
                   category: p.category,
-                  imagePath: p.imagePath,
+                  imagePath: newsMainImageSrc(p),
                   date: p.date,
                   link: p.link,
                   language: baseSection.language,
