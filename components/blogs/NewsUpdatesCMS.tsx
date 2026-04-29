@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useMemo, useState } from "react";
 import { NewsUpdatesContent } from "@/types/news-updates";
-import { newsLargeDisplayImageSrc, newsMainImageSrc } from "@/lib/news-post-images";
+import { newsMainImageSrc } from "@/lib/news-post-images";
 
 interface Props {
   data: NewsUpdatesContent;
@@ -39,7 +39,8 @@ export default function NewsUpdatesCMS({ data }: Props) {
 
   const featuredIndex = activePosts.findIndex((p) => p.isFeatured === true);
   const featuredPostHref = getPostHref(featuredPost, featuredIndex >= 0 ? featuredIndex : 0);
-  const heroSrc = newsLargeDisplayImageSrc(featuredPost);
+  // Featured card uses featured image when available, otherwise falls back to main image.
+  const heroSrc = featuredPost.imagePath?.trim() || newsMainImageSrc(featuredPost);
 
   const getDateBadgeParts = (post: (typeof activePosts)[number]) => {
     if (post.dateIso) {

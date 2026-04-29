@@ -3,7 +3,7 @@ import Image from "next/image";
 import React from "react";
 import { Metadata } from "next";
 import { getNewsUpdatesContent } from "@/lib/data-fetch";
-import { newsLargeDisplayImageSrc, newsMainImageSrc } from "@/lib/news-post-images";
+import { newsMainImageSrc } from "@/lib/news-post-images";
 import Breadcumb from "@/components/common/Breadcumb";
 
 interface PageProps {
@@ -42,10 +42,7 @@ function resolvePostById(
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  const content = await getNewsUpdatesContent("ltr");
-  const post = resolvePostById(id, content?.posts || []);
-
-  const title = post?.title || "News Details || Al Bahar & Partners";
+  const title = "News & Updates || Al Bahar & Partners";
   return {
     title,
     description: "Al Bahar & Partners",
@@ -123,15 +120,15 @@ export default async function NewsDetailsPage({ params }: PageProps) {
     );
   }
 
-  const detailHeroSrc = newsLargeDisplayImageSrc(post);
+  const detailHeroSrc = newsMainImageSrc(post);
 
   return (
     <>
       <div className="page-title style-1 bg-img-8">
         <div className="tf-container">
           <div className="page-title-content">
-            <Breadcumb pageName="News" />
-            <h2 className="title-page-title">{post.title}</h2>
+            <Breadcumb pageName="News & Updates" />
+            <h2 className="title-page-title">News &amp; Updates</h2>
           </div>
         </div>
       </div>
