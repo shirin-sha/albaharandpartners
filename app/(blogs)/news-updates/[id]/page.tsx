@@ -4,6 +4,7 @@ import React from "react";
 import { Metadata } from "next";
 import { getNewsUpdatesContent } from "@/lib/data-fetch";
 import { newsLargeDisplayImageSrc, newsMainImageSrc } from "@/lib/news-post-images";
+import Breadcumb from "@/components/common/Breadcumb";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -126,101 +127,11 @@ export default async function NewsDetailsPage({ params }: PageProps) {
 
   return (
     <>
-      <div className="page-title style-2 bg-img-3">
+      <div className="page-title style-1 bg-img-8">
         <div className="tf-container">
-          <div className="row">
-            <div className="col-12">
-              <div className="page-title-content">
-                <div className="breadkcum">
-                  <Link href="/" className="caption-1 home">
-                    Homepage
-                  </Link>{" "}
-                  <span className="arrow-svg">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={20}
-                      height={20}
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <g clipPath="url(#clip0_news_1)">
-                        <path
-                          d="M3.125 10H16.875"
-                          stroke="#A2A3AB"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M11.25 4.375L16.875 10L11.25 15.625"
-                          stroke="#A2A3AB"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_news_1">
-                          <rect width={20} height={20} fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </span>{" "}
-                  <Link href="/news-updates" className="caption-1 home">
-                    News
-                  </Link>{" "}
-                  <span className="arrow-svg">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={20}
-                      height={20}
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <g clipPath="url(#clip0_news_2)">
-                        <path
-                          d="M3.125 10H16.875"
-                          stroke="#A2A3AB"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M11.25 4.375L16.875 10L11.25 15.625"
-                          stroke="#A2A3AB"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_news_2">
-                          <rect width={20} height={20} fill="white" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </span>{" "}
-                  <span className="caption-1 page-breadkcum">{post.title}</span>
-                </div>
-                <div className="content">
-                  <h2 className="title-page-title">
-                    {post.title.split(" ").slice(0, 5).join(" ")}
-                    <br />
-                    {post.title.split(" ").slice(5).join(" ")}
-                  </h2>
-                  <div className="meta">
-                    <div className="meta-content">
-                      <div className="icon">
-                        <i className="icon-calendarBlank" />
-                      </div>
-                      <div className="text body-2">{formatDate(post)}</div>
-                    </div>
-                    <div className="meta-content">
-                      <div className="icon">
-                        <i className="icon-price-tag" />
-                      </div>
-                      <div className="text body-2">{post.category}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="page-title-content">
+            <Breadcumb pageName="News" />
+            <h2 className="title-page-title">{post.title}</h2>
           </div>
         </div>
       </div>
@@ -241,6 +152,20 @@ export default async function NewsDetailsPage({ params }: PageProps) {
                     />
                   </div>
                 )}
+                <div className="meta mb-20">
+                  <div className="meta-content">
+                    <div className="icon">
+                      <i className="icon-calendarBlank" />
+                    </div>
+                    <div className="text body-2">{formatDate(post)}</div>
+                  </div>
+                  <div className="meta-content">
+                    <div className="icon">
+                      <i className="icon-price-tag" />
+                    </div>
+                    <div className="text body-2">{post.category}</div>
+                  </div>
+                </div>
                 <div className="desc-blog">
                   <h4 className="title-desc mb-20">{post.title}</h4>
                   {post.longDescription && (
