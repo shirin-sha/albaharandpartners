@@ -40,13 +40,6 @@ export default function NewsUpdatesCMS({ data }: Props) {
   const featuredIndex = activePosts.findIndex((p) => p.isFeatured === true);
   const featuredPostHref = getPostHref(featuredPost, featuredIndex >= 0 ? featuredIndex : 0);
   const heroSrc = newsLargeDisplayImageSrc(featuredPost);
-  const usesFeaturedHeroImage = !!featuredPost.imagePath?.trim();
-  const heroWidth = usesFeaturedHeroImage
-    ? featuredPost.featuredImgWidth || 1290
-    : featuredPost.imgWidth || 1290;
-  const heroHeight = usesFeaturedHeroImage
-    ? featuredPost.featuredImgHeight || 600
-    : featuredPost.imgHeight || 600;
 
   const getDateBadgeParts = (post: (typeof activePosts)[number]) => {
     if (post.dateIso) {
@@ -75,8 +68,8 @@ export default function NewsUpdatesCMS({ data }: Props) {
                     <Image
                       src={heroSrc}
                       alt={featuredPost.title}
-                      width={heroWidth}
-                      height={heroHeight}
+                      width={featuredPost.imgWidth || 1290}
+                      height={featuredPost.imgHeight || 600}
                       className="lazyload"
                     />
                   )}

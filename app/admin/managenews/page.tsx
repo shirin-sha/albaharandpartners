@@ -66,8 +66,6 @@ export default function NewsManagePage() {
     detailImagePath: string;
     imgWidth: number;
     imgHeight: number;
-    featuredImgWidth: number;
-    featuredImgHeight: number;
     dateValue: string;
     isFeatured: boolean;
   }>({
@@ -83,8 +81,6 @@ export default function NewsManagePage() {
     detailImagePath: '',
     imgWidth: 410,
     imgHeight: 546,
-    featuredImgWidth: 1290,
-    featuredImgHeight: 600,
     dateValue: '',
     isFeatured: false,
   });
@@ -146,8 +142,6 @@ export default function NewsManagePage() {
         dateIso: formData.dateValue,
         imgWidth: formData.imgWidth,
         imgHeight: formData.imgHeight,
-        featuredImgWidth: formData.featuredImgWidth,
-        featuredImgHeight: formData.featuredImgHeight,
         date: dateParts,
         link: '#',
         isActive: true,
@@ -196,8 +190,6 @@ export default function NewsManagePage() {
       dateValue: postLtr.dateIso || partsToDateValue(postLtr.date),
       imgWidth: postLtr.imgWidth || 410,
       imgHeight: postLtr.imgHeight || 546,
-      featuredImgWidth: postLtr.featuredImgWidth || 1290,
-      featuredImgHeight: postLtr.featuredImgHeight || 600,
       isFeatured: postLtr.isFeatured === true,
     });
     setShowForm(true);
@@ -240,8 +232,6 @@ export default function NewsManagePage() {
       detailImagePath: '',
       imgWidth: 410,
       imgHeight: 546,
-      featuredImgWidth: 1290,
-      featuredImgHeight: 600,
       dateValue: '',
       isFeatured: false,
     });
@@ -424,8 +414,6 @@ export default function NewsManagePage() {
                         ? {}
                         : {
                             imagePath: '',
-                            featuredImgWidth: 1290,
-                            featuredImgHeight: 600,
                           }),
                     })
                   }
@@ -437,42 +425,12 @@ export default function NewsManagePage() {
             {formData.isFeatured && (
               <>
                 <div className="form-group">
-                  <label>Featured Image</label>
+                  <label>Featured Image (1290 x 430)</label>
                   <ImageUpload
                     value={formData.imagePath}
                     onChange={(value) => setFormData({ ...formData, imagePath: value })}
                     folder="news"
                   />
-                </div>
-                <div className="form-row-bilingual">
-                  <div className="form-group">
-                    <label>Featured Image Width</label>
-                    <input
-                      type="number"
-                      min={1}
-                      value={formData.featuredImgWidth}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          featuredImgWidth: Number(e.target.value) || 1290,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Featured Image Height</label>
-                    <input
-                      type="number"
-                      min={1}
-                      value={formData.featuredImgHeight}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          featuredImgHeight: Number(e.target.value) || 600,
-                        })
-                      }
-                    />
-                  </div>
                 </div>
               </>
             )}
