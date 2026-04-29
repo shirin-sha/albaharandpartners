@@ -222,13 +222,16 @@ export default async function Page() {
 
           const mappedPosts = sourcePosts
             .slice(0, 3)
-            .map((p) => ({
+            .map((p, index) => ({
               _id: p._id,
               title: p.title,
               category: p.category,
               imagePath: newsMainImageSrc(p),
               date: p.date,
-              link: p.link,
+              link:
+                p.link && p.link.trim() !== "#"
+                  ? p.link
+                  : `/news-updates/${p._id || String(index + 1)}`,
               order: 0,
               language: baseSection.language,
               isActive: p.isActive,

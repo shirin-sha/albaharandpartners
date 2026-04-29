@@ -193,13 +193,16 @@ export default async function Page() {
                   return 0;
                 })
                 .slice(0, 3)
-                .map((p) => ({
+                .map((p, index) => ({
                   _id: p._id,
                   title: p.title,
                   category: p.category,
                   imagePath: newsMainImageSrc(p),
                   date: p.date,
-                  link: p.link,
+                  link:
+                    p.link && p.link.trim() !== "#"
+                      ? p.link
+                      : `/news-updates/${p._id || String(index + 1)}`,
                   language: baseSection.language,
                   isActive: p.isActive,
                 })) || [];
