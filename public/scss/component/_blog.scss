@@ -1134,7 +1134,7 @@
 .blog-details-content {
     @include mixin.d-flex();
     flex-direction: column;
-    // gap: 40px;
+    gap: 20px;
 
     .desc-blog {
         .title-desc {

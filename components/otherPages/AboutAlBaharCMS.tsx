@@ -25,7 +25,10 @@ export default function AboutAlBaharCMS({ data }: Props) {
                   {data.tag}
                 </a>
               </div>
-              <h3 className="title-section mb-40" dangerouslySetInnerHTML={{ __html: data.title }} />
+              <h3
+                className="title-section mb-40 about-albahar-title"
+                dangerouslySetInnerHTML={{ __html: data.title }}
+              />
             </div>
           </div>
           <div className="col-lg-4">
