@@ -7,9 +7,11 @@ import { newsMainImageSrc } from "@/lib/news-post-images";
 
 interface Props {
   data: NewsUpdatesContent;
+  /** Base path for post detail links (no trailing slash). Default `/news-updates`. */
+  postsBasePath?: string;
 }
 
-export default function NewsUpdatesCMS({ data }: Props) {
+export default function NewsUpdatesCMS({ data, postsBasePath = "/news-updates" }: Props) {
   const [isLoadedMore, setIsLoadedMore] = useState(false);
 
   const { activePosts, featuredPost, remainingPosts, filteredPosts } = useMemo(() => {
@@ -38,7 +40,11 @@ export default function NewsUpdatesCMS({ data }: Props) {
   if (activePosts.length === 0 || !featuredPost) return null;
 
   const featuredIndex = activePosts.findIndex((p) => p.isFeatured === true);
-  const featuredPostHref = getPostHref(featuredPost, featuredIndex >= 0 ? featuredIndex : 0);
+  const featuredPostHref = getPostHref(
+    postsBasePath,
+    featuredPost,
+    featuredIndex >= 0 ? featuredIndex : 0
+  );
   // Featured card uses featured image when available, otherwise falls back to main image.
   const heroSrc = featuredPost.imagePath?.trim() || newsMainImageSrc(featuredPost);
 
@@ -94,7 +100,7 @@ export default function NewsUpdatesCMS({ data }: Props) {
             <div className="layout-grid-3 loadmore-item">
               {filteredPosts.map((post, index) => {
                 const absoluteIndex = activePosts.findIndex((p) => p === post);
-                const href = getPostHref(post, absoluteIndex >= 0 ? absoluteIndex : index);
+                const href = getPostHref(postsBasePath, post, absoluteIndex >= 0 ? absoluteIndex : index);
                 const listSrc = newsMainImageSrc(post);
                 return (
                   <div className="tf-post-grid style-small fl-item d-block" key={post._id || index}>
@@ -144,7 +150,7 @@ export default function NewsUpdatesCMS({ data }: Props) {
   );
 }
 
-function getPostHref(post: { _id?: string }, index: number) {
+function getPostHref(basePath: string, post: { _id?: string }, index: number) {
   const fallbackId = post._id || String(index + 1);
-  return `/news-updates/${fallbackId}`;
+  return `${basePath.replace(/\/$/, "")}/${fallbackId}`;
 }

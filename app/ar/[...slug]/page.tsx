@@ -418,7 +418,7 @@ export default async function ArabicPage({ params, searchParams }: PageProps) {
             </div>
           )}
           <div className="main-content tf-spacing-2">
-            {content && <NewsUpdatesCMS data={content} />}
+            {content && <NewsUpdatesCMS data={content} postsBasePath="/ar/news-updates" />}
           </div>
         </>
       );

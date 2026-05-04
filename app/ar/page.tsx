@@ -202,7 +202,7 @@ export default async function Page() {
                   link:
                     p.link && p.link.trim() !== "#"
                       ? p.link
-                      : `/news-updates/${p._id || String(index + 1)}`,
+                      : `/ar/news-updates/${p._id || String(index + 1)}`,
                   language: baseSection.language,
                   isActive: p.isActive,
                 })) || [];
