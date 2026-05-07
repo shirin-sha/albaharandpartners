@@ -1,8 +1,5 @@
-import Process from "@/components/common/Process2";
-import Features from "@/components/common/Features";
 import ServicesCMS from "@/components/services/ServicesCMS";
 import React from "react";
-import Cta from "@/components/common/Cta";
 import Breadcumb from "@/components/common/Breadcumb";
 import { Metadata } from "next";
 import { SolutionsContent } from "@/types/solutions";

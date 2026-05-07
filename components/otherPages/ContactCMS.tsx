@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import ContactForm from "./ContactForm";
+import ContactForm from "@/components/common/ContactForm";
 import { ContactUsContent } from "@/types/contact-us";
 
 interface Props {

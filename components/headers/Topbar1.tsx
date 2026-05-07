@@ -1,5 +1,4 @@
 import React from "react";
-import LanguageDropdown from "./LanguageSelect";
 
 export default function Topbar1() {
   return (

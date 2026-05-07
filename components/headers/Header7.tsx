@@ -4,13 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { usePathname } from "next/navigation";
-import NavOnepage from "./NavOnepage";
-import Nav from "./Nav";
 import Nav7 from "./Nav7";
-import CartLength from "../common/CartLength";
-import SearchButton from "./SearchButton";
 
-export default function Header7({ onepage = false }) {
+export default function Header7() {
   const [isFixed, setIsFixed] = useState(false);
   const pathname = usePathname();
   const isArabic = pathname === "/ar" || pathname.startsWith("/ar/");
@@ -54,12 +50,8 @@ export default function Header7({ onepage = false }) {
                   </Link>
                 </div>
                 <nav className="main-menu">
-                  <ul
-                    className={` menu-primary-menu ${
-                      onepage ? "navigation" : ""
-                    } `}
-                  >
-                    {onepage ? <NavOnepage /> : <Nav7 />}
+                  <ul className="menu-primary-menu">
+                    <Nav7 />
                   </ul>
                 </nav>
               </div>
