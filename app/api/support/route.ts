@@ -76,6 +76,7 @@ export async function POST(request: NextRequest) {
 
     // Revalidate support page
     revalidatePath('/support');
+    revalidatePath('/ar/support');
 
     return NextResponse.json({
       success: true,
@@ -128,6 +129,7 @@ export async function PUT(request: NextRequest) {
 
     // Revalidate support page
     revalidatePath('/support');
+    revalidatePath('/ar/support');
 
     return NextResponse.json({
       success: true,

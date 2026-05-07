@@ -63,6 +63,30 @@
     text-align: center !important;
   }
 
+  // BiDi stabilization for Arabic content:
+  // keeps punctuation like "." from visually jumping in mixed-language strings.
+  .sub-title,
+  .desc,
+  .body-2,
+  .caption-1,
+  .text,
+  .title-desc,
+  .name-post,
+  .name-services,
+  .title-post,
+  .rtl-copy {
+    direction: rtl;
+    unicode-bidi: plaintext;
+  }
+
+  // Keep explicitly LTR fragments stable inside RTL text blocks
+  [dir="ltr"],
+  .ltr-inline {
+    direction: ltr !important;
+    unicode-bidi: isolate;
+    display: inline-block;
+  }
+
   #toggle-rtl {
     left: 15px;
     right: auto;

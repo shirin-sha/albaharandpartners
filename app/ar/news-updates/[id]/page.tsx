@@ -59,6 +59,7 @@ export default async function ArabicNewsDetailsPage({ params }: PageProps) {
         breadcrumbPageName={header?.breadcrumb || "الأخبار والتحديثات"}
         listingTitle={header?.title || "الأخبار والتحديثات"}
         recentPostsTitle="مقالات حديثة"
+        language="rtl"
       />
     );
   }

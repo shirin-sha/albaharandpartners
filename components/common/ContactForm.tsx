@@ -3,6 +3,7 @@ import React from "react";
 import DropdownSelect from "./DropdownSelect";
 import axios from "axios";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function ContactForm({
   parentClass = "form-contact-home style-border",
@@ -10,6 +11,8 @@ export default function ContactForm({
   isTitleCenter = true,
   title = "Get A Free Quote",
 }) {
+  const pathname = usePathname();
+  const isRtl = pathname?.startsWith("/ar") || false;
   const [success, setSuccess] = useState(true);
   const [showMessage, setShowMessage] = useState(false);
   const handleShowMessage = () => {
@@ -64,20 +67,33 @@ export default function ContactForm({
         {title}
       </h5>
       <fieldset>
-        <input required type="text" placeholder="Full name" />
+        <input required type="text" placeholder={isRtl ? "الاسم الكامل" : "Full name"} />
       </fieldset>
       <fieldset>
-        <input required type="number" placeholder="Phone number" />
+        <input required type="number" placeholder={isRtl ? "رقم الهاتف" : "Phone number"} />
       </fieldset>
       <fieldset>
-        <input required type="email" name="email" placeholder="Email address" />
+        <input
+          required
+          type="email"
+          name="email"
+          placeholder={isRtl ? "البريد الإلكتروني" : "Email address"}
+        />
       </fieldset>
 
       <DropdownSelect
-        options={["How can we help you?", "Option 1", "Option 2", "Option 3"]}
+        options={
+          isRtl
+            ? ["كيف يمكننا مساعدتك؟", "الخيار 1", "الخيار 2", "الخيار 3"]
+            : ["How can we help you?", "Option 1", "Option 2", "Option 3"]
+        }
       />
       <fieldset>
-        <textarea required placeholder="Your mesages" defaultValue={""} />
+        <textarea
+          required
+          placeholder={isRtl ? "رسالتك" : "Your mesages"}
+          defaultValue={""}
+        />
       </fieldset>
       <div
         className={`tfSubscribeMsg  footer-sub-element ${

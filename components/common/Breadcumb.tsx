@@ -1,11 +1,19 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
+import { usePathname } from "next/navigation";
 
 export default function Breadcumb({ pageName = "Blog" }) {
+  const pathname = usePathname();
+  const isArabic = pathname?.startsWith("/ar");
+  const homeLabel = isArabic ? "الرئيسية" : "Homepage";
+  const homeHref = isArabic ? "/ar" : "/";
+
   return (
     <div className="breadkcum">
-      <Link href={`/`} className="caption-1 home">
-        Homepage
+      <Link href={homeHref} className="caption-1 home">
+        {homeLabel}
       </Link>{" "}
       <span className="arrow-svg">
         <svg

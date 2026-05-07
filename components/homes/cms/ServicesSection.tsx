@@ -24,6 +24,7 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
   }
 
   const learnMoreLabel = language === "rtl" ? "اعرف المزيد" : "Learn More";
+  const detailsBasePath = language === "rtl" ? "/ar/services-details-1" : "/services-details-1";
 
   return (
     <section
@@ -71,6 +72,9 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
               </div>
               <div className="tab-content">
                 {activeServices.map((service, index) => (
+                  (() => {
+                    const detailsHref = `${detailsBasePath}?id=${service.id}`;
+                    return (
                   <div
                     key={service.id}
                     className={`tab-pane${index === 0 ? " active show" : ""}`}
@@ -80,7 +84,7 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                     <div className="services-inner bg-surface">
                       <div className="services-content p-40" style={{ paddingTop: '50px', paddingBottom: '50px' }}>
                         <h4 className="title-content mb-12">
-                          <Link href="/services-details-1">{service.title}</Link>
+                          <Link href={detailsHref}>{service.title}</Link>
                         </h4>
                         <div className="sub-title mb-28 body-2">
                           {service.description.split('<br/>').map((line, i, array) => (
@@ -101,7 +105,7 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                           ))}
                         </div>
                         <Link
-                          href="#"
+                          href={detailsHref}
                           className="tf-btn style-1 bg-color-primary"
                         >
                           <span>{learnMoreLabel}</span>
@@ -123,6 +127,8 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                       </div>
                     </div>
                   </div>
+                    );
+                  })()
                 ))}
               </div>
             </div>

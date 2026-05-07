@@ -68,12 +68,20 @@ export default function AdminSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const [cmsOpen, setCmsOpen] = useState(false);
+  const [enquiriesOpen, setEnquiriesOpen] = useState(false);
 
   useEffect(() => {
     // Auto-expand CMS menu if on CMS pages
     const shouldOpen = pathname?.startsWith('/admin/cms') || pathname?.startsWith('/admin/homepage');
     if (shouldOpen) {
       setCmsOpen(true);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    const shouldOpen = pathname?.startsWith('/admin/enquiries') || pathname?.startsWith('/admin/job-inquiries');
+    if (shouldOpen) {
+      setEnquiriesOpen(true);
     }
   }, [pathname]);
 
@@ -231,12 +239,41 @@ export default function AdminSidebar() {
           <span className="admin-sidebar-label"><span className="admin-sidebar-icon"><SidebarIcon name="solutions" /></span><span>Solutions Management</span></span>
         </Link>
         
-        <Link
-          href="/admin/enquiries"
-          className={`admin-sidebar-link ${isActive('/admin/enquiries') ? 'active' : ''}`}
-        >
-          <span className="admin-sidebar-label"><span className="admin-sidebar-icon"><SidebarIcon name="enquiries" /></span><span>Enquiries</span></span>
-        </Link>
+        <div className={`admin-sidebar-group ${pathname?.startsWith('/admin/enquiries') || pathname?.startsWith('/admin/job-inquiries') ? 'active' : ''}`}>
+          <button
+            type="button"
+            className={`admin-sidebar-group-toggle ${enquiriesOpen ? 'open' : ''}`}
+            onClick={() => setEnquiriesOpen(!enquiriesOpen)}
+          >
+            <span className="admin-sidebar-label">
+              <span className="admin-sidebar-icon"><SidebarIcon name="enquiries" /></span>
+              <span>Enquiries</span>
+            </span>
+            <span className="admin-sidebar-arrow">{enquiriesOpen ? '▼' : '▶'}</span>
+          </button>
+          {enquiriesOpen && (
+            <div className="admin-sidebar-submenu">
+              <Link
+                href="/admin/enquiries"
+                className={`admin-sidebar-link admin-sidebar-sublink ${isActive('/admin/enquiries') ? 'active' : ''}`}
+              >
+                <span className="admin-sidebar-label">
+                  <span className="admin-sidebar-icon"><SidebarIcon name="enquiries" /></span>
+                  <span>Contact Enquiries</span>
+                </span>
+              </Link>
+              <Link
+                href="/admin/job-inquiries"
+                className={`admin-sidebar-link admin-sidebar-sublink ${isActive('/admin/job-inquiries') ? 'active' : ''}`}
+              >
+                <span className="admin-sidebar-label">
+                  <span className="admin-sidebar-icon"><SidebarIcon name="careers" /></span>
+                  <span>Job Inquiries</span>
+                </span>
+              </Link>
+            </div>
+          )}
+        </div>
       </nav>
     </aside>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { SupportContent } from '@/types/support';
 
 const SUPPORT_SECTIONS = [
@@ -140,6 +141,20 @@ export default function SupportManager() {
     <div className="admin-cms-container">
       <div className="admin-cms-header">
         <h1>Support</h1>
+      </div>
+
+      <div className="admin-cms-section-card" style={{ marginBottom: 24 }}>
+        <div className="admin-cms-section-header" style={{ cursor: 'default' }}>
+          <div>
+            <h3 style={{ margin: 0 }}>Support Services Management</h3>
+            <div style={{ fontSize: 13, opacity: 0.8 }}>
+              Manage the service cards list separately (like News/Team).
+            </div>
+          </div>
+          <Link href="/admin/managesupportservices" className="button button-primary">
+            Go to Services Management →
+          </Link>
+        </div>
       </div>
 
       {message && (
@@ -494,6 +509,252 @@ export default function SupportManager() {
                 >
                   {saving === 'services' ? 'Saving...' : 'Save Services Section'}
                 </button>
+              </div>
+
+              <div style={{ marginTop: 24 }}>
+                <h4 style={{ margin: '0 0 12px 0' }}>Service Cards</h4>
+                <div style={{ fontSize: 13, opacity: 0.8, marginBottom: 16 }}>
+                  Manage the support service cards shown on the Support page. Icons are shared; titles/descriptions are language-specific.
+                </div>
+
+                <div className="hero-slides-container">
+                  {Array.from({
+                    length: Math.max(
+                      contentLtr.servicesSection.services?.length || 0,
+                      contentRtl.servicesSection.services?.length || 0
+                    ),
+                  }).map((_, index) => {
+                    const ltrService =
+                      contentLtr.servicesSection.services?.[index] || {
+                        title: '',
+                        description: '',
+                        iconClass: '',
+                        iconSvg: '',
+                        isActive: true,
+                      };
+                    const rtlService =
+                      contentRtl.servicesSection.services?.[index] || {
+                        title: '',
+                        description: '',
+                        iconClass: ltrService.iconClass || '',
+                        iconSvg: ltrService.iconSvg || '',
+                        isActive: ltrService.isActive ?? true,
+                      };
+
+                    return (
+                      <div key={index} className="hero-slide-card">
+                        <div className="hero-slide-header">
+                          <h4 style={{ margin: 0 }}>Service {index + 1}</h4>
+                          <button
+                            type="button"
+                            className="hero-slide-remove"
+                            onClick={() => {
+                              const newLtr = [...(contentLtr.servicesSection.services || [])].filter(
+                                (_: unknown, i: number) => i !== index
+                              );
+                              const newRtl = [...(contentRtl.servicesSection.services || [])].filter(
+                                (_: unknown, i: number) => i !== index
+                              );
+                              setContentLtr({
+                                ...contentLtr,
+                                servicesSection: { ...contentLtr.servicesSection, services: newLtr },
+                              });
+                              setContentRtl({
+                                ...contentRtl,
+                                servicesSection: { ...contentRtl.servicesSection, services: newRtl },
+                              });
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+
+                        <div className="hero-slide-fields">
+                          <div style={{ marginBottom: 12 }}>
+                            <label style={{ display: 'inline-flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                              <input
+                                type="checkbox"
+                                checked={Boolean(ltrService.isActive)}
+                                onChange={(e) => {
+                                  const isActive = e.target.checked;
+                                  const newLtr = [...(contentLtr.servicesSection.services || [])];
+                                  const newRtl = [...(contentRtl.servicesSection.services || [])];
+                                  newLtr[index] = { ...ltrService, isActive };
+                                  newRtl[index] = { ...rtlService, isActive };
+                                  setContentLtr({
+                                    ...contentLtr,
+                                    servicesSection: { ...contentLtr.servicesSection, services: newLtr },
+                                  });
+                                  setContentRtl({
+                                    ...contentRtl,
+                                    servicesSection: { ...contentRtl.servicesSection, services: newRtl },
+                                  });
+                                }}
+                              />
+                              Active
+                            </label>
+                          </div>
+
+                          <div className="form-row-bilingual-header">
+                            <div className="form-label-header">English</div>
+                            <div className="form-label-header">Arabic</div>
+                          </div>
+
+                          <div className="form-row-bilingual">
+                            <div className="form-group">
+                              <label>Title</label>
+                              <input
+                                type="text"
+                                value={ltrService.title}
+                                onChange={(e) => {
+                                  const title = e.target.value;
+                                  const newLtr = [...(contentLtr.servicesSection.services || [])];
+                                  newLtr[index] = { ...ltrService, title };
+                                  setContentLtr({
+                                    ...contentLtr,
+                                    servicesSection: { ...contentLtr.servicesSection, services: newLtr },
+                                  });
+                                }}
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label>Title</label>
+                              <input
+                                type="text"
+                                dir="rtl"
+                                value={rtlService.title}
+                                onChange={(e) => {
+                                  const title = e.target.value;
+                                  const newRtl = [...(contentRtl.servicesSection.services || [])];
+                                  newRtl[index] = { ...rtlService, title };
+                                  setContentRtl({
+                                    ...contentRtl,
+                                    servicesSection: { ...contentRtl.servicesSection, services: newRtl },
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="form-row-bilingual">
+                            <div className="form-group">
+                              <label>Description</label>
+                              <textarea
+                                rows={3}
+                                value={ltrService.description}
+                                onChange={(e) => {
+                                  const description = e.target.value;
+                                  const newLtr = [...(contentLtr.servicesSection.services || [])];
+                                  newLtr[index] = { ...ltrService, description };
+                                  setContentLtr({
+                                    ...contentLtr,
+                                    servicesSection: { ...contentLtr.servicesSection, services: newLtr },
+                                  });
+                                }}
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label>Description</label>
+                              <textarea
+                                rows={3}
+                                dir="rtl"
+                                value={rtlService.description}
+                                onChange={(e) => {
+                                  const description = e.target.value;
+                                  const newRtl = [...(contentRtl.servicesSection.services || [])];
+                                  newRtl[index] = { ...rtlService, description };
+                                  setContentRtl({
+                                    ...contentRtl,
+                                    servicesSection: { ...contentRtl.servicesSection, services: newRtl },
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="form-row-bilingual">
+                            <div className="form-group">
+                              <label>Icon class (shared)</label>
+                              <input
+                                type="text"
+                                value={ltrService.iconClass || ''}
+                                placeholder="e.g. icon-Briefcase"
+                                onChange={(e) => {
+                                  const iconClass = e.target.value;
+                                  const newLtr = [...(contentLtr.servicesSection.services || [])];
+                                  const newRtl = [...(contentRtl.servicesSection.services || [])];
+                                  newLtr[index] = { ...ltrService, iconClass };
+                                  newRtl[index] = { ...rtlService, iconClass };
+                                  setContentLtr({
+                                    ...contentLtr,
+                                    servicesSection: { ...contentLtr.servicesSection, services: newLtr },
+                                  });
+                                  setContentRtl({
+                                    ...contentRtl,
+                                    servicesSection: { ...contentRtl.servicesSection, services: newRtl },
+                                  });
+                                }}
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label>Icon SVG (shared, optional)</label>
+                              <textarea
+                                rows={3}
+                                value={ltrService.iconSvg || ''}
+                                placeholder="<svg ...>...</svg>"
+                                onChange={(e) => {
+                                  const iconSvg = e.target.value;
+                                  const newLtr = [...(contentLtr.servicesSection.services || [])];
+                                  const newRtl = [...(contentRtl.servicesSection.services || [])];
+                                  newLtr[index] = { ...ltrService, iconSvg };
+                                  newRtl[index] = { ...rtlService, iconSvg };
+                                  setContentLtr({
+                                    ...contentLtr,
+                                    servicesSection: { ...contentLtr.servicesSection, services: newLtr },
+                                  });
+                                  setContentRtl({
+                                    ...contentRtl,
+                                    servicesSection: { ...contentRtl.servicesSection, services: newRtl },
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  <button
+                    type="button"
+                    className="hero-add-slide-button"
+                    onClick={() => {
+                      const newService = {
+                        title: '',
+                        description: '',
+                        iconClass: 'icon-Briefcase',
+                        iconSvg: '',
+                        isActive: true,
+                      };
+                      setContentLtr({
+                        ...contentLtr,
+                        servicesSection: {
+                          ...contentLtr.servicesSection,
+                          services: [...(contentLtr.servicesSection.services || []), newService],
+                        },
+                      });
+                      setContentRtl({
+                        ...contentRtl,
+                        servicesSection: {
+                          ...contentRtl.servicesSection,
+                          services: [...(contentRtl.servicesSection.services || []), newService],
+                        },
+                      });
+                    }}
+                  >
+                    + Add Service Card
+                  </button>
+                </div>
               </div>
             </div>
           )}

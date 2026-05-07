@@ -1,8 +1,42 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Contact() {
+  const pathname = usePathname();
+  const isRtl = pathname?.startsWith("/ar") || false;
+
+  const copy = isRtl
+    ? {
+        tag: "اتصل بنا",
+        title: "تواصل معنا",
+        subtitleLine1: "تواصل معنا اليوم لمناقشة كيف يمكننا",
+        subtitleLine2: "دعم أهداف عملك.",
+        addressTitle: "عنوان الشركة",
+        address:
+          "ص.ب 148 الصفاة 13002 - الكويت، قطعة 1، شارع 3، الشويخ الصناعية 1",
+        direction: "الاتجاهات",
+        phoneTitle: "اتصل بنا",
+        emailTitle: "راسلنا",
+        cta: "اتصل بنا",
+        ctaHref: "/ar/contact-us",
+      }
+    : {
+        tag: "Contact US",
+        title: "Get In Touch",
+        subtitleLine1: "Reach out today to discuss how we can",
+        subtitleLine2: "support your business goals.",
+        addressTitle: "Address Business",
+        address:
+          "P.O.Box 148 Safat 13002 - Kuwait, Block 1, Street 3, Shuwaikh Industrial 1",
+        direction: "Get direction",
+        phoneTitle: "Contact Us",
+        emailTitle: "Email Us",
+        cta: "Contact Us",
+        ctaHref: "/contact-us",
+      };
+
   return (
     <>
       {" "}
@@ -14,29 +48,51 @@ export default function Contact() {
               href="#"
               className="tag label text-btn-uppercase color-white mb-16"
             >
-              Contact US
+              {copy.tag}
             </Link>
-            <h4 className="title-section mb-1">Get In Touch</h4>
+            <h4 className="title-section mb-1">{copy.title}</h4>
             <div className="sub-title caption-1">
-              Reach out today to discuss how we can
+              {copy.subtitleLine1}
               <br />
-              support your business goals.
+              {copy.subtitleLine2}
             </div>
           </div>
           <div className="list-box-contact style-column mb-28">
-            <div className="box-contact-item">
+            <div
+              className="box-contact-item"
+              style={isRtl ? { direction: "rtl", textAlign: "right" } : undefined}
+            >
               <div className="icon">
                 <i className="icon-MapPin" />
               </div>
-              <div className="content">
+              <div className="content" style={isRtl ? { width: "100%" } : undefined}>
                 <div className="caption-1 title-section-contact">
-                  Address Business
+                  {copy.addressTitle}
                 </div>
-                <a href="#" className="caption-1 text">
-                P.O.Box 148 Safat 13002 - Kuwait, Block 1, Street 3, Shuwaikh Industrial 1
+                <a
+                  href="#"
+                  className="caption-1 text"
+                  style={
+                    isRtl
+                      ? {
+                          display: "block",
+                          width: "100%",
+                          textAlign: "right",
+                          direction: "rtl",
+                          unicodeBidi: "plaintext",
+                          paddingInlineStart: 0,
+                        }
+                      : undefined
+                  }
+                >
+                  {copy.address}
                 </a>
-                <a href="#" className="label text-btn-uppercase">
-                  Get direction
+                <a
+                  href="#"
+                  className="label text-btn-uppercase"
+                  style={isRtl ? { marginInlineStart: 0 } : undefined}
+                >
+                  {copy.direction}
                 </a>
               </div>
             </div>
@@ -46,12 +102,16 @@ export default function Contact() {
               </div>
               <div className="content">
                 <div className="caption-1 title-section-contact">
-                  Contact Us
+                  {copy.phoneTitle}
                 </div>
                 <a href="#" className="caption-1 text">
-                +965 184 8848
-                <br />
-                +965 184 8848
+                  <span dir="ltr" style={{ unicodeBidi: "isolate" }}>
+                    +965 184 8848
+                  </span>
+                  <br />
+                  <span dir="ltr" style={{ unicodeBidi: "isolate" }}>
+                    +965 184 8848
+                  </span>
                 </a>
               </div>
             </div>
@@ -61,23 +121,27 @@ export default function Contact() {
               </div>
               <div className="content">
                 <div className="caption-1 title-section-contact">
-                Email Us
+                  {copy.emailTitle}
                 </div>
                 <a href="mailto:bpc.sales@albahargroup.com" className="caption-1 text">
-                bpc.sales@albahargroup.com
+                  <span dir="ltr" style={{ unicodeBidi: "isolate" }}>
+                    bpc.sales@albahargroup.com
+                  </span>
                 </a>
               
                 <a href="mailto:bpc.info@albahargroup.com" className="caption-1 text">
-                bpc.info@albahargroup.com
+                  <span dir="ltr" style={{ unicodeBidi: "isolate" }}>
+                    bpc.info@albahargroup.com
+                  </span>
                 </a>
               </div>
             </div>
           </div>
           <Link
-            href="/contact-us"
+            href={copy.ctaHref}
             className="tf-btn style-1 bg-white bg-white-style-2 w-full text-center"
           >
-            <span> Contact Us </span>
+            <span> {copy.cta} </span>
           </Link>
         </div>
       </div>

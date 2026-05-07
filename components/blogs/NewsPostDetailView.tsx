@@ -45,6 +45,7 @@ export interface NewsPostDetailViewProps {
   breadcrumbPageName: string;
   listingTitle: string;
   recentPostsTitle: string;
+  language?: "ltr" | "rtl";
 }
 
 export default function NewsPostDetailView({
@@ -54,6 +55,7 @@ export default function NewsPostDetailView({
   breadcrumbPageName,
   listingTitle,
   recentPostsTitle,
+  language = "ltr",
 }: NewsPostDetailViewProps) {
   const detailHeroSrc = newsMainImageSrc(post);
 
@@ -68,7 +70,7 @@ export default function NewsPostDetailView({
         </div>
       </div>
 
-      <div className="main-content tf-spacing-2">
+      <div className="main-content tf-spacing-2" dir={language}>
         <div className="tf-container tf-spacing-3">
           <div className="row rg-60">
             <div className="col-xl-9">

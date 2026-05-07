@@ -50,7 +50,7 @@ export default function ProcessSection({ content, language = 'ltr' }: ProcessSec
             <Swiper
               className="sw-case-studies swiper sw-layout"
               spaceBetween={10}
-              dir="ltr"
+              dir={language}
               breakpoints={{
                 0: { slidesPerView: 1 },
                 575: { slidesPerView: 2 },

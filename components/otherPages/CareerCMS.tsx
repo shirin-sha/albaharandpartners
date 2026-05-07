@@ -1,6 +1,7 @@
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 import { CareersContent } from "@/types/careers";
+import CareerApplyForm from "@/components/otherPages/CareerApplyForm";
 
 interface Props {
   data: CareersContent;
@@ -8,6 +9,13 @@ interface Props {
 
 export default function CareerCMS({ data }: Props) {
   if (!data.isActive) return null;
+  const isArabic = data.language === "rtl";
+  const labels = {
+    jobDescription: isArabic ? "الوصف الوظيفي" : "Job Description",
+    work: isArabic ? "المهام الوظيفية" : "The Work You'll Do",
+    salary: isArabic ? "الراتب" : "Salary",
+    applyNow: isArabic ? "قدم الآن" : "Apply Job Now",
+  };
 
   const activeJobs = (data.jobs || [])
     .filter(job => job.isActive)
@@ -56,12 +64,12 @@ export default function CareerCMS({ data }: Props) {
                     <div className="according-content">
                       <div className="content">
                         <div className="job-description item-content item-content-1">
-                          <h6 className="title-item">Job Description</h6>
+                          <h6 className="title-item">{labels.jobDescription}</h6>
                           <div className="text body-2" dangerouslySetInnerHTML={{ __html: job.description.replace(/\n/g, '<br />') }} />
                         </div>
                         {job.responsibilities && job.responsibilities.length > 0 && (
                           <div className="item-content item-content-1">
-                            <h6 className="title-item">The Work You'll Do</h6>
+                            <h6 className="title-item">{labels.work}</h6>
                             <ul>
                               {job.responsibilities.map((responsibility, respIndex) => (
                                 <li className="body-2" key={respIndex}>
@@ -72,16 +80,20 @@ export default function CareerCMS({ data }: Props) {
                           </div>
                         )}
                         <div className="item-content item-content-2">
-                          <h6 className="title-item">Salary</h6>
+                          <h6 className="title-item">{labels.salary}</h6>
                           <div className="price-according mb-20">
                             <h5 className="salary-amount">{job.salary.amount}</h5>
                             <span className="salary-period">{job.salary.period}</span>
                           </div>
                           <Link
-                            href={job.applyLink || "#"}
+                            href={
+                              job.applyLink && job.applyLink !== "#"
+                                ? job.applyLink
+                                : `/career?job=${encodeURIComponent(job.title)}#apply-now`
+                            }
                             className="tf-btn style-1 bg-color-primary"
                           >
-                            <span> Apply Job Now </span>
+                            <span> {labels.applyNow} </span>
                           </Link>
                         </div>
                       </div>
@@ -90,6 +102,10 @@ export default function CareerCMS({ data }: Props) {
                 </div>
               ))}
             </div>
+
+            <Suspense fallback={<div id="apply-now" className="mt-40" />}>
+              <CareerApplyForm jobs={activeJobs} language={data.language} />
+            </Suspense>
           </div>
         </div>
       </div>

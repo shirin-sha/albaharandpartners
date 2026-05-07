@@ -48,6 +48,7 @@ export default async function NewsDetailsPage({ params }: PageProps) {
       breadcrumbPageName={header?.breadcrumb || "News & Updates"}
       listingTitle={header?.title || "News & Updates"}
       recentPostsTitle="Recent posts"
+      language="ltr"
     />
   );
 }

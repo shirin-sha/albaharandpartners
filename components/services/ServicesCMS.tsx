@@ -13,6 +13,7 @@ export default function ServicesCMS({ data, language = 'ltr' }: Props) {
 
   const solutions = data.solutions || [];
   const detailsBasePath = language === 'rtl' ? '/ar/services-details-1' : '/services-details-1';
+  const viewServicesLabel = language === 'rtl' ? 'عرض الخدمات' : 'View Services';
 
   return (
     <div className="tf-container">
@@ -74,7 +75,7 @@ export default function ServicesCMS({ data, language = 'ltr' }: Props) {
                         href={`${detailsBasePath}?id=${solution.id}`}
                         className="tf-btn style-1 bg-color-primary"
                       >
-                        <span> View Services </span>
+                        <span>{viewServicesLabel}</span>
                       </Link>
                     </div>
                   </div>
