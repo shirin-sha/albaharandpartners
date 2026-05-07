@@ -37,9 +37,9 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
           <div className="col-12">
             <div className="heading-section text-center">
               <div className="text-anime-wave-1">
-                <a href="#" className="tag label text-btn-uppercase">
+                <span className="tag label text-btn-uppercase">
                   {content.tag}
-                </a>
+                </span>
               </div>
               <h3 className="title-section text-anime-wave-1 mb-12">
                 {content.heading}

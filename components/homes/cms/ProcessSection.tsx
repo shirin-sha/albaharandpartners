@@ -30,9 +30,9 @@ export default function ProcessSection({ content, language = 'ltr' }: ProcessSec
             <div className="heading-section style-2 style-color-white">
               <div className="left">
                 <div className="text-anime-wave">
-                  <a href="#" className="tag label text-btn-uppercase color-white">
+                  <span className="tag label text-btn-uppercase color-white">
                     {content.tag}
-                  </a>
+                  </span>
                 </div>
                 <h3 className="title-section mb-12 text-anime-wave">
                   {content.heading}

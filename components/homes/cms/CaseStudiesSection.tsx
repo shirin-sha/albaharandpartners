@@ -40,9 +40,9 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
           <div className="col-12">
             <div className="heading-section text-center">
               <div className="text-anime-wave-1">
-                <a href="#" className="tag label text-btn-uppercase bg-white">
+                <span className="tag label text-btn-uppercase bg-white">
                   {content.tag}
-                </a>
+                </span>
               </div>
               <h3 className="title-section text-anime-wave-1 mb-12">
                 {content.heading}
@@ -77,6 +77,7 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
                 <Link
                   href={caseStudy.link || "#"}
                   className="image d-block"
+                  aria-label={`View case study ${caseStudy.title}`}
                   style={{ aspectRatio: "473 / 630" }}
                 >
                   <Image
@@ -87,7 +88,7 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
                     style={{ objectFit: "cover" }}
                   />
                 </Link>
-                <Link href={caseStudy.link || "#"} className="btn-arrow-item">
+                <Link href={caseStudy.link || "#"} className="btn-arrow-item" aria-label={`Open ${caseStudy.title}`}>
                   <i className="icon-arrowRight" />
                 </Link>
                 <div className="case-studies-content">

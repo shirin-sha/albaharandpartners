@@ -37,9 +37,9 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
             <div className="heading-section style-2">
               <div className="left">
                 <div className="text-anime-wave">
-                  <a href="#" className="tag label text-btn-uppercase">
+                  <span className="tag label text-btn-uppercase">
                     {content.tag}
-                  </a>
+                  </span>
                 </div>
                 <h3 className="title-section mb-12 text-anime-wave">
                   {content.heading}
@@ -85,11 +85,11 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
                           sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           style={{ objectFit: "cover" }}
                         />
-                        <Link href={post.link || "#"} className="link" />
-                        <a href="#" className="date">
+                        <Link href={post.link || "#"} className="link" aria-label={`Read more about ${post.title}`} />
+                        <div className="date" aria-hidden="true">
                           <span className="day">{post.date.day}</span>
                           <span className="label">{post.date.month}</span>
-                        </a>
+                        </div>
                       </div>
                       <div className="tf-grid-post-content">
                         <div className="position label text-btn-uppercase mb-12">

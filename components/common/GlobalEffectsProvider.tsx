@@ -14,6 +14,8 @@ export default function GlobalEffectsProvider() {
   const wowRef = useRef<any>(null); // Save WOW module (imported once)
 
   const pathname = usePathname();
+  const isMobileViewport = () =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 991px)").matches;
 
   // Load Bootstrap JS only once on client
   useEffect(() => {
@@ -49,6 +51,7 @@ export default function GlobalEffectsProvider() {
   // WOW.js: import once, but init on every route change
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (isMobileViewport()) return;
 
     const initWow = async () => {
       if (!wowRef.current) {
@@ -67,6 +70,9 @@ export default function GlobalEffectsProvider() {
   }, [pathname]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isMobileViewport()) return;
+
     function debounce(fn: (...args: any[]) => void, delay: number) {
       let timeoutId: ReturnType<typeof setTimeout>;
       return (...args: any[]) => {
@@ -112,6 +118,9 @@ export default function GlobalEffectsProvider() {
     };
   }, [pathname]);
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isMobileViewport()) return;
+
     if (window.innerWidth <= 550) {
       const animatedTextElements = document.querySelectorAll(
         ".text-anime-wave, .text-anime-wave-1, .text-anime-wave-2"
@@ -222,6 +231,9 @@ export default function GlobalEffectsProvider() {
     };
   }, [pathname]);
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isMobileViewport()) return;
+
     const isLargeScreen = window.matchMedia("(min-width: 992px)").matches;
 
     if (!isLargeScreen) return;
@@ -262,6 +274,9 @@ export default function GlobalEffectsProvider() {
     };
   }, [pathname]);
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (isMobileViewport()) return;
+
     const isTabletUp = window.matchMedia("(min-width: 768px)").matches;
 
     if (!isTabletUp) return;

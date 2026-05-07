@@ -5,13 +5,10 @@ import "rc-slider/assets/index.css";
 import GlobalEffectsProvider from "@/components/common/GlobalEffectsProvider";
 import ScrollTop from "@/components/common/ScrollTop";
 import MobileMenu from "@/components/modals/MobileMenu";
-import Quickview from "@/components/modals/Quickview";
-import Search from "@/components/modals/Search";
-import SideOffcanvas from "@/components/modals/SideOffcanvas";
 import Context from "@/context/Context";
 import LoginModal from "@/components/modals/LoginModal";
-import TeamModal from "@/components/modals/TeamModal";
 import { rtlInitScript } from "@/lib/rtl-init";
+import DeferredGlobalOverlays from "@/components/common/DeferredGlobalOverlays";
 
 import { Metadata } from "next";
 export const metadata: Metadata = {
@@ -42,11 +39,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <RtlToggler />
             {children}
             <MobileMenu />
-            <Quickview />
             {/* <LoginModal /> */}
-            <Search />
-            <TeamModal />
-            <SideOffcanvas />
+            <DeferredGlobalOverlays />
             <ScrollTop />{" "}
           </Context>
           <GlobalEffectsProvider />

@@ -50,9 +50,9 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
               />
               <div className="content wow fadeInUp">
                 <h6>
-                  <a href="#" className="name">
+                  <span className="name">
                     {personName}
-                  </a>
+                  </span>
                 </h6>
                 <div className="position">{personTitle}</div>
               </div>
@@ -63,9 +63,9 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
               <div className="section-content">
                 <div className="heading-section">
                   <div className="wow fadeInUp">
-                    <a href="#" className="tag label text-btn-uppercase">
+                    <span className="tag label text-btn-uppercase">
                       {content.tag}
-                    </a>
+                    </span>
                   </div>
                   <h3 className="title-section wow fadeInUp mb-12">
                     {content.heading}

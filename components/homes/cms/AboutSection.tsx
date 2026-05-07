@@ -17,9 +17,9 @@ export default function AboutSection({ content, language = 'ltr' }: AboutSection
     <div className="about-left bg-surface">
       <div className="heading-section mb-0">
         <div className="text-anime-wave">
-          <a href="#" className="tag label text-btn-uppercase bg-white">
+          <span className="tag label text-btn-uppercase bg-white">
             {content.tag}
-          </a>
+          </span>
         </div>
         <h3 className="mb-0 text-anime-wave">
           {content.heading.split('<br/>').map((line, index, array) => (

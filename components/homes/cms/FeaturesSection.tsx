@@ -37,9 +37,9 @@ export default function FeaturesSection({ content, language = 'ltr' }: FeaturesS
             <div className="section-content ml-15">
               <div className="heading-section">
                 <div className="wow fadeInUp">
-                  <a href="#" className="tag label text-btn-uppercase bg-white">
+                  <span className="tag label text-btn-uppercase bg-white">
                     {content.tag}
-                  </a>
+                  </span>
                 </div>
                 <h3 className="wow fadeInUp mb-12">
                   {content.heading}
