@@ -153,7 +153,7 @@ export default function HeaderCMS({ data }: Props) {
                 </div>
                 <div className="nav-icon">
                   <div className="canvas-btn">
-                    <a href="#canvnasMegamenu" data-bs-toggle="offcanvas">
+                    <a href="#canvnasMegamenu" data-bs-toggle="offcanvas" aria-label="Open navigation menu">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width={24}
@@ -186,7 +186,7 @@ export default function HeaderCMS({ data }: Props) {
                     </a>
                   </div>
                   <div className="mobile-button">
-                    <a href="#canvasMobile" data-bs-toggle="offcanvas">
+                    <a href="#canvasMobile" data-bs-toggle="offcanvas" aria-label="Open mobile menu">
                       <span />
                       <span />
                       <span />

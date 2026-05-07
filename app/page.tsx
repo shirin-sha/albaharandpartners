@@ -36,7 +36,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const language: 'ltr' | 'rtl' = 'ltr';
   const content = await getHomepageContent(language);
   const title = content?.seo?.title || "Al bahar partners";
-  const description = content?.seo?.description || "";
+  const description =
+    content?.seo?.description ||
+    "Al Bahar & Partners delivers enterprise technology solutions, consulting, and managed services across Kuwait and the GCC.";
   const keywords = content?.seo?.keywords || [];
 
   return {

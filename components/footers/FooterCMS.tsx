@@ -154,7 +154,12 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
                     >
                       {activeSocialLinks.map((social, index) => (
                         <li key={social._id || index} className="item">
-                          <a href={social.url} target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={social.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Open ${social.icon || "social"} profile`}
+                          >
                             <div className="icon">
                               {renderSocialIcon(social.icon)}
                             </div>
