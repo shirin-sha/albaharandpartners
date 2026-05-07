@@ -1,9 +1,6 @@
-"use client";
 import Link from "next/link";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
+import React from "react";
 import { BlogsSection as BlogsSectionType } from "@/types/homepage";
 
 interface BlogsSectionProps {
@@ -12,12 +9,6 @@ interface BlogsSectionProps {
 }
 
 export default function BlogsSection({ content, language = 'ltr' }: BlogsSectionProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   if (!content.isActive) {
     return null;
   }
@@ -57,56 +48,45 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
                 </Link>
               </div>
             </div>
-            {isMounted && (
-              <Swiper
-                className="swiper sw-new-h8 sw-layout"
-                spaceBetween={10}
-                breakpoints={{
-                  0: { slidesPerView: 1 },
-                  575: { slidesPerView: 2 },
-                  768: { slidesPerView: 2, spaceBetween: 20 },
-                  992: { spaceBetween: 30 },
-                  1200: { slidesPerView: 3, spaceBetween: 30 },
-                }}
-                modules={[Pagination]}
-                pagination={{
-                  clickable: true,
-                  el: ".spe7",
-                }}
-              >
-                {activePosts.map((post, index) => (
-                  <SwiperSlide className="swiper-slide" key={index}>
-                    <div className="tf-post-grid style-absolute style-3 hover-img">
-                      <div className="image" style={{ aspectRatio: "473 / 630" }}>
-                        <Image
-                          src={post.imagePath}
-                          alt={post.title}
-                          fill
-                          sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          style={{ objectFit: "cover" }}
-                        />
-                        <Link href={post.link || "#"} className="link" aria-label={`Read more about ${post.title}`} />
-                        <div className="date" aria-hidden="true">
-                          <span className="day">{post.date.day}</span>
-                          <span className="label">{post.date.month}</span>
-                        </div>
-                      </div>
-                      <div className="tf-grid-post-content">
-                        <div className="position label text-btn-uppercase mb-12">
-                          {post.category}
-                        </div>
-                        <h5 className="title-post">
-                          <Link href={post.link || "#"}>
-                            {post.title}
-                          </Link>
-                        </h5>
+            <div
+              className="swiper sw-new-h8 sw-layout"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gap: "24px",
+              }}
+            >
+              {activePosts.map((post, index) => (
+                <div key={index}>
+                  <div className="tf-post-grid style-absolute style-3 hover-img">
+                    <div className="image" style={{ aspectRatio: "473 / 630" }}>
+                      <Image
+                        src={post.imagePath}
+                        alt={post.title}
+                        fill
+                        sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        style={{ objectFit: "cover" }}
+                      />
+                      <Link href={post.link || "#"} className="link" aria-label={`Read more about ${post.title}`} />
+                      <div className="date" aria-hidden="true">
+                        <span className="day">{post.date.day}</span>
+                        <span className="label">{post.date.month}</span>
                       </div>
                     </div>
-                  </SwiperSlide>
-                ))}
-                <div className="sw-pagination-layout flex justify-content-center spe7"></div>
-              </Swiper>
-            )}
+                    <div className="tf-grid-post-content">
+                      <div className="position label text-btn-uppercase mb-12">
+                        {post.category}
+                      </div>
+                      <h5 className="title-post">
+                        <Link href={post.link || "#"}>
+                          {post.title}
+                        </Link>
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

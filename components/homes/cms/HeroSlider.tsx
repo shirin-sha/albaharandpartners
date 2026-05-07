@@ -2,6 +2,7 @@
 import { HeroSlide } from "@/types/homepage";
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 import { Autoplay, EffectFade, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -24,7 +25,7 @@ export default function HeroSlider({ slides, language = 'ltr' }: HeroSliderProps
     <Swiper
       className="page-title-home h-7 swiper sw-auto style-absolute"
       loop
-      effect="fade"
+      effect="slide"
       modules={[EffectFade, Autoplay, Navigation]}
       navigation={{
         prevEl: ".snbp7",
@@ -37,16 +38,21 @@ export default function HeroSlider({ slides, language = 'ltr' }: HeroSliderProps
       }}
       dir={language}
     >
-      <div className="tf-btn-arrow arrow-left sw-auto-next snbp7">
+      <button type="button" aria-label="Previous slide" className="tf-btn-arrow arrow-left sw-auto-next snbp7">
         <i className="icon-arrow-left" />
-      </div>
+      </button>
       {activeSlides.map((slide, index) => (
         <SwiperSlide className="swiper-slide" key={index}>
           <div className="page-title-inner">
-            <img
+            <Image
               src={slide.image}
               alt={slide.title}
               className="hero-banner-image"
+              fill
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              sizes="100vw"
+              style={{ objectFit: "cover" }}
             />
             <div className="hero-overlay" />
             <div className="tf-container hero-container">
@@ -87,9 +93,9 @@ export default function HeroSlider({ slides, language = 'ltr' }: HeroSliderProps
           </div>
         </SwiperSlide>
       ))}
-      <div className="tf-btn-arrow arrow-right sw-auto-prev snbn7">
+      <button type="button" aria-label="Next slide" className="tf-btn-arrow arrow-right sw-auto-prev snbn7">
         <i className="icon-arrow-right1" />
-      </div>
+      </button>
     </Swiper>
   );
 }

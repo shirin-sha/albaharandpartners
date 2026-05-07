@@ -1,7 +1,5 @@
-"use client";
 import Link from "next/link";
 import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
 import { ProcessSection as ProcessSectionType } from "@/types/homepage";
 
 interface ProcessSectionProps {
@@ -47,19 +45,16 @@ export default function ProcessSection({ content, language = 'ltr' }: ProcessSec
                 </Link>
               </div>
             </div>
-            <Swiper
-              className="sw-case-studies swiper sw-layout"
-              spaceBetween={10}
-              dir={language}
-              breakpoints={{
-                0: { slidesPerView: 1 },
-                575: { slidesPerView: 2 },
-                768: { slidesPerView: 3, spaceBetween: 20 },
-                1200: { slidesPerView: 4, spaceBetween: 20 },
+            <div
+              className="sw-case-studies sw-layout"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                gap: "20px",
               }}
             >
               {activeSteps.map((step, index) => (
-                <SwiperSlide className="swiper-slide" key={index}>
+                <div key={index}>
                   <div className="process-item bg-1 bg-1-style-2 step-hover">
                     <div className="process-top">
                       <span className="label text-btn-uppercase">{step.title}</span>
@@ -68,9 +63,9 @@ export default function ProcessSection({ content, language = 'ltr' }: ProcessSec
                       <div className="desc">{step.description}</div>
                     </div>
                   </div>
-                </SwiperSlide>
+                </div>
               ))}
-            </Swiper>
+            </div>
           </div>
         </div>
       </div>

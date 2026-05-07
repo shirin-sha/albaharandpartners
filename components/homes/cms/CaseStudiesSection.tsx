@@ -1,9 +1,6 @@
-"use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
+import React from "react";
 import Link from "next/link";
-import { Pagination } from "swiper/modules";
 import { CaseStudiesSection as CaseStudiesSectionType } from "@/types/homepage";
 
 interface CaseStudiesSectionProps {
@@ -12,12 +9,6 @@ interface CaseStudiesSectionProps {
 }
 
 export default function CaseStudiesSection({ content, language = 'ltr' }: CaseStudiesSectionProps) {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   if (!content.isActive) {
     return null;
   }
@@ -55,24 +46,16 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
         </div>
       </div>
       <div className="bg-white">
-        {isMounted && (
-          <Swiper
-          className="sw-project-list swiper sw-layout"
-          spaceBetween={10}
-          breakpoints={{
-            0: { slidesPerView: 1 },
-            575: { slidesPerView: 2 },
-            768: { slidesPerView: 3 },
-            1200: { slidesPerView: 4 },
-          }}
-          modules={[Pagination]}
-          pagination={{
-            clickable: true,
-            el: ".spe8",
+        <div
+          className="sw-project-list sw-layout"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gap: "16px",
           }}
         >
           {activeCaseStudies.map((caseStudy, index) => (
-            <SwiperSlide className="swiper-slide" key={index}>
+            <div key={index}>
               <div className="case-studies-item style-bg-content hover-img style-2">
                 <Link
                   href={caseStudy.link || "#"}
@@ -106,11 +89,9 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
                   </Link>
                 </div>
               </div>
-            </SwiperSlide>
+            </div>
           ))}
-          <div className="sw-pagination-layout flex justify-content-center spe8"></div>
-        </Swiper>
-        )}
+        </div>
       </div>
     </section>
   );
