@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Geologica:wght@100..900&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Kumbh+Sans:wght@100..900&family=Noto+Sans+Arabic:wght@100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Oxygen:wght@300;400;700&family=Rethink+Sans:ital,wght@0,400..800;1,400..800&family=SUSE:wght@100..800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap"
           rel="stylesheet"
         />
       </head>
@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <div className="wrapper">
           <Context>
             <RtlToggler />
-            {children}
+            <main id="main-content">{children}</main>
             <MobileMenu />
             {/* <LoginModal /> */}
             <DeferredGlobalOverlays />

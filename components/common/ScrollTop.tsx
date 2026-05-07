@@ -42,7 +42,9 @@ export default function ScrollTop() {
   };
 
   return (
-    <div
+    <button
+      type="button"
+      aria-label="Scroll to top"
       className={`progress-wrap ${scrolled > 150 ? "active-progress" : ""}`}
       onClick={() => scrollToTop()}
     >
@@ -61,6 +63,6 @@ export default function ScrollTop() {
           }}
         />
       </svg>
-    </div>
+    </button>
   );
 }

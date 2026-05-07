@@ -2,20 +2,41 @@
 
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import SplitText from "gsap/SplitText";
-
-gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export default function GlobalEffectsProvider() {
   const hasLoadedBootstrap = useRef(false);
   const bootstrapRef = useRef<{ Modal: any; Offcanvas: any } | null>(null);
   const wowRef = useRef<any>(null); // Save WOW module (imported once)
+  const gsapRef = useRef<any>(null);
+  const scrollTriggerRef = useRef<any>(null);
+  const splitTextRef = useRef<any>(null);
+  const hasLoadedGsap = useRef(false);
 
   const pathname = usePathname();
   const isMobileViewport = () =>
     typeof window !== "undefined" && window.matchMedia("(max-width: 991px)").matches;
+
+  const ensureGsapLoaded = async () => {
+    if (hasLoadedGsap.current && gsapRef.current && scrollTriggerRef.current && splitTextRef.current) {
+      return true;
+    }
+
+    const [{ gsap }, { ScrollTrigger }, splitTextModule] = await Promise.all([
+      import("gsap"),
+      import("gsap/ScrollTrigger"),
+      import("gsap/SplitText"),
+    ]);
+
+    const SplitText = splitTextModule.default;
+    gsap.registerPlugin(ScrollTrigger, SplitText);
+
+    gsapRef.current = gsap;
+    scrollTriggerRef.current = ScrollTrigger;
+    splitTextRef.current = SplitText;
+    hasLoadedGsap.current = true;
+
+    return true;
+  };
 
   // Load Bootstrap JS only once on client
   useEffect(() => {
@@ -121,191 +142,220 @@ export default function GlobalEffectsProvider() {
     if (typeof window === "undefined") return;
     if (isMobileViewport()) return;
 
-    if (window.innerWidth <= 550) {
-      const animatedTextElements = document.querySelectorAll(
-        ".text-anime-wave, .text-anime-wave-1, .text-anime-wave-2"
+    let isCancelled = false;
+
+    const runAnimations = async () => {
+      await ensureGsapLoaded();
+      if (isCancelled || !gsapRef.current || !scrollTriggerRef.current || !splitTextRef.current) return;
+
+      const gsap = gsapRef.current;
+      const ScrollTrigger = scrollTriggerRef.current;
+      const SplitText = splitTextRef.current;
+
+      if (window.innerWidth <= 550) {
+        const animatedTextElements = document.querySelectorAll(
+          ".text-anime-wave, .text-anime-wave-1, .text-anime-wave-2"
+        );
+
+        animatedTextElements.forEach((el) => {
+          const animEl = el as Element & { animation?: any };
+          if (animEl.animation) {
+            animEl.animation.progress(1).kill();
+          }
+          gsap.set(animEl, { clearProps: "all" });
+        });
+
+        return;
+      }
+
+      // ✅ Animate Wave Text
+      const waveElements = document.querySelectorAll(
+        ".text-anime-wave, .text-anime-wave-1, .text-anime-wave-2, .text-anime-wave-3"
       );
 
-      animatedTextElements.forEach((el) => {
-        const animEl = el as Element & { animation?: gsap.core.Tween };
+      waveElements.forEach((el) => {
+        const animEl = el as Element & { animation?: any };
         if (animEl.animation) {
           animEl.animation.progress(1).kill();
         }
-        gsap.set(animEl, { clearProps: "all" });
+
+        let origin = "left center";
+        let rotateStart = -90;
+        const delay = parseFloat(el.getAttribute("data-delay") ?? "0") || 0;
+
+        if (el.classList.contains("text-anime-wave-1")) {
+          origin = "center center";
+        } else if (el.classList.contains("text-anime-wave-2")) {
+          origin = "right center";
+          rotateStart = 90;
+        }
+
+        gsap.set(el, {
+          opacity: 0,
+          rotateY: rotateStart,
+          transformOrigin: origin,
+        });
+
+        (el as any).animation = gsap.to(el, {
+          scrollTrigger: {
+            trigger: el,
+            start: "top 90%",
+            toggleActions: "play none none none",
+          },
+          opacity: 1,
+          rotateY: 0,
+          duration: 1,
+          delay: delay,
+          ease: "back.out(1.7)",
+        });
       });
 
-      return;
-    }
+      // ✅ Animate Color Change Text
+      const colorElements = document.querySelectorAll(".text-color-change");
 
-    // ✅ Animate Wave Text
-    const waveElements = document.querySelectorAll(
-      ".text-anime-wave, .text-anime-wave-1, .text-anime-wave-2, .text-anime-wave-3"
-    );
+      colorElements.forEach((el) => {
+        const animEl = el as Element & {
+          wordSplit?: any;
+          charSplit?: any;
+          animation?: any;
+        };
 
-    waveElements.forEach((el) => {
-      const animEl = el as Element & { animation?: gsap.core.Tween };
-      if (animEl.animation) {
-        animEl.animation.progress(1).kill();
-      }
+        if (animEl.wordSplit) animEl.wordSplit.revert();
+        if (animEl.charSplit) animEl.charSplit.revert();
 
-      let origin = "left center";
-      let rotateStart = -90;
-      const delay = parseFloat(el.getAttribute("data-delay") ?? "0") || 0;
+        animEl.wordSplit = new SplitText(animEl, {
+          type: "words",
+          wordsClass: "word-wrapper",
+        });
 
-      if (el.classList.contains("text-anime-wave-1")) {
-        origin = "center center";
-      } else if (el.classList.contains("text-anime-wave-2")) {
-        origin = "right center";
-        rotateStart = 90;
-      }
+        animEl.charSplit = new SplitText(animEl.wordSplit.words, {
+          type: "chars",
+          charsClass: "char-wrapper",
+        });
 
-      gsap.set(el, {
-        opacity: 0,
-        rotateY: rotateStart,
-        transformOrigin: origin,
+        gsap.set(animEl.charSplit.chars, {
+          color: "#A2A3AB",
+          opacity: 1,
+        });
+
+        animEl.animation = gsap.to(animEl.charSplit.chars, {
+          scrollTrigger: {
+            trigger: animEl,
+            start: "top 90%",
+            end: "bottom 35%",
+            toggleActions: "play none none reverse",
+            scrub: true,
+          },
+          color: "#24283E",
+          stagger: {
+            each: 0.05,
+            from: "start",
+          },
+          duration: 0.5,
+          ease: "power2.out",
+        });
       });
+    };
 
-      (el as any).animation = gsap.to(el, {
-        scrollTrigger: {
-          trigger: el,
-          start: "top 90%",
-          toggleActions: "play none none none",
-        },
-        opacity: 1,
-        rotateY: 0,
-        duration: 1,
-        delay: delay,
-        ease: "back.out(1.7)",
-      });
-    });
-
-    // ✅ Animate Color Change Text
-    const colorElements = document.querySelectorAll(".text-color-change");
-
-    colorElements.forEach((el) => {
-      const animEl = el as Element & {
-        wordSplit?: any;
-        charSplit?: any;
-        animation?: gsap.core.Tween;
-      };
-
-      if (animEl.wordSplit) animEl.wordSplit.revert();
-      if (animEl.charSplit) animEl.charSplit.revert();
-
-      animEl.wordSplit = new SplitText(animEl, {
-        type: "words",
-        wordsClass: "word-wrapper",
-      });
-
-      animEl.charSplit = new SplitText(animEl.wordSplit.words, {
-        type: "chars",
-        charsClass: "char-wrapper",
-      });
-
-      gsap.set(animEl.charSplit.chars, {
-        color: "#A2A3AB",
-        opacity: 1,
-      });
-
-      animEl.animation = gsap.to(animEl.charSplit.chars, {
-        scrollTrigger: {
-          trigger: animEl,
-          start: "top 90%",
-          end: "bottom 35%",
-          toggleActions: "play none none reverse",
-          scrub: true,
-        },
-        color: "#24283E",
-        stagger: {
-          each: 0.05,
-          from: "start",
-        },
-        duration: 0.5,
-        ease: "power2.out",
-      });
-    });
+    runAnimations();
 
     return () => {
-      // Cleanup ScrollTriggers on unmount or rerender
-      ScrollTrigger.getAll().forEach((st) => st.kill());
+      isCancelled = true;
+      if (scrollTriggerRef.current) {
+        scrollTriggerRef.current.getAll().forEach((st: any) => st.kill());
+      }
     };
   }, [pathname]);
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (isMobileViewport()) return;
+    let isCancelled = false;
 
-    const isLargeScreen = window.matchMedia("(min-width: 992px)").matches;
+    const run = async () => {
+      await ensureGsapLoaded();
+      if (isCancelled || !gsapRef.current) return;
+      const gsap = gsapRef.current;
 
-    if (!isLargeScreen) return;
+      const isLargeScreen = window.matchMedia("(min-width: 992px)").matches;
 
-    const scrollTriggers: (ScrollTrigger | undefined)[] = [];
+      if (!isLargeScreen) return;
 
-    // Animate scroll-tranform
-    if (document.querySelector(".scroll-tranform")) {
-      const st1 = gsap.to(".scroll-tranform", {
-        y: -100,
-        scrollTrigger: {
-          trigger: ".scroll-tranform-section",
-          start: "top center",
-          end: "bottom top",
-          scrub: 3,
-        },
-      });
-      scrollTriggers.push(st1.scrollTrigger);
-    }
+      const scrollTriggers: any[] = [];
 
-    // Animate scroll-tranform-up
-    if (document.querySelector(".scroll-tranform-up")) {
-      const st2 = gsap.to(".scroll-tranform-up", {
-        y: 100,
-        scrollTrigger: {
-          trigger: ".scroll-tranform-section",
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 3,
-        },
-      });
-      scrollTriggers.push(st2.scrollTrigger);
-    }
+      // Animate scroll-tranform
+      if (document.querySelector(".scroll-tranform")) {
+        const st1 = gsap.to(".scroll-tranform", {
+          y: -100,
+          scrollTrigger: {
+            trigger: ".scroll-tranform-section",
+            start: "top center",
+            end: "bottom top",
+            scrub: 3,
+          },
+        });
+        scrollTriggers.push(st1.scrollTrigger);
+      }
 
+      // Animate scroll-tranform-up
+      if (document.querySelector(".scroll-tranform-up")) {
+        const st2 = gsap.to(".scroll-tranform-up", {
+          y: 100,
+          scrollTrigger: {
+            trigger: ".scroll-tranform-section",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 3,
+          },
+        });
+        scrollTriggers.push(st2.scrollTrigger);
+      }
+    };
+
+    run();
     return () => {
-      // Kill all scroll triggers created here
-      scrollTriggers.forEach((st) => st?.kill());
+      isCancelled = true;
     };
   }, [pathname]);
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (isMobileViewport()) return;
+    let isCancelled = false;
 
-    const isTabletUp = window.matchMedia("(min-width: 768px)").matches;
+    const run = async () => {
+      await ensureGsapLoaded();
+      if (isCancelled || !gsapRef.current) return;
+      const gsap = gsapRef.current;
 
-    if (!isTabletUp) return;
+      const isTabletUp = window.matchMedia("(min-width: 768px)").matches;
 
-    const triggers: (ScrollTrigger | undefined)[] = [];
+      if (!isTabletUp) return;
 
-    const images = gsap.utils.toArray(".img-paralax");
-    images.forEach((img) => {
-      const element = img as HTMLElement;
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: element,
-          scrub: 3,
-          pin: false,
-        },
+      const triggers: any[] = [];
+
+      const images = gsap.utils.toArray(".img-paralax");
+      images.forEach((img: any) => {
+        const element = img as HTMLElement;
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: element,
+            scrub: 3,
+            pin: false,
+          },
+        });
+
+        tl.fromTo(
+          element,
+          { yPercent: 0, ease: "none" },
+          { yPercent: -10, ease: "none" }
+        );
+
+        triggers.push(tl.scrollTrigger);
       });
+    };
 
-      tl.fromTo(
-        element,
-        { yPercent: 0, ease: "none" },
-        { yPercent: -10, ease: "none" }
-      );
-
-      triggers.push(tl.scrollTrigger);
-    });
-
+    run();
     return () => {
-      // Clean up all ScrollTriggers
-      triggers.forEach((st) => st?.kill());
+      isCancelled = true;
     };
   }, [pathname]);
 
