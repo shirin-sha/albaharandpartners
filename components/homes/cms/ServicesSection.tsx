@@ -82,7 +82,7 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                     role="tabpanel"
                   >
                     <div className="services-inner bg-surface">
-                      <div className="services-content p-40" style={{ paddingTop: '50px', paddingBottom: '50px' }}>
+                      <div className="services-content p-40 services-content-spacious">
                         <h4 className="title-content mb-12">
                           <Link href={detailsHref}>{service.title}</Link>
                         </h4>
@@ -111,18 +111,13 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                           <span>{learnMoreLabel}</span>
                         </Link>
                       </div>
-                      <div className="image" style={{ width: '100%', height: '100%', minHeight: '500px', position: 'relative', overflow: 'hidden' }}>
+                      <div className="image services-image-wrap">
                         <Image
                           src={service.imgSrc}
                           alt={service.title}
-                          className="lazyload"
+                          className="lazyload services-image-fill"
                           width={960}
                           height={720}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                          }}
                         />
                       </div>
                     </div>

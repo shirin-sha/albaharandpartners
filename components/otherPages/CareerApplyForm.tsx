@@ -159,15 +159,8 @@ export default function CareerApplyForm({ jobs, language = "ltr" }: Props) {
   };
 
   return (
-    <div id="apply-now" className="mt-40" style={{ marginTop: "40px" }} dir={isArabic ? "rtl" : "ltr"}>
-      <div
-        className="bg-white"
-        style={{
-          padding: "32px",
-          borderRadius: "16px",
-          boxShadow: "0 8px 30px rgba(15, 23, 42, 0.08)",
-        }}
-      >
+    <div id="apply-now" className="career-apply-wrapper" dir={isArabic ? "rtl" : "ltr"}>
+      <div className="bg-white career-apply-card">
         <div className="heading-section text-center mb-20">
           <h4 className="mb-8">{labels.heading}</h4>
           <div className="sub-title body-2">
@@ -183,7 +176,7 @@ export default function CareerApplyForm({ jobs, language = "ltr" }: Props) {
                 required
                 value={form.jobTitle}
                 onChange={(e) => setField("jobTitle", e.target.value)}
-                style={{ minHeight: "56px", width: "100%", padding: "0 16px" }}
+                className="career-apply-select"
               >
                 <option value="">{labels.selectRole}</option>
                 {jobTitles.map((title) => (
@@ -249,11 +242,10 @@ export default function CareerApplyForm({ jobs, language = "ltr" }: Props) {
             </fieldset>
           </div>
 
-          <fieldset style={{ marginTop: "12px" }}>
+          <fieldset className="career-apply-fieldset-sm">
             <label
               htmlFor="resumeFile"
-              className="body-2"
-              style={{ display: "block", marginBottom: "8px", fontWeight: 600 }}
+              className="body-2 career-apply-resume-label"
             >
               {labels.resume}
             </label>
@@ -270,7 +262,7 @@ export default function CareerApplyForm({ jobs, language = "ltr" }: Props) {
             />
           </fieldset>
 
-          <fieldset style={{ marginTop: "16px" }}>
+          <fieldset className="career-apply-fieldset-md">
             <textarea
               name="coverLetter"
               placeholder={labels.coverLetter}
@@ -280,11 +272,11 @@ export default function CareerApplyForm({ jobs, language = "ltr" }: Props) {
           </fieldset>
 
           {success !== null && (
-            <div className="tfSubscribeMsg footer-sub-element active" style={{ marginBottom: 12 }}>
+            <div className="tfSubscribeMsg footer-sub-element active career-apply-feedback">
               {success ? (
-                <p style={{ color: "rgb(52, 168, 83)" }}>{message}</p>
+                <p className="career-apply-feedback-success">{message}</p>
               ) : (
-                <p style={{ color: "red" }}>{message}</p>
+                <p className="career-apply-feedback-error">{message}</p>
               )}
             </div>
           )}

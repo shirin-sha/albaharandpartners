@@ -48,24 +48,17 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
                 </Link>
               </div>
             </div>
-            <div
-              className="swiper sw-new-h8 sw-layout"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: "24px",
-              }}
-            >
+            <div className="swiper sw-new-h8 sw-layout blogs-grid-layout">
               {activePosts.map((post, index) => (
                 <div key={index}>
                   <div className="tf-post-grid style-absolute style-3 hover-img">
-                    <div className="image" style={{ aspectRatio: "473 / 630" }}>
+                    <div className="image media-card-ratio">
                       <Image
                         src={post.imagePath}
                         alt={post.title}
                         fill
                         sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        style={{ objectFit: "cover" }}
+                        className="media-fill-cover"
                       />
                       <Link href={post.link || "#"} className="link" aria-label={`Read more about ${post.title}`} />
                       <div className="date" aria-hidden="true">

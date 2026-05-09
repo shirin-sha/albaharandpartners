@@ -88,7 +88,7 @@ export default async function Page() {
       {content?.heroSlides && content.heroSlides.length > 0 ? (
         <HeroSlider slides={content.heroSlides} language={language} />
       ) : (
-        <div style={{height: '100vh', background: '#f0f0f0', textAlign: 'center'}}>
+        <div className="hero-fallback-placeholder">
           {/* <p>No Hero Slides Found - Please add content in admin</p> */}
         </div>
       )}

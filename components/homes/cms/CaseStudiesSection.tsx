@@ -46,29 +46,21 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
         </div>
       </div>
       <div className="bg-white">
-        <div
-          className="sw-project-list sw-layout"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "16px",
-          }}
-        >
+        <div className="sw-project-list sw-layout case-studies-grid-layout">
           {activeCaseStudies.map((caseStudy, index) => (
             <div key={index}>
               <div className="case-studies-item style-bg-content hover-img style-2">
                 <Link
                   href={caseStudy.link || "#"}
-                  className="image d-block"
+                  className="image d-block media-card-ratio"
                   aria-label={`View case study ${caseStudy.title}`}
-                  style={{ aspectRatio: "473 / 630" }}
                 >
                   <Image
                     src={caseStudy.imagePath}
                     alt={caseStudy.title}
                     fill
                     sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    style={{ objectFit: "cover" }}
+                    className="media-fill-cover"
                   />
                 </Link>
                 <Link href={caseStudy.link || "#"} className="btn-arrow-item" aria-label={`Open ${caseStudy.title}`}>

@@ -64,7 +64,7 @@ export default async function Page() {
       {content?.heroSlides && content.heroSlides.length > 0 ? (
         <HeroSlider slides={content.heroSlides} language={language} />
       ) : (
-        <div style={{ padding: "50px", background: "#f0f0f0", textAlign: "center" }}>
+        <div className="hero-fallback-note">
           <p>No Hero Slides Found - Please add content in admin (RTL)</p>
         </div>
       )}

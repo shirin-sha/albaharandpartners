@@ -170,3 +170,97 @@
   scrollbar-width: thin;
   scrollbar-color: #c1c1c1 #f1f1f1;
 }
+
+/* Public page inline-style replacements */
+.career-apply-wrapper {
+  margin-top: 40px;
+}
+
+.career-apply-card {
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+}
+
+.career-apply-select {
+  min-height: 56px;
+  width: 100%;
+  padding: 0 16px;
+}
+
+.career-apply-fieldset-sm {
+  margin-top: 12px;
+}
+
+.career-apply-fieldset-md {
+  margin-top: 16px;
+}
+
+.career-apply-resume-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.career-apply-feedback {
+  margin-bottom: 12px;
+}
+
+.career-apply-feedback-success {
+  color: rgb(52, 168, 83);
+}
+
+.career-apply-feedback-error {
+  color: red;
+}
+
+.services-content-spacious {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.services-image-wrap {
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  position: relative;
+  overflow: hidden;
+}
+
+.services-image-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blogs-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.case-studies-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.media-card-ratio {
+  aspect-ratio: 473 / 630;
+}
+
+.media-fill-cover {
+  object-fit: cover;
+}
+
+.hero-fallback-placeholder {
+  height: 100vh;
+  background: #f0f0f0;
+  text-align: center;
+}
+
+.hero-fallback-note {
+  padding: 50px;
+  background: #f0f0f0;
+  text-align: center;
+}
