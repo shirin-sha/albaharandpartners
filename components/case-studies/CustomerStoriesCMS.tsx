@@ -33,9 +33,7 @@ export default function CustomerStoriesCMS({ data }: Props) {
             {data.tag && data.heading && (
               <div className="heading-section text-center mb-60">
                 <div className="text-anime-wave-1">
-                  <a href="#" className="tag label text-btn-uppercase bg-white">
-                    {data.tag}
-                  </a>
+                  <span className="tag label text-btn-uppercase bg-white">{data.tag}</span>
                 </div>
                 <h3 className="title-section text-anime-wave-1 mb-12">
                   {data.heading}
@@ -51,6 +49,10 @@ export default function CustomerStoriesCMS({ data }: Props) {
               <div className="case-list">
                 <div className="layout-grid-3 g-30 loadmore-item style-2 mb-40">
                   {filteres.map((story, index) => (
+                  (() => {
+                    const storyHref =
+                      story.link && story.link.trim() !== "#" ? story.link : "/customer-stories";
+                    return (
                     <div
                       className="case-studies-item style-bg-content hover-img fl-item"
                       style={{ display: "block" }}
@@ -65,20 +67,22 @@ export default function CustomerStoriesCMS({ data }: Props) {
                           height={630}
                         />
                         <Link
-                          href={story.link || "#"}
+                          href={storyHref}
                           className="link"
+                          aria-label={`View story ${story.title}`}
                         />
                       </div>
                       <Link
-                        href={story.link || "#"}
+                        href={storyHref}
                         className="btn-arrow-item"
+                        aria-label={`Open story ${story.title}`}
                       >
                         <i className="icon-arrowRight" />
                       </Link>
                       <div className="case-studies-content">
                         <h5>
                           <Link
-                            href={story.link || "#"}
+                            href={storyHref}
                             className="name"
                           >
                             {story.title}
@@ -87,7 +91,9 @@ export default function CustomerStoriesCMS({ data }: Props) {
                         <div className="desc">{story.description}</div>
                       </div>
                     </div>
-                  ))}
+                    );
+                  })()
+                ))}
                 </div>
                 {!isLoadedMore && activeStories.length > 6 && (
                   <div

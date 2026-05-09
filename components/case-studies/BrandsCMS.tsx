@@ -33,9 +33,7 @@ export default function BrandsCMS({ data }: Props) {
             {data.tag && data.heading && (
               <div className="heading-section text-center mb-60">
                 <div className="text-anime-wave-1">
-                  <a href="#" className="tag label text-btn-uppercase bg-white">
-                    {data.tag}
-                  </a>
+                  <span className="tag label text-btn-uppercase bg-white">{data.tag}</span>
                 </div>
                 <h3 className="title-section text-anime-wave-1 mb-12">
                   {data.heading}

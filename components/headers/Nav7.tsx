@@ -66,7 +66,7 @@ export default function Nav7() {
           isMenuActive({ href: "/brands" }) ? "current-menu-item" : ""
         }`}
       >
-        <Link href="#" className="item-link" prefetch={true}>
+        <Link href="/brands" className="item-link" prefetch={true}>
           BRANDS
         </Link>
       </li>
@@ -75,9 +75,9 @@ export default function Nav7() {
           isMenuParentActive(corpInfoLinks) ? "current-menu-item" : ""
         }`}
       >
-        <a href="#" className="item-link">
+        <span className="item-link" role="button" aria-haspopup="true">
           CORP. INFORMATION
-        </a>
+        </span>
         <ul className="sub-menu">
           {corpInfoLinks.map((item, index) => (
             <li

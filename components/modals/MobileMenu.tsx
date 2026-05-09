@@ -91,7 +91,7 @@ export default function MobileMenu() {
                   : ""
               }`}
                     >
-              <Link href="#" prefetch={true}>BRANDS</Link>
+              <Link href="/brands" prefetch={true}>BRANDS</Link>
             </li>
             <li
               className={`menu-item menu-item-has-children-mobile ${
@@ -148,53 +148,53 @@ export default function MobileMenu() {
           <div className="contact-mobile">
             <h6 className="title-contact-mobile">Contact Info</h6>
             <div className="content-contact-moblile">
-              <a href="#">
+              <a href="https://maps.google.com/?q=East+Chicago+IN" target="_blank" rel="noopener noreferrer">
                 <i className="icon-MapPin" /> 101 E 129th St, East Chicago, IN
                 46312, US
               </a>
             </div>
             <div className="content-contact-moblile">
-              <a href="#">
+              <a href="mailto:example@gmail.com">
                 <i className="icon-Envelope" /> example@gmail.com
               </a>
             </div>
             <div className="content-contact-moblile">
-              <a href="#">
+              <a href="tel:+15556788888">
                 <i className="icon-PhoneCall" /> 1-555-678-8888
               </a>
             </div>
             <div className="content-contact-moblile">
               <ul className="tf-social style-border radius-50 g-8 style-2 color-on-suface-container">
                 <li className="item">
-                  <a href="#">
+                  <a href="https://www.messenger.com" target="_blank" rel="noopener noreferrer" aria-label="Messenger">
                     <div className="icon">
                       <i className="icon-messenger" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="#">
+                  <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X">
                     <div className="icon">
                       <i className="icon-x" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="#">
+                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                     <div className="icon">
                       <i className="icon-ig1" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="#">
+                  <a href="https://www.skype.com" target="_blank" rel="noopener noreferrer" aria-label="Skype">
                     <div className="icon">
                       <i className="icon-skype" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="#">
+                  <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
                     <div className="icon">
                       <i className="icon-telegram" />
                     </div>

@@ -28,9 +28,7 @@ export default function HeritageCMS({ data }: Props) {
             <div className="section-content ml-15">
               <div className="heading-section">
                 <div className="wow fadeInUp">
-                  <a href="#" className="tag label text-btn-uppercase">
-                    {data.tag}
-                  </a>
+                  <span className="tag label text-btn-uppercase">{data.tag}</span>
                 </div>
                 <h3 className="title-section wow fadeInUp mb-12" dangerouslySetInnerHTML={{ __html: data.heading }} />
                 <div className="sub-title body-2 wow fadeInUp">

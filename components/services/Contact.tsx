@@ -44,12 +44,7 @@ export default function Contact() {
       <div className="sidebar-contact sidebar-details">
         <div className="section-content position-relative">
           <div className="heading-section style-color-white">
-            <Link
-              href="#"
-              className="tag label text-btn-uppercase color-white mb-16"
-            >
-              {copy.tag}
-            </Link>
+            <span className="tag label text-btn-uppercase color-white mb-16">{copy.tag}</span>
             <h4 className="title-section mb-1">{copy.title}</h4>
             <div className="sub-title caption-1">
               {copy.subtitleLine1}
@@ -69,8 +64,7 @@ export default function Contact() {
                 <div className="caption-1 title-section-contact">
                   {copy.addressTitle}
                 </div>
-                <a
-                  href="#"
+                <div
                   className="caption-1 text"
                   style={
                     isRtl
@@ -86,9 +80,11 @@ export default function Contact() {
                   }
                 >
                   {copy.address}
-                </a>
+                </div>
                 <a
-                  href="#"
+                  href="https://maps.google.com/?q=Al+Bahar+and+Partners+Kuwait"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="label text-btn-uppercase"
                   style={isRtl ? { marginInlineStart: 0 } : undefined}
                 >
@@ -104,7 +100,7 @@ export default function Contact() {
                 <div className="caption-1 title-section-contact">
                   {copy.phoneTitle}
                 </div>
-                <a href="#" className="caption-1 text">
+                <a href="tel:+9651848848" className="caption-1 text">
                   <span dir="ltr" style={{ unicodeBidi: "isolate" }}>
                     +965 184 8848
                   </span>

@@ -23,13 +23,14 @@ export default function Search() {
                     />
                   </Link>
                 </div>
-                <a
-                  href="#"
+                <button
+                  type="button"
                   className="button-close"
+                  aria-label="Close search"
                   onClick={() => setIsSearchModalOpen(false)}
                 >
                   <i className="icon-close11" />
-                </a>
+                </button>
               </div>
               <div className="wg-box-search">
                 <form

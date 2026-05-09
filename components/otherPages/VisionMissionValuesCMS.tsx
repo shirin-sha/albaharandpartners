@@ -19,9 +19,7 @@ export default function VisionMissionValuesCMS({ data }: Props) {
           <div className="col-12">
             <div className="heading-section text-center">
               <div className="text-anime-wave-1">
-                <a href="#" className="tag bg-white label text-btn-uppercase">
-                  {data.tag}
-                </a>
+                <span className="tag bg-white label text-btn-uppercase">{data.tag}</span>
               </div>
               <h3 className="text-anime-wave-1 mb-12">
                 {data.heading}
@@ -51,9 +49,7 @@ export default function VisionMissionValuesCMS({ data }: Props) {
                   </span>
                   <div className="process-content">
                     <h5>
-                      <a href="#" className="name-process">
-                        {item.title}
-                      </a>
+                      <span className="name-process">{item.title}</span>
                     </h5>
                     <div className="desc">
                       {item.description}

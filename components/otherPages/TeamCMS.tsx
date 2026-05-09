@@ -34,9 +34,7 @@ export default function TeamCMS({ data }: Props) {
           <div className="col-12">
             <div className="heading-section text-center">
               <div className="text-anime-wave-1">
-                <a href="#" className="tag label text-btn-uppercase">
-                  {data.tag}
-                </a>
+                <span className="tag label text-btn-uppercase">{data.tag}</span>
               </div>
               <h3 className="title-section text-anime-wave-1 mb-12">
                 {data.heading}

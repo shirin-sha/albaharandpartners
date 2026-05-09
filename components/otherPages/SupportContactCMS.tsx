@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Link from "next/link";
 import ContactForm from "@/components/common/ContactForm";
 import { SupportContent } from "@/types/support";
 
@@ -20,12 +19,9 @@ export default function SupportContactCMS({ data }: Props) {
               <div className="section-content">
                 <div className="heading-section mb-28 style-color-white">
                   <div className="wow fadeInUp">
-                    <Link
-                      href={`#`}
-                      className="tag label text-btn-uppercase color-white"
-                    >
+                    <span className="tag label text-btn-uppercase color-white">
                       {data.contactSection.tag}
-                    </Link>
+                    </span>
                   </div>
                   <h3 className="title-section mb-12 wow fadeInUp">
                     {data.contactSection.heading}
@@ -84,13 +80,9 @@ export default function SupportContactCMS({ data }: Props) {
                       >
                         Location
                       </div>
-                      <a
-                        href="#"
-                        className="caption-1 text wow fadeInUp"
-                        data-wow-delay=".1s"
-                      >
+                      <div className="caption-1 text wow fadeInUp" data-wow-delay=".1s">
                         {data.contactSection.contactInfo.location}
-                      </a>
+                      </div>
                     </div>
                   </div>
                   {data.contactSection.contactInfo.phoneNumbers && data.contactSection.contactInfo.phoneNumbers.length > 0 && (
@@ -105,17 +97,18 @@ export default function SupportContactCMS({ data }: Props) {
                         >
                           Support Hotline
                         </div>
-                        <a href="#">
+                        <div>
                           {data.contactSection.contactInfo.phoneNumbers.map((phone, index) => (
-                            <p
+                            <a
                               key={index}
+                              href={`tel:${phone}`}
                               className="caption-1 text wow fadeInUp"
                               data-wow-delay=".3s"
                             >
                               {phone}
-                            </p>
+                            </a>
                           ))}
-                        </a>
+                        </div>
                       </div>
                     </div>
                   )}

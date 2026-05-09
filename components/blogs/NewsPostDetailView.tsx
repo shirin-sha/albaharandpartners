@@ -132,7 +132,7 @@ export default function NewsPostDetailView({
                           key={recentPost._id || index}
                         >
                           <div className="image">
-                            <Link href={href} className="link" />
+                            <Link href={href} className="link" aria-label={`Read ${recentPost.title}`} />
                             {thumbSrc && (
                               <Image
                                 src={thumbSrc}

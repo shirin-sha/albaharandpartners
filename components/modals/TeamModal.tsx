@@ -40,35 +40,35 @@ export default function TeamModal() {
             <h3 className="name mb-24">{currentTeamMember.name}</h3>
             <ul className="tf-social color-on-suface-container style-border radius-50 g-12 mb-24">
               <li className="item">
-                <a href="#">
+                <a href="https://www.messenger.com" target="_blank" rel="noopener noreferrer" aria-label="Messenger">
                   <div className="icon">
                     <i className="icon-messenger" />
                   </div>
                 </a>
               </li>
               <li className="item">
-                <a href="#">
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X">
                   <div className="icon">
                     <i className="icon-x" />
                   </div>
                 </a>
               </li>
               <li className="item">
-                <a href="#">
+                <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                   <div className="icon">
                     <i className="icon-ig1" />
                   </div>
                 </a>
               </li>
               <li className="item">
-                <a href="#">
+                <a href="https://www.skype.com" target="_blank" rel="noopener noreferrer" aria-label="Skype">
                   <div className="icon">
                     <i className="icon-skype" />
                   </div>
                 </a>
               </li>
               <li className="item">
-                <a href="#">
+                <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
                   <div className="icon">
                     <i className="icon-telegram" />
                   </div>
@@ -97,7 +97,7 @@ export default function TeamModal() {
               <div className="age infomation-content item">
                 <div className="label">EMAIL:</div>
                 <h6 className="content">
-                  <a href="#"> themesflat@gmail.com</a>
+                  <a href="mailto:themesflat@gmail.com"> themesflat@gmail.com</a>
                 </h6>
               </div>
             </div>
@@ -105,13 +105,13 @@ export default function TeamModal() {
               <div className="age infomation-content item">
                 <div className="label">WHATSAPP:</div>
                 <h6 className="content">
-                  <a href="#">(555) 123-4567</a>
+                  <a href="tel:+15551234567">(555) 123-4567</a>
                 </h6>
               </div>
               <div className="age infomation-content item">
                 <div className="label">FROM</div>
                 <h6 className="content">
-                  <a href="#">Los Angeles,California</a>
+                  <span>Los Angeles,California</span>
                 </h6>
               </div>
             </div>

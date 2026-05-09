@@ -21,9 +21,7 @@ export default function AboutAlBaharCMS({ data }: Props) {
           <div className="col-lg-8">
             <div className="heading-section about-content-left">
               <div className="text-anime-wave">
-                <a href="#" className="tag label text-btn-uppercase">
-                  {data.tag}
-                </a>
+                <span className="tag label text-btn-uppercase">{data.tag}</span>
               </div>
               <h3
                 className="title-section mb-40 about-albahar-title"

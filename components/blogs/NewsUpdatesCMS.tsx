@@ -70,7 +70,7 @@ export default function NewsUpdatesCMS({ data, postsBasePath = "/news-updates" }
             <div className="blog-no-sidebar-slide">
               <div className="tf-post-grid style-absolute news-featured-post">
                 <div className="image">
-                  <Link href={featuredPostHref} className="link" />
+                  <Link href={featuredPostHref} className="link" aria-label={`Read ${featuredPost.title}`} />
                   {heroSrc && (
                     <Image
                       src={heroSrc}
@@ -105,7 +105,7 @@ export default function NewsUpdatesCMS({ data, postsBasePath = "/news-updates" }
                 return (
                   <div className="tf-post-grid style-small fl-item d-block" key={post._id || index}>
                     <div className="image">
-                      <Link href={href} className="link" />
+                      <Link href={href} className="link" aria-label={`Read ${post.title}`} />
                       {listSrc && (
                         <Image
                           src={listSrc}

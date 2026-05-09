@@ -203,7 +203,7 @@ export default function Quickview() {
                           selected === option.id ? "active" : ""
                         }`}
                       >
-                        <a href="#" className="image">
+                        <button type="button" className="image" aria-label={`Select ${option.id}`}>
                           <Image
                             src={option.src}
                             alt=""
@@ -211,7 +211,7 @@ export default function Quickview() {
                             width={option.width}
                             height={option.height}
                           />
-                        </a>
+                        </button>
                       </label>
                     </React.Fragment>
                   ))}
@@ -248,10 +248,9 @@ export default function Quickview() {
               </div>
               <div>
                 <div className="tf-product-info-by-btn ">
-                  <a
-                    href="#"
+                  <button
+                    type="button"
                     onClick={(e) => {
-                      e.preventDefault();
                       addProductToCart(quickViewItem.id, value);
                     }}
                     className="tf-btn style-2 w-full text-center bg-color-primary btn-add-to-cart"
@@ -265,7 +264,7 @@ export default function Quickview() {
                     <span className="cart-total tf-qty-price total-price">
                       ${(quickViewItem.price * value).toFixed(2)}
                     </span>
-                  </a>
+                  </button>
                   <a
                     href="#compare"
                     data-bs-toggle="offcanvas"
@@ -273,19 +272,21 @@ export default function Quickview() {
                   >
                     <i className="icon icon-gitDiff" />
                   </a>
-                  <a
-                    href="#"
+                  <button
+                    type="button"
                     className="box-icon hover-tooltip text-caption-2 wishlist btn-icon-action"
+                    aria-label="Add to wishlist"
                   >
                     <i className="icon icon-heart" />
-                  </a>
+                  </button>
                 </div>
-                <a
-                  href="#"
+                <button
+                  type="button"
                   className="tf-btn w-full style-2 bg-on-suface-container text-center"
+                  aria-label="Buy now"
                 >
                   <span>Buy It Now</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>

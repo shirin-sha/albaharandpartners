@@ -1,5 +1,4 @@
 import React from "react";
-import Link from "next/link";
 import { SupportContent } from "@/types/support";
 
 interface Props {
@@ -21,9 +20,7 @@ export default function SupportServicesCMS({ data }: Props) {
           <div className="col-12">
             <div className="heading-section text-center">
               <div className="text-anime-wave-1">
-                <a href="#" className="tag label text-btn-uppercase">
-                  {data.servicesSection.tag}
-                </a>
+                <span className="tag label text-btn-uppercase">{data.servicesSection.tag}</span>
               </div>
               <h3 className="title-section text-anime-wave-1 mb-12">
                 {data.servicesSection.heading}
@@ -53,9 +50,7 @@ export default function SupportServicesCMS({ data }: Props) {
                     )}
                   </div>
                   <h6>
-                    <Link href="#" className="name-industry">
-                      {service.title}
-                    </Link>
+                    <span className="name-industry">{service.title}</span>
                   </h6>
                 </div>
                 <div className="desc">{service.description}</div>

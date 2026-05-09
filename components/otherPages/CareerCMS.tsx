@@ -30,9 +30,7 @@ export default function CareerCMS({ data }: Props) {
           <div className="col-12">
             <div className="heading-section text-center">
               <div className="text-anime-wave-1">
-                <a href="#" className="tag label text-btn-uppercase bg-white">
-                  {data.tag}
-                </a>
+                <span className="tag label text-btn-uppercase bg-white">{data.tag}</span>
               </div>
               <h3 className="text-anime-wave-1 mb-12">
                 {data.heading}

@@ -132,35 +132,35 @@ export default function LoginModal() {
               </form>
               <ul className="tf-social radius-50 g-8 color-on-suface-container">
                 <li className="item">
-                  <a href="#">
+                  <a href="https://www.messenger.com" target="_blank" rel="noopener noreferrer" aria-label="Messenger">
                     <div className="icon">
                       <i className="icon-messenger" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="#">
+                  <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X">
                     <div className="icon">
                       <i className="icon-x" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="#">
+                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                     <div className="icon">
                       <i className="icon-ig1" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="#">
+                  <a href="https://www.skype.com" target="_blank" rel="noopener noreferrer" aria-label="Skype">
                     <div className="icon">
                       <i className="icon-skype" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="#">
+                  <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
                     <div className="icon">
                       <i className="icon-telegram" />
                     </div>
@@ -168,13 +168,14 @@ export default function LoginModal() {
                 </li>
               </ul>
             </div>
-            <a
-              href="#"
+            <button
+              type="button"
               data-bs-dismiss="modal"
               className="icon-new-letter btn-hide-popup"
+              aria-label="Close newsletter popup"
             >
               <i className="icon-close1"> </i>
-            </a>
+            </button>
           </div>
         </div>
       </div>
