@@ -278,7 +278,7 @@
 }
 
 .font-noto-arabic {
-    font-family: "Noto Sans Arabic", sans-serif !important;
+    font-family: var(--font-noto-arabic), sans-serif !important;
 }
 
 .header {

@@ -17,11 +17,19 @@
         margin-bottom: 40px;
 
         li {
-            a {
+
+            a,
+            button.tab-trigger {
                 display: inline-block;
                 color: var(--on-suface-container);
                 padding-bottom: 8px;
                 position: relative;
+                margin: 0;
+                border: 0;
+                background: transparent;
+                font: inherit;
+                text-align: inherit;
+                cursor: pointer;
 
                 &::before {
                     content: '';
@@ -45,7 +53,9 @@
             }
 
             &:hover {
-                a {
+
+                a,
+                button.tab-trigger {
                     &::before {
                         left: 0;
                         right: auto;

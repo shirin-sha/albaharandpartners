@@ -35,9 +35,9 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
                   {content.tag}
                 </span>
               </div>
-              <h3 className="title-section text-anime-wave-1 mb-12">
+              <h2 className="title-section text-anime-wave-1 mb-12">
                 {content.heading}
-              </h3>
+              </h2>
               <div className="sub-title body-2 text-anime-wave-1">
                 {content.subheading}
               </div>
@@ -67,11 +67,11 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
                   <i className="icon-arrowRight" />
                 </Link>
                 <div className="case-studies-content">
-                  <h5>
+                  <h3>
                     <Link href={caseStudy.link || "#"} className="name">
                       {caseStudy.title}
                     </Link>
-                  </h5>
+                  </h3>
                   <div className="desc">{caseStudy.description}</div>
                   <Link href={caseStudy.link || "#"} className="tf-btn-arrow-t-r">
                     <span>View Case Study</span>

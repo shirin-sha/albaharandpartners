@@ -25,9 +25,9 @@ export default function BrandsSection({ content, language = 'ltr' }: BrandsSecti
         <div className="row">
           <div className="col-12">
             <div className="text-heading">
-              <h5>
+              <h2 className="h5 mb-0">
                 <span>{content.heading}</span>
-              </h5>
+              </h2>
             </div>
             <div className="tf-marquee tf-spacing-25">
               <div className="marquee-wrapper">

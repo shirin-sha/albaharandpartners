@@ -32,9 +32,9 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
                     {content.tag}
                   </span>
                 </div>
-                <h3 className="title-section mb-12 text-anime-wave">
+                <h2 className="title-section mb-12 text-anime-wave">
                   {content.heading}
-                </h3>
+                </h2>
                 <div className="sub-title body-2 text-anime-wave">
                   {content.subheading}
                 </div>
@@ -60,7 +60,9 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
                         sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="media-fill-cover"
                       />
-                      <Link href={post.link && post.link !== "#" ? post.link : `/news-updates`} className="link" aria-label={`Read more about ${post.title}`} />
+                      <Link href={post.link && post.link !== "#" ? post.link : `/news-updates`} className="link">
+                        <span className="visually-hidden">{`Read full article: ${post.title}`}</span>
+                      </Link>
                       <div className="date" aria-hidden="true">
                         <span className="day">{post.date.day}</span>
                         <span className="label">{post.date.month}</span>
@@ -70,11 +72,11 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
                       <div className="position label text-btn-uppercase mb-12">
                         {post.category}
                       </div>
-                      <h5 className="title-post">
+                      <h3 className="title-post">
                         <Link href={post.link && post.link !== "#" ? post.link : `/news-updates`}>
                           {post.title}
                         </Link>
-                      </h5>
+                      </h3>
                     </div>
                   </div>
                 </div>

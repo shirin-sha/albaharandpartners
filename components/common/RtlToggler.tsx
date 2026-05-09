@@ -38,9 +38,11 @@ export default function RtlToggler() {
 
   return (
     <button
+      type="button"
       onClick={toggleLanguage}
       id="toggle-rtl"
       className="btn-style-2 radius-3"
+      aria-label={isRtl ? "Switch site language to English" : "Switch site language to Arabic"}
     >
       <span>AR</span>
       <span>EN</span>

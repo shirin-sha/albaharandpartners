@@ -49,11 +49,11 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
                 height={605}
               />
               <div className="content wow fadeInUp">
-                <h6>
+                <p className="mb-0">
                   <span className="name">
                     {personName}
                   </span>
-                </h6>
+                </p>
                 <div className="position">{personTitle}</div>
               </div>
             </div>
@@ -67,15 +67,15 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
                       {content.tag}
                     </span>
                   </div>
-                  <h3 className="title-section wow fadeInUp mb-12">
+                  <h2 className="title-section wow fadeInUp mb-12">
                     {content.heading}
-                  </h3>
+                  </h2>
                   <div className="sub-title body-2 wow fadeInUp">
                     {content.description}
                   </div>
                 </div>
                 {content.secondaryHeading && (
-                  <h4 className="mb-16 wow fadeInUp">{content.secondaryHeading}</h4>
+                  <h3 className="mb-16 wow fadeInUp">{content.secondaryHeading}</h3>
                 )}
                 {content.secondaryDescription && (
                   <div className="text color-on-suface-variant-1 body-2 wow fadeInUp">

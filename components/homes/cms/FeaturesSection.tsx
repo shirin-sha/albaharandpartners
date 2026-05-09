@@ -41,9 +41,9 @@ export default function FeaturesSection({ content, language = 'ltr' }: FeaturesS
                     {content.tag}
                   </span>
                 </div>
-                <h3 className="wow fadeInUp mb-12">
+                <h2 className="wow fadeInUp mb-12">
                   {content.heading}
-                </h3>
+                </h2>
                 <div className="sub-title body-2 wow fadeInUp">
                   {content.description}
                 </div>
@@ -95,12 +95,14 @@ export default function FeaturesSection({ content, language = 'ltr' }: FeaturesS
                   <div className="counter-item style-3" key={index}>
                     <div className="counter">
                       <div className="number-counter">
-                        <h2 className="number odometer">
+                        <div className="number odometer">
                           <OdometerComponent max={counter.value} />
-                        </h2>
-                        <h2 className="plus">+</h2>
+                        </div>
+                        <div className="plus" aria-hidden="true">
+                          +
+                        </div>
                       </div>
-                      <h6
+                      <div
                         className="text"
                         dangerouslySetInnerHTML={{ __html: counter.label }}
                       />

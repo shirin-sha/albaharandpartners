@@ -21,14 +21,14 @@ export default function AboutSection({ content, language = 'ltr' }: AboutSection
             {content.tag}
           </span>
         </div>
-        <h3 className="mb-0 text-anime-wave">
+        <h2 className="mb-0 text-anime-wave">
           {content.heading.split('<br/>').map((line, index, array) => (
             <React.Fragment key={index}>
               {line}
               {index < array.length - 1 && <br />}
             </React.Fragment>
           ))}
-        </h3>
+        </h2>
       </div>
     </div>
   );
@@ -54,11 +54,11 @@ export default function AboutSection({ content, language = 'ltr' }: AboutSection
           <div className="tf-phone">
             <div className="content">
               <p>{content.phoneLabel}</p>
-              <h5>
+              <p className="mb-0">
                 <a href={`tel:${content.phoneNumber}`} className="color-primary">
                   {content.phoneNumber}
                 </a>
-              </h5>
+              </p>
             </div>
           </div>
         </div>

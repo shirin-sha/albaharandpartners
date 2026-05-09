@@ -41,9 +41,9 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                   {content.tag}
                 </span>
               </div>
-              <h3 className="title-section text-anime-wave-1 mb-12">
+              <h2 className="title-section text-anime-wave-1 mb-12">
                 {content.heading}
-              </h3>
+              </h2>
               <div className="sub-title body-2 text-anime-wave-1">
                 {content.subheading}
               </div>
@@ -54,20 +54,27 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                   className="tab-product g-40 justify-content-between min-w-1131"
                   role="tablist"
                 >
-                  {activeServices.map((service, index) => (
-                    <li className="nav-tab-item" role="presentation" key={service.id}>
-                      <h5>
-                        <a
-                          href={`#${service.id}`}
-                          data-bs-toggle="tab"
+                  {activeServices.map((service, index) => {
+                    const panelId = `services-panel-${service.id}`;
+                    const tabId = `services-tab-${service.id}`;
+                    return (
+                      <li className="nav-tab-item" role="none" key={service.id}>
+                        <button
+                          type="button"
+                          id={tabId}
+                          className={`tab-trigger${index === 0 ? " active" : ""}`}
                           role="tab"
-                          className={index === 0 ? "active" : ""}
+                          aria-selected={index === 0}
+                          aria-controls={panelId}
+                          tabIndex={index === 0 ? 0 : -1}
+                          data-bs-toggle="tab"
+                          data-bs-target={`#${panelId}`}
                         >
                           {service.tabTitle}
-                        </a>
-                      </h5>
-                    </li>
-                  ))}
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
               <div className="tab-content">
@@ -78,14 +85,15 @@ export default function ServicesSection({ content, language = 'ltr' }: ServicesS
                   <div
                     key={service.id}
                     className={`tab-pane${index === 0 ? " active show" : ""}`}
-                    id={service.id}
+                    id={`services-panel-${service.id}`}
                     role="tabpanel"
+                    aria-labelledby={`services-tab-${service.id}`}
                   >
                     <div className="services-inner bg-surface">
                       <div className="services-content p-40 services-content-spacious">
-                        <h4 className="title-content mb-12">
+                        <h3 className="title-content mb-12">
                           <Link href={detailsHref}>{service.title}</Link>
-                        </h4>
+                        </h3>
                         <div className="sub-title mb-28 body-2">
                           {service.description.split('<br/>').map((line, i, array) => (
                             <React.Fragment key={i}>

@@ -44,8 +44,8 @@ export default function Search() {
                       id="search"
                       placeholder="Searching...."
                     />
-                    <button type="submit" className="btn-search">
-                      <i className="icon-MagnifyingGlass" />
+                    <button type="submit" className="btn-search" aria-label="Submit search">
+                      <i className="icon-MagnifyingGlass" aria-hidden />
                     </button>
                   </fieldset>
                 </form>

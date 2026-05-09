@@ -32,16 +32,13 @@ export default function CtaSection({ content, language = 'ltr' }: CtaSectionProp
             <div className="section-content">
               <div className="heading-section style-color-white">
                 <div className="wow fadeInUp">
-                  <Link
-                    href={content.buttonLink || '/contact-us'}
-                    className="tag label text-btn-uppercase bg-white"
-                  >
+                  <span className="tag label text-btn-uppercase bg-white">
                     {content.tag}
-                  </Link>
+                  </span>
                 </div>
-                <h3 className="title-section mb-12 wow fadeInUp">
+                <h2 className="title-section mb-12 wow fadeInUp">
                   {content.heading}
-                </h3>
+                </h2>
                 <div className="sub-title body-2 wow fadeInUp">
                   {content.description}
                 </div>
@@ -60,14 +57,15 @@ export default function CtaSection({ content, language = 'ltr' }: CtaSectionProp
                     href={`tel:${content.phoneNumber}`}
                     className="icon wow fadeInUp"
                     data-wow-delay=".1s"
+                    aria-label={`Call ${content.phoneNumber}`}
                   >
                     <i className="icon-PhoneCall" />
                   </a>
                   <div className="content wow fadeInUp" data-wow-delay=".2s">
                     <p className="caption-2">{content.phoneLabel}</p>
-                    <h6>
+                    <p className="mb-0">
                       <a href={`tel:${content.phoneNumber}`}>{content.phoneNumber}</a>
-                    </h6>
+                    </p>
                   </div>
                 </div>
               </div>

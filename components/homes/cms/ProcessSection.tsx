@@ -32,9 +32,9 @@ export default function ProcessSection({ content, language = 'ltr' }: ProcessSec
                     {content.tag}
                   </span>
                 </div>
-                <h3 className="title-section mb-12 text-anime-wave">
+                <h2 className="title-section mb-12 text-anime-wave">
                   {content.heading}
-                </h3>
+                </h2>
                 <div className="sub-title body-2 text-anime-wave">
                   {content.subheading}
                 </div>

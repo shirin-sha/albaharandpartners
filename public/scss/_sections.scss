@@ -2327,7 +2327,8 @@
         width: 100%;
         text-align: center;
 
-        a {
+        a,
+        button.tab-trigger {
           width: 100%;
           padding-bottom: 20px;
         }
