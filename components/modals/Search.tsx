@@ -15,12 +15,10 @@ export default function Search() {
               <div className="top-content">
                 <div className="logo-search">
                   <Link href={`/`}>
-                    <Image
-                      alt="Al Bahar & Partners"
-                      src="/image/logo/logo.svg"
-                      width={169}
-                      height={40}
-                    />
+                    <span className="visually-hidden">
+                      Al Bahar & Partners — home
+                    </span>
+                    <Image alt="" src="/image/logo/logo.svg" width={169} height={40} />
                   </Link>
                 </div>
                 <button

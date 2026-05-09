@@ -10,9 +10,12 @@ export default function SideOffcanvas() {
     >
       <div className="heading">
         <Link href="/" className="logo">
+          <span className="visually-hidden">
+            Al Bahar & Partners — home
+          </span>
           <Image
             src="/image/logo/logo-2.png"
-            alt="Al Bahar & Partners"
+            alt=""
             width={169}
             height={41}
           />

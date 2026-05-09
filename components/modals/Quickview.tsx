@@ -269,8 +269,9 @@ export default function Quickview() {
                     href="#compare"
                     data-bs-toggle="offcanvas"
                     className="box-icon hover-tooltip compare btn-icon-action"
+                    aria-label="Open product comparison"
                   >
-                    <i className="icon icon-gitDiff" />
+                    <i className="icon icon-gitDiff" aria-hidden />
                   </a>
                   <button
                     type="button"

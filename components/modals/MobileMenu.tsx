@@ -26,12 +26,10 @@ export default function MobileMenu() {
         <div className="top-header-mobi">
           <div className="logo-mobile">
             <Link href={`/`}>
-              <Image
-                alt="Al Bahar & Partners"
-                src="/image/logo/logo-2.png"
-                width={169}
-                height={40}
-              />
+              <span className="visually-hidden">
+                Al Bahar & Partners — home
+              </span>
+              <Image alt="" src="/image/logo/logo-2.png" width={169} height={40} />
             </Link>
           </div>
           <button

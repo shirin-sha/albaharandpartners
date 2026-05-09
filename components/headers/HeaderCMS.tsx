@@ -68,8 +68,13 @@ export default function HeaderCMS({ data }: Props) {
               <div className="header-left">
                 <div className="logo">
                   <Link href={addLanguagePrefix(data.logo.link, pathname)}>
+                    <span className="visually-hidden">
+                      {(data.logo.alt || "").trim()
+                        ? `${data.logo.alt} — home`
+                        : "Al Bahar & Partners — home"}
+                    </span>
                     <Image
-                      alt={data.logo.alt}
+                      alt=""
                       src={data.logo.imagePath}
                       width={data.logo.width}
                       height={40}

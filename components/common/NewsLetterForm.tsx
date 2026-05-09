@@ -56,8 +56,12 @@ export default function NewsLetterForm({
       {" "}
       <fieldset>
         <input name="email" type="text" placeholder={placeholder} />
-        <button type="submit" className="tf-btn-newsletter">
-          <i className="icon-PaperPlaneTilt" />
+        <button
+          type="submit"
+          className="tf-btn-newsletter"
+          aria-label="Subscribe to newsletter"
+        >
+          <i className="icon-PaperPlaneTilt" aria-hidden />
         </button>
       </fieldset>
       <div

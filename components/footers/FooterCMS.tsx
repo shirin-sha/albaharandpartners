@@ -131,8 +131,13 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
               <div className="footer-left">
                 <div className="logo-footer">
                   <Link href={data.logo.link} className="logo">
+                    <span className="visually-hidden">
+                      {(data.logo.alt || "").trim()
+                        ? `${data.logo.alt} — home`
+                        : "Al Bahar & Partners — home"}
+                    </span>
                     <Image
-                      alt={data.logo.alt}
+                      alt=""
                       src={data.logo.imagePath}
                       width={data.logo.width}
                       height={data.logo.height}
