@@ -36,8 +36,8 @@ import { newsMainImageSrc } from "@/lib/news-post-images";
 import Topbar1 from "@/components/headers/Topbar1";
 
 export const metadata: Metadata = {
-  title: "Al bahar partners - Arabic",
-  description: "",
+  title: "البحار وشركاه - حلول تقنية المعلومات",
+  description: "البحار وشركاه تقدم حلول تقنية المعلومات للمؤسسات والاستشارات والخدمات المُدارة في الكويت ومنطقة الخليج العربي.",
 };
 
 // Arabic / RTL homepage

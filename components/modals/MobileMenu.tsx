@@ -27,7 +27,7 @@ export default function MobileMenu() {
           <div className="logo-mobile">
             <Link href={`/`}>
               <Image
-                alt=""
+                alt="Al Bahar & Partners"
                 src="/image/logo/logo-2.png"
                 width={169}
                 height={40}

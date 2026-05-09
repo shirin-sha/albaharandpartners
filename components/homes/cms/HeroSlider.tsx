@@ -80,7 +80,7 @@ export default function HeroSlider({ slides, language = 'ltr' }: HeroSliderProps
                     </div>
                     <div className="tf-fade-top fade-item-3">
                       <Link
-                        href={slide.buttonLink || "#"}
+                        href={slide.buttonLink && slide.buttonLink !== "#" ? slide.buttonLink : "/solutions"}
                         className="tf-btn style-1 bg-white "
                       >
                         <span>{slide.buttonText || "View All Services"}</span>

@@ -42,7 +42,7 @@ export default function Header7() {
                 <div className="logo">
                   <Link href={`/`}>
                     <Image
-                      alt=""
+                      alt="Al Bahar & Partners"
                       src="/image/logo/logo-2.png"
                       width={169}
                       height={40}

@@ -16,7 +16,7 @@ export default function Search() {
                 <div className="logo-search">
                   <Link href={`/`}>
                     <Image
-                      alt=""
+                      alt="Al Bahar & Partners"
                       src="/image/logo/logo.svg"
                       width={169}
                       height={40}

@@ -42,7 +42,7 @@ export default function Quickview() {
                 <div className="image">
                   <Image
                     className="lazyloaded"
-                    alt=""
+                    alt={quickViewItem.title}
                     src={quickViewItem.imgSrc}
                     width={360}
                     height={360}

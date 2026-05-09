@@ -85,9 +85,9 @@ export default function LoginModal() {
             <div className="image">
               <Image
                 src="/image/section/img-new-letter.jpg"
-                alt=""
-                className="lazyload"
-                width={440}
+              alt="Newsletter signup"
+              className="lazyload"
+              width={440}
                 height={440}
               />
             </div>

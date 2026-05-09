@@ -34,15 +34,33 @@ export default function BrandsSection({ content, language = 'ltr' }: BrandsSecti
                 <div className="initial-child-container">
                   {activeBrands.map((brand, index) => (
                     <div className="marquee-child-item" style={{ marginRight: '60px' }} key={index}>
-                      <a href={brand.link || "#"} className="brand-item">
-                        <Image
-                          alt={brand.name}
-                          src={brand.imagePath}
-                          width={280}
-                          height={55}
-                          style={{ width: '280px', height: '55px', objectFit: 'contain' }}
-                        />
-                      </a>
+                      {brand.link && brand.link !== "#" ? (
+                        <a
+                          href={brand.link}
+                          className="brand-item"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={brand.name}
+                        >
+                          <Image
+                            alt={brand.name}
+                            src={brand.imagePath}
+                            width={280}
+                            height={55}
+                            className="brand-marquee-img"
+                          />
+                        </a>
+                      ) : (
+                        <span className="brand-item">
+                          <Image
+                            alt={brand.name}
+                            src={brand.imagePath}
+                            width={280}
+                            height={55}
+                            className="brand-marquee-img"
+                          />
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>

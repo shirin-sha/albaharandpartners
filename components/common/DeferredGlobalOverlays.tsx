@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 
 const Quickview = dynamic(() => import("@/components/modals/Quickview"));
 const Search = dynamic(() => import("@/components/modals/Search"));
-const TeamModal = dynamic(() => import("@/components/modals/TeamModal"));
 const SideOffcanvas = dynamic(() => import("@/components/modals/SideOffcanvas"));
 
 export default function DeferredGlobalOverlays() {
@@ -33,7 +32,6 @@ export default function DeferredGlobalOverlays() {
     <>
       <Quickview />
       <Search />
-      <TeamModal />
       <SideOffcanvas />
     </>
   );

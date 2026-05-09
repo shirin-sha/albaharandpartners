@@ -4,7 +4,6 @@ import Image from "next/image";
 import { teamMembers } from "@/data/team";
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { useContextElement } from "@/context/Context";
 import { Pagination } from "swiper/modules";
 import { TeamSection } from "@/types/aboutus";
 
@@ -13,7 +12,6 @@ interface Props {
 }
 
 export default function TeamCMS({ data }: Props) {
-  const { setCurrentTeamMember } = useContextElement();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -58,10 +56,7 @@ export default function TeamCMS({ data }: Props) {
             >
               {members.map((member, index) => (
                 <SwiperSlide key={index}>
-                  <div
-                    className="team-item style-1"
-                    onClick={() => setCurrentTeamMember?.(member)}
-                  >
+                  <div className="team-item style-1">
                     <div className="image">
                       <Image
                         src={member.imgSrc}

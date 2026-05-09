@@ -60,7 +60,7 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
                         sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="media-fill-cover"
                       />
-                      <Link href={post.link || "#"} className="link" aria-label={`Read more about ${post.title}`} />
+                      <Link href={post.link && post.link !== "#" ? post.link : `/news-updates`} className="link" aria-label={`Read more about ${post.title}`} />
                       <div className="date" aria-hidden="true">
                         <span className="day">{post.date.day}</span>
                         <span className="label">{post.date.month}</span>
@@ -71,7 +71,7 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
                         {post.category}
                       </div>
                       <h5 className="title-post">
-                        <Link href={post.link || "#"}>
+                        <Link href={post.link && post.link !== "#" ? post.link : `/news-updates`}>
                           {post.title}
                         </Link>
                       </h5>
