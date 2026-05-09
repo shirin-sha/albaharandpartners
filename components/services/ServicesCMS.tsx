@@ -29,7 +29,9 @@ export default function ServicesCMS({ data, language = 'ltr' }: Props) {
                     <Link
                       href={`${detailsBasePath}?id=${solution.id}`}
                       className="link"
-                    />
+                    >
+                      <span className="visually-hidden">{`View solution: ${solution.title}`}</span>
+                    </Link>
                     <Image
                       src={solution.imgSrc}
                       alt={solution.title}

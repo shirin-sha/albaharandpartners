@@ -114,6 +114,22 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
     return <i className={icon} />;
   };
 
+  const footerSocialLinkLabel = (icon: string) => {
+    switch ((icon || "").toLowerCase()) {
+      case "linkedin":
+        return "Al Bahar & Partners on LinkedIn";
+      case "facebook":
+        return "Al Bahar & Partners on Facebook";
+      case "instagram":
+        return "Al Bahar & Partners on Instagram";
+      case "x":
+      case "twitter":
+        return "Al Bahar & Partners on X";
+      default:
+        return `Al Bahar & Partners social profile (${icon?.trim() || "external link"})`;
+    }
+  };
+
   const getContactItemHref = (item: { value: string }) => {
     const trimmed = (item.value || "").trim();
     if (!trimmed) return "";
@@ -163,9 +179,12 @@ export default function FooterCMS({ data, parentClass = "footer style-2", light 
                             href={social.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            aria-label={`Open ${social.icon || "social"} profile`}
+                            aria-label={footerSocialLinkLabel(social.icon)}
                           >
-                            <div className="icon">
+                            <span className="visually-hidden">
+                              {footerSocialLinkLabel(social.icon)}
+                            </span>
+                            <div className="icon" aria-hidden={true}>
                               {renderSocialIcon(social.icon)}
                             </div>
                           </a>
