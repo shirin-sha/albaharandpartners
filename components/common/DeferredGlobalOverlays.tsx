@@ -11,28 +11,43 @@ export default function DeferredGlobalOverlays() {
   const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
     const enable = () => setShouldLoad(true);
+    const shouldEnableForTarget = (target: EventTarget | null) => {
+      if (!(target instanceof Element)) return false;
 
-    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-      (window as any).requestIdleCallback(enable, { timeout: 1500 });
-    } else {
-      timer = setTimeout(enable, 1200);
-    }
+      return Boolean(
+        target.closest(
+          '[href="#canvnasQuickview"], [data-search-trigger], .search-trigger'
+        )
+      );
+    };
+
+    const handleIntent = (event: Event) => {
+      if (shouldEnableForTarget(event.target)) {
+        enable();
+      }
+    };
+
+    window.addEventListener("pointerover", handleIntent, { passive: true });
+    window.addEventListener("focusin", handleIntent);
+    window.addEventListener("pointerdown", handleIntent, { passive: true });
 
     return () => {
-      if (timer) clearTimeout(timer);
+      window.removeEventListener("pointerover", handleIntent);
+      window.removeEventListener("focusin", handleIntent);
+      window.removeEventListener("pointerdown", handleIntent);
     };
   }, []);
 
-  if (!shouldLoad) return null;
-
   return (
     <>
-      <Quickview />
-      <Search />
       <SideOffcanvas />
+      {shouldLoad && (
+        <>
+          <Quickview />
+          <Search />
+        </>
+      )}
     </>
   );
 }

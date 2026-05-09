@@ -79,13 +79,15 @@ export default function Header7() {
                 <div className="nav-icon">
                
                   <div className="canvas-btn">
-                    <a href="#canvnasMegamenu" data-bs-toggle="offcanvas">
+                    <a href="#canvnasMegamenu" data-bs-toggle="offcanvas" aria-label="Open navigation menu">
+                      <span className="visually-hidden">Open navigation menu</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width={24}
                         height={24}
                         viewBox="0 0 24 24"
                         fill="none"
+                        aria-hidden="true"
                       >
                         <path
                           d="M4 6H20.5"
@@ -112,7 +114,8 @@ export default function Header7() {
                     </a>
                   </div>
                   <div className="mobile-button">
-                    <a href="#canvasMobile" data-bs-toggle="offcanvas">
+                    <a href="#canvasMobile" data-bs-toggle="offcanvas" aria-label="Open mobile menu">
+                      <span className="visually-hidden">Open mobile menu</span>
                       <span />
                       <span />
                       <span />

@@ -51,6 +51,7 @@ export default function HeroSlider({ slides, language = 'ltr' }: HeroSliderProps
               fill
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
+              quality={index === 0 ? 72 : 60}
               sizes="100vw"
               style={{ objectFit: "cover" }}
             />

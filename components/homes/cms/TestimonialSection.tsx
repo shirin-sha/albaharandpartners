@@ -47,6 +47,9 @@ export default function TestimonialSection({ content, language = 'ltr' }: Testim
                 className="lazyload"
                 width={605}
                 height={605}
+                loading="lazy"
+                quality={65}
+                sizes="(max-width: 991px) 100vw, 50vw"
               />
               <div className="content wow fadeInUp">
                 <p className="mb-0">

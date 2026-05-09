@@ -82,6 +82,9 @@ export default function NewsPostDetailView({
                       alt={post.title}
                       width={910}
                       height={512}
+                      priority
+                      quality={72}
+                      sizes="(max-width: 1199px) 100vw, 910px"
                       style={{ width: "100%", height: "auto" }}
                     />
                   </div>
@@ -142,6 +145,9 @@ export default function NewsPostDetailView({
                                 width={120}
                                 height={90}
                                 className="lazyload"
+                                loading="lazy"
+                                quality={65}
+                                sizes="120px"
                               />
                             )}
                           </div>

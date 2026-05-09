@@ -42,12 +42,18 @@ export default function BrandsSection({ content, language = 'ltr' }: BrandsSecti
                           rel="noopener noreferrer"
                           aria-label={brand.name}
                         >
+                          <span className="visually-hidden">
+                            {`Visit ${brand.name}`}
+                          </span>
                           <Image
-                            alt={brand.name}
+                            alt=""
                             src={brand.imagePath}
                             width={280}
                             height={55}
                             className="brand-marquee-img"
+                            loading="lazy"
+                            quality={70}
+                            sizes="280px"
                           />
                         </a>
                       ) : (
@@ -58,6 +64,9 @@ export default function BrandsSection({ content, language = 'ltr' }: BrandsSecti
                             width={280}
                             height={55}
                             className="brand-marquee-img"
+                            loading="lazy"
+                            quality={70}
+                            sizes="280px"
                           />
                         </span>
                       )}

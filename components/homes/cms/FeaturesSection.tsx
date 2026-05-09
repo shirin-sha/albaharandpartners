@@ -30,6 +30,9 @@ export default function FeaturesSection({ content, language = 'ltr' }: FeaturesS
                 className="lazyload"
                 width={615}
                 height={615}
+                loading="lazy"
+                quality={65}
+                sizes="(max-width: 1199px) 100vw, 50vw"
               />
             </div>
           </div>

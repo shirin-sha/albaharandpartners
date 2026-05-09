@@ -132,36 +132,41 @@ export default function LoginModal() {
               </form>
               <ul className="tf-social radius-50 g-8 color-on-suface-container">
                 <li className="item">
-                  <a href="https://www.messenger.com" target="_blank" rel="noopener noreferrer" aria-label="Messenger">
-                    <div className="icon">
+                  <a href="https://www.messenger.com" target="_blank" rel="noopener noreferrer" aria-label="Al Bahar & Partners on Messenger">
+                    <span className="visually-hidden">Al Bahar & Partners on Messenger</span>
+                    <div className="icon" aria-hidden={true}>
                       <i className="icon-messenger" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="X">
-                    <div className="icon">
+                  <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="Al Bahar & Partners on X">
+                    <span className="visually-hidden">Al Bahar & Partners on X</span>
+                    <div className="icon" aria-hidden={true}>
                       <i className="icon-x" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                    <div className="icon">
+                  <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Al Bahar & Partners on Instagram">
+                    <span className="visually-hidden">Al Bahar & Partners on Instagram</span>
+                    <div className="icon" aria-hidden={true}>
                       <i className="icon-ig1" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="https://www.skype.com" target="_blank" rel="noopener noreferrer" aria-label="Skype">
-                    <div className="icon">
+                  <a href="https://www.skype.com" target="_blank" rel="noopener noreferrer" aria-label="Al Bahar & Partners on Skype">
+                    <span className="visually-hidden">Al Bahar & Partners on Skype</span>
+                    <div className="icon" aria-hidden={true}>
                       <i className="icon-skype" />
                     </div>
                   </a>
                 </li>
                 <li className="item">
-                  <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
-                    <div className="icon">
+                  <a href="https://telegram.org" target="_blank" rel="noopener noreferrer" aria-label="Al Bahar & Partners on Telegram">
+                    <span className="visually-hidden">Al Bahar & Partners on Telegram</span>
+                    <div className="icon" aria-hidden={true}>
                       <i className="icon-telegram" />
                     </div>
                   </a>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 import { CtaSection as CtaSectionType } from "@/types/homepage";
 
@@ -20,12 +21,16 @@ export default function CtaSection({ content, language = 'ltr' }: CtaSectionProp
       className="section-banner h-8 tf-spacing-2 section-one-page"
       id="cta"
       dir={language}
-      style={
-        {
-          "--cta-bg-image": `url("${ctaBackgroundImage}")`,
-        } as React.CSSProperties
-      }
     >
+      <Image
+        src={ctaBackgroundImage}
+        alt=""
+        fill
+        className="section-banner-bg"
+        loading="lazy"
+        quality={65}
+        sizes="100vw"
+      />
       <div className="tf-container position-relative">
         <div className="row">
           <div className="col-lg-6">
@@ -59,7 +64,8 @@ export default function CtaSection({ content, language = 'ltr' }: CtaSectionProp
                     data-wow-delay=".1s"
                     aria-label={`Call ${content.phoneNumber}`}
                   >
-                    <i className="icon-PhoneCall" />
+                    <span className="visually-hidden">{`Call ${content.phoneNumber}`}</span>
+                    <i className="icon-PhoneCall" aria-hidden />
                   </a>
                   <div className="content wow fadeInUp" data-wow-delay=".2s">
                     <p className="caption-2">{content.phoneLabel}</p>

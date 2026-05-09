@@ -80,9 +80,15 @@ export default function NewsUpdatesCMS({ data, postsBasePath = "/news-updates" }
                       width={featuredPost.imgWidth || 1290}
                       height={featuredPost.imgHeight || 600}
                       className="lazyload"
+                      priority
+                      quality={72}
+                      sizes="(max-width: 1290px) 100vw, 1290px"
                     />
                   )}
                   <Link href={featuredPostHref} className="date">
+                    <span className="visually-hidden">
+                      {`Read article: ${featuredPost.title}`}
+                    </span>
                     <span className="day">{getDateBadgeParts(featuredPost).day}</span>
                     <span>{getDateBadgeParts(featuredPost).month}</span>
                   </Link>
@@ -117,9 +123,15 @@ export default function NewsUpdatesCMS({ data, postsBasePath = "/news-updates" }
                           width={post.imgWidth || 410}
                           height={post.imgHeight || 546}
                           className="lazyload"
+                          loading="lazy"
+                          quality={65}
+                          sizes="(max-width: 767px) 100vw, (max-width: 1199px) 50vw, 33vw"
                         />
                       )}
                       <Link href={href} className="date">
+                        <span className="visually-hidden">
+                          {`Read article: ${post.title}`}
+                        </span>
                         <span className="day">{getDateBadgeParts(post).day}</span>
                         <span>{getDateBadgeParts(post).month}</span>
                       </Link>

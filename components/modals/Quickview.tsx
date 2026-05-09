@@ -271,6 +271,7 @@ export default function Quickview() {
                     className="box-icon hover-tooltip compare btn-icon-action"
                     aria-label="Open product comparison"
                   >
+                    <span className="visually-hidden">Open product comparison</span>
                     <i className="icon icon-gitDiff" aria-hidden />
                   </a>
                   <button

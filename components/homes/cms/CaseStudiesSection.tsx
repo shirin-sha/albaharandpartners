@@ -55,16 +55,22 @@ export default function CaseStudiesSection({ content, language = 'ltr' }: CaseSt
                   className="image d-block media-card-ratio"
                   aria-label={`View case study ${caseStudy.title}`}
                 >
+                  <span className="visually-hidden">
+                    {`View case study: ${caseStudy.title}`}
+                  </span>
                   <Image
                     src={caseStudy.imagePath}
                     alt={caseStudy.title}
                     fill
                     sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     className="media-fill-cover"
+                    loading="lazy"
+                    quality={65}
                   />
                 </Link>
                 <Link href={caseStudy.link || "#"} className="btn-arrow-item" aria-label={`Open ${caseStudy.title}`}>
-                  <i className="icon-arrowRight" />
+                  <span className="visually-hidden">{`Open ${caseStudy.title}`}</span>
+                  <i className="icon-arrowRight" aria-hidden />
                 </Link>
                 <div className="case-studies-content">
                   <h3>

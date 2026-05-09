@@ -59,6 +59,8 @@ export default function BlogsSection({ content, language = 'ltr' }: BlogsSection
                         fill
                         sizes="(max-width: 575px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="media-fill-cover"
+                        loading="lazy"
+                        quality={65}
                       />
                       <Link href={post.link && post.link !== "#" ? post.link : `/news-updates`} className="link">
                         <span className="visually-hidden">{`Read full article: ${post.title}`}</span>

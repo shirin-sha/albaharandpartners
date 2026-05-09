@@ -2405,7 +2405,19 @@
     position: relative;
     background-color: var(--on-suface-container);
 
+    .section-banner-bg {
+      object-fit: cover;
+      pointer-events: none;
+      opacity: 0.5;
+      z-index: 0;
+    }
+
+    .tf-container {
+      z-index: 1;
+    }
+
     &::before {
+      display: none;
       position: absolute;
       content: "";
       top: 0;
